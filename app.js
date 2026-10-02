@@ -141,7 +141,12 @@ const JM=['فروردین','اردیبهشت','خرداد','تیر','مرداد'
 
 // Scanner pipeline: enhance photo -> OCR #1 (layout: dates + names) -> locate header row & your row -> OCR #2 per cell (single-line, code whitelist) -> review with crops.
 let sc={wp:'',name:'',y:0,m:0,words:null,cells:null,msg:'',busy:false,img:'',cv:null};
-const loadScript=u=>window.Tesseract?Promise.resolve():new Promise((ok,no)=>{const e=document.createElement('script');e.src=u;e.onload=ok;e.onerror=()=>no(Error('OCR files missing'));document.head.append(e)});
+const OCR_FILES=['tesseract.min.js','worker.min.js','tesseract-core-simd-lstm.wasm.js','tesseract-core-lstm.wasm.js','lang/eng.traineddata.gz','lang/fas.traineddata.gz'];
+// Checks every OCR file is reachable and names the missing ones, then loads the library.
+const loadScript=async u=>{if(window.Tesseract)return;const B=BASE(),miss=[];
+  for(const f of OCR_FILES){const r=await fetch(B+f,{method:'HEAD',cache:'no-store'}).catch(()=>null);if(!r||!r.ok)miss.push('vendor/'+f+(r?' ('+r.status+')':''))}
+  if(miss.length)throw Error('Missing on the server: '+miss.join(', '));
+  await new Promise((ok,no)=>{const e=document.createElement('script');e.src=u;e.onload=ok;e.onerror=()=>no(Error('Could not run vendor/tesseract.min.js'));document.head.append(e)})};
 const nn=t=>nrm(t).replace(/ي/g,'ی').replace(/ك/g,'ک').replace(/[\u200c\s]/g,'').toLowerCase();
 const lev=(a,b)=>{const d=[...Array(b.length+1).keys()];for(let i=1;i<=a.length;i++){let p=d[0];d[0]=i;for(let j=1;j<=b.length;j++){const t=d[j];d[j]=Math.min(d[j]+1,d[j-1]+1,p+(a[i-1]===b[j-1]?0:1));p=t}}return d[b.length]};
 const cleanCode=t=>{t=t.replace(/[—–_−]/g,'-').replace(/[|!\[\]()]/g,'');return /^-+$/.test(t)?'*':/^off$/i.test(t)?'OFF':t};
