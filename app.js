@@ -2,6 +2,7 @@
    Times are stored as epoch-ms segments, so old shifts keep their real times if a code is later edited. */
 const $=s=>document.querySelector(s), DAY=864e5;
 const DEF=[['N','Night','19:30-08:00'],['D','Morning','07:30-14:30'],['E','Evening','14:00-20:00'],['n','Short night','20:00-24:00'],['M','Leave','leave'],['S','Sick leave','leave'],['OFF','Day off','off'],['*','Day off','off']];
+const VER='v9';
 const DS=()=>({wps:[],shifts:[],events:[],gap:120,cal:'j',theme:'auto',lang:'fa',ver:3,myname:'',h24:true,fdow:6,cross:true,same:true,fh:2});
 let S=DS(),tab='today',cm=new Date(),sel='',vm='agenda';
 
@@ -71,7 +72,7 @@ V.set=()=>{const o=(a,c)=>a.map(([v,l])=>`<option value="${v}" ${String(c)===Str
 <label class="mu">First day of week</label><select onchange="S.fdow=+this.value;save();render()">${o([[6,'Sat'],[0,'Sun'],[1,'Mon']],S.fdow)}</select>
 <label class="mu">Theme</label><select onchange="S.theme=this.value;save();render()">${o([['auto','auto'],['light','light'],['dark','dark']],S.theme)}</select><label class="mu">Accent</label><select onchange="S.ac=this.value;save();render()">${o([['fox','Fox'],['ocean','Ocean'],['forest','Forest'],['violet','Violet']],S.ac||'fox')}</select>${sw('h24','24-hour clock')}</div>
 <h1>CONFLICTS</h1><div class="c"><label class="mu">Short gap is less than</label><select onchange="S.gap=+this.value;save();render()">${o([[60,'1 h'],[120,'2 h'],[240,'4 h']],S.gap)}</select>${sw('cross','Cross-workplace conflicts')}${sw('same','Same-workplace overlaps')}</div>
-<h1>DATA</h1><button class="p" onclick="exp()">Export backup</button><input type="file" accept=".json" onchange="imp(this.files[0])"><button class="p" style="background:var(--red)" onclick="if(confirm('Delete all data?')){S=DS();save();render()}">Clear data</button>`};
+<h1>DATA</h1><button class="p" onclick="exp()">Export backup</button><input type="file" accept=".json" onchange="imp(this.files[0])"><button class="p" style="background:var(--red)" onclick="if(confirm('Delete all data?')){S=DS();save();render()}">Clear data</button><div class="mu" style="text-align:center;margin-top:14px">ShiftFox ${VER}</div>`};
 
 function editWp(id){const w=S.wps.find(x=>x.id===id)||{name:'',color:'#3b82f6',codes:decCodes(DEF.map(d=>d.join('|')).join('\n'))};
   dlg(`<h3>${id?'Edit':'New'} workplace</h3><input id=wn placeholder="Name" value="${w.name}"><input id=wc type=color value="${w.color}">
@@ -164,8 +165,8 @@ function gridScan(d,w,h){
  for(let y=R;y<h-R;y++)for(let x=R;x<w-R;x++){const m=(I[(y+R+1)*W1+x+R+1]-I[(y-R)*W1+x+R+1]-I[(y+R+1)*W1+x-R]+I[(y-R)*W1+x-R])/A;if(d[(y*w+x)*4]<m*.8-4)px.push(x,y)}
  const n=px.length>>1,off=w;
  const score=th=>{const c=Math.cos(th),s=Math.sin(th),b=new Int32Array(h+2*w+8);for(let i=0;i<n;i+=3)b[Math.round(px[2*i+1]*c-px[2*i]*s)+off]++;let t=0;for(const v of b)t+=v*v;return t};
- let bt=0,bs=-1;for(let a=-4;a<=4.001;a+=.1){const t=a*Math.PI/180,v=score(t);if(v>bs){bs=v;bt=t}}
- const c0=bt;for(let a=-.1;a<=.101;a+=.02){const t=c0+a*Math.PI/180,v=score(t);if(v>bs){bs=v;bt=t}}
+ let bt=0,bs=-1;for(let a=-8;a<=8.001;a+=.2){const t=a*Math.PI/180,v=score(t);if(v>bs){bs=v;bt=t}}
+ const c0=bt;for(let a=-.2;a<=.201;a+=.04){const t=c0+a*Math.PI/180,v=score(t);if(v>bs){bs=v;bt=t}}
  const c=Math.cos(bt),s=Math.sin(bt);let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;
  for(const [x,y] of [[0,0],[w,0],[0,h],[w,h]]){const X=x*c+y*s,Y=y*c-x*s;x0=Math.min(x0,X);x1=Math.max(x1,X);y0=Math.min(y0,Y);y1=Math.max(y1,Y)}
  const ox=Math.ceil(-x0)+4,oy=Math.ceil(-y0)+4,W2=Math.ceil(x1-x0)+8,H2=Math.ceil(y1-y0)+8,Bm=new Uint8Array(W2*H2);
@@ -203,23 +204,30 @@ V.scan=()=>{if(!S.wps.length)return`<h1>SCAN</h1><div class="c">Add a workplace 
 <label class=mu>Your name</label><input id=sn value="${sc.name}"><div class=row style="gap:8px"><select id=sm>${[...Array(12)].map((_,i)=>`<option value=${i+1} ${i+1===m?'selected':''}>${mn(i+1)}</option>`).join('')}</select><input id=sy inputmode=numeric dir=ltr value="${PDg(y)}" style="width:100px"></div>
 <div class=row style="gap:8px"><label class=p>${inp(1)}Camera</label><label class="p s">${inp(0)}Gallery</label></div><div id=prog class=mu style="margin-top:8px;color:var(--red)">${sc.msg}</div></div>`};
 function readForm(){sc.wp=$('#sw').value;sc.name=$('#sn').value.trim();sc.m=+$('#sm').value;sc.y=+nrm($('#sy').value);S.myname=sc.name;save()}
-async function scanFile(f){if(!f)return;readForm();sc.msg='';sc.cells=null;sc.pick=false;sc.dr=null;await killWk();
-  try{const img=await createImageBitmap(f),k=Math.min(1,2400/Math.max(img.width,img.height)),cv=document.createElement('canvas');cv.width=Math.round(img.width*k);cv.height=Math.round(img.height*k);cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);
+const turn=(cv,deg)=>{const q=deg%180?[cv.height,cv.width]:[cv.width,cv.height],n=document.createElement('canvas');n.width=q[0];n.height=q[1];const x=n.getContext('2d');x.translate(q[0]/2,q[1]/2);x.rotate(deg*Math.PI/180);x.drawImage(cv,-cv.width/2,-cv.height/2);return n};
+const gridOf=cv=>gridScan(cv.getContext('2d').getImageData(0,0,cv.width,cv.height).data,cv.width,cv.height);
+// Straightens the photo by the measured tilt and stores the grid lines (in straightened coordinates).
+function setLayout(cv,G){const c=Math.cos(G.th),s=Math.sin(G.th),n=document.createElement('canvas');n.width=G.W2;n.height=G.H2;const x=n.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,n.width,n.height);x.setTransform(c,-s,s,c,G.ox,G.oy);x.drawImage(cv,0,0);sc.cv=n;
+  const sm=document.createElement('canvas');sm.width=1200;sm.height=1200*n.height/n.width;sm.getContext('2d').drawImage(n,0,0,sm.width,sm.height);sc.img=sm.toDataURL('image/jpeg',.7);
+  sc.dbg=cv.width+'×'+cv.height+' '+(G.th*57.3).toFixed(1)+'° H'+G.hl.length+' V'+G.vl.length;
+  if(G.hl.length<5||G.vl.length<8)throw Error('Table lines not found. Retake the photo flat and fully in view.');
+  sc.hl=fillGaps(G.hl,1);sc.vl=extLines(fillGaps(G.vl),G.vl2)}
+async function scanFile(f){if(!f)return;readForm();sc.msg='';sc.cells=null;sc.pick=false;sc.dr=null;sc.dbg='';await killWk();
+  try{let img;try{img=await createImageBitmap(f,{imageOrientation:'from-image'})}catch(e){img=await createImageBitmap(f)}
+    const k=Math.min(1,2400/Math.max(img.width,img.height));let cv=document.createElement('canvas');cv.width=Math.round(img.width*k);cv.height=Math.round(img.height*k);cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);
     sc.img=cv.toDataURL('image/jpeg',.5);sc.busy=true;render();P('Preparing image…',.05);await new Promise(r=>setTimeout(r,30));enhance(cv);
-    P('Finding the table…',.1);await new Promise(r=>setTimeout(r,30));const G=gridScan(cv.getContext('2d').getImageData(0,0,cv.width,cv.height).data,cv.width,cv.height);
-    const c=Math.cos(G.th),s=Math.sin(G.th),n=document.createElement('canvas');n.width=G.W2;n.height=G.H2;const x=n.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,n.width,n.height);x.setTransform(c,-s,s,c,G.ox,G.oy);x.drawImage(cv,0,0);sc.cv=n;
-    const sm=document.createElement('canvas');sm.width=1200;sm.height=1200*n.height/n.width;sm.getContext('2d').drawImage(n,0,0,sm.width,sm.height);sc.img=sm.toDataURL('image/jpeg',.7);
-    if(G.hl.length<5||G.vl.length<8)throw Error('Table lines not found. Retake the photo flat and fully in view.');
-    sc.hl=fillGaps(G.hl,1);sc.vl=extLines(fillGaps(G.vl),G.vl2);
+    P('Finding the table…',.1);await new Promise(r=>setTimeout(r,30));let G=gridOf(cv);
+    if(G.hl.length>G.vl.length){cv=turn(cv,90);G=gridOf(cv)} // the sheet has more day columns than staff rows; if not, the photo is sideways
     const B=BASE();await loadScript(B+'tesseract.min.js');P('Reading the table…',.2);
     sc.wk=await Tesseract.createWorker('eng',1,{workerPath:B+'worker.min.js',corePath:B,langPath:B+'lang',gzip:true});await sc.wk.setParameters({tessedit_pageseg_mode:'7'});
-    await structure();if(!sc.dr){sc.busy=false;sc.msg='Could not find the date row';await killWk();return render()}
-    pickAuto()}catch(e){sc.busy=false;sc.msg='Scan failed: '+e.message;render()}}
+    setLayout(cv,G);await structure();
+    if(sc.guess){const c2=turn(cv,180),g2=gridOf(c2);setLayout(c2,g2);await structure();if(sc.guess){setLayout(cv,G);await structure()}} // maybe upside down
+    pickAuto()}catch(e){sc.busy=false;sc.msg='Scan failed: '+e.message+(sc.dbg?' ['+sc.dbg+']':'');await killWk();render()}}
 // Header OCR gives each column its day number (and the direction); the name column sits at the day-1 end.
 async function structure(){const H=sc.hl,V=sc.vl,wk=sc.wk,vals=[];await wk.setParameters({tessedit_char_whitelist:'0123456789'});
   for(let i=0;i<V.length-1;i++){P('Reading dates…',.25+.2*i/V.length);const r=await wk.recognize(cropC(V[i]+6,H[0]+6,V[i+1]-6,H[1]-6,1)),v=+nrm(r.data.text.replace(/\D/g,''));vals.push(v>=1&&v<=31?v:0)}
   const votes={};vals.forEach((v,i)=>{if(v)for(const d of [1,-1]){const k=d+':'+(v-d*i);votes[k]=(votes[k]||0)+1}});
-  const [k,n]=Object.entries(votes).sort((a,b)=>b[1]-a[1])[0]||['',0];if(n<4)return;const[dr,a0]=k.split(':').map(Number);sc.dr=dr;sc.dayAt=i=>a0+dr*i;
+  const [k,n]=Object.entries(votes).sort((a,b)=>b[1]-a[1])[0]||['',0];let dr,a0;sc.guess=n<4;if(sc.guess){dr=-1;a0=V.length-5}else[dr,a0]=k.split(':').map(Number);sc.dr=dr;sc.dayAt=i=>a0+dr*i;
   sc.nameCol=dr<0?V.length-2:0;const hs=H.slice(1).map((v,i)=>v-H[i+1-1]).slice(1),rows=[];const med=[...hs].sort((a,b)=>a-b)[hs.length>>1];
   for(let j=1;j<H.length-1;j++){const h=H[j+1]-H[j];if(h>med*.6&&h<med*1.5)rows.push([H[j],H[j+1]])}
   const wn=await Tesseract.createWorker('fas',1,{workerPath:BASE()+'worker.min.js',corePath:BASE(),langPath:BASE()+'lang',gzip:true});await wn.setParameters({tessedit_pageseg_mode:'7'});sc.rows=[];const toks=sc.name.split(/\s+/).map(nn).filter(Boolean);
@@ -240,7 +248,7 @@ const cState=(w,c)=>!c.text?'empty':!parse(w,c.text)?'bad':c.c<80?'low':'ok';
 const setCell=(i,v)=>{sc.cells[i].text=v;sc.cells[i].c=100;render()};
 const reviewV=()=>{const w=S.wps.find(x=>x.id===sc.wp),st=sc.cells.map(c=>cState(w,c)),chk=st.filter(x=>x!=='ok').length,n=st.filter(x=>x!=='empty').length;
   const ov=`<svg viewBox="0 0 ${sc.cv.width} ${sc.cv.height}" class="pv"><image href="${sc.img}" width="${sc.cv.width}" height="${sc.cv.height}"/><rect x="0" y="${sc.hdrY-sc.mh}" width="${sc.cv.width}" height="${sc.mh*2}" fill="#2b7be4" opacity=".3"/><rect x="0" y="${sc.row-sc.mh}" width="${sc.cv.width}" height="${sc.mh*2}" fill="#ec6a1c" opacity=".35"/></svg>`;
-  return `<div class="steps"><span class="on"></span><span class="on"></span><span class="on"></span></div>${ov}<div class="row" style="margin:0 4px 10px"><b>${sc.name} · ${w.name}</b><span class="bad ${chk?'g':''}" style="${chk?'':'background:var(--ok)'}">${chk?chk+' Needs review':n+' ✓'}</span></div>`
+  return `<div class="steps"><span class="on"></span><span class="on"></span><span class="on"></span></div>${sc.guess?'<div class="c mu" style="border-color:var(--org)">Dates were guessed. Check the first and last day.</div>':''}${ov}<div class="mu" style="margin:0 6px 4px;direction:ltr">${sc.dbg||''}</div><div class="row" style="margin:0 4px 10px"><b>${sc.name} · ${w.name}</b><span class="bad ${chk?'g':''}" style="${chk?'':'background:var(--ok)'}">${chk?chk+' Needs review':n+' ✓'}</span></div>`
    +sc.cells.map((c,i)=>{const k=st[i];return `<div class="c cr ${k==='ok'?'':'w'}" style="padding:8px 10px"><img src="${c.img}"><div style="flex:1"><div class="mu">${dlabel(c.date)}</div><input dir=ltr style="margin:2px 0;text-align:center" value="${c.text}" onchange="setCell(${i},nrm(this.value.trim()))">${k==='ok'||k==='empty'?'':`<div>${w.codes.map(x=>`<span class=chip onclick="setCell(${i},'${x.code}')">${x.code}</span>`).join('')}</div>`}</div></div>`}).join('')
    +`<div class="sticky"><button class=p onclick=doImport()>Import ${n}</button><button class="p s" style="margin-top:6px" onclick="sc.cells=null;sc.pick=true;render()">Wrong row?</button></div>`};
 function doImport(){const w=S.wps.find(x=>x.id===sc.wp),L=sc.cells.filter(c=>c.text);
@@ -251,5 +259,5 @@ function doImport(){const w=S.wps.find(x=>x.id===sc.wp),L=sc.cells.filter(c=>c.t
     S.shifts.push({id:'s'+Date.now()+n,wp:w.id,date:c.date,text:c.text,label:cs.map(x=>x.label).join(' + '),segs:makeSegs(c.date,cs)})});
   sc.cells=null;killWk();save();go('agenda')}
 
-(async()=>{const L=await load()||{};if(L.wps&&!L.ver){L.lang='fa';L.cal='j';L.ver=3}S={...S,...L};sel=iso(Date.now());cm=mfirst(new Date());render();if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js')})();
+(async()=>{const L=await load()||{};if(L.wps&&!L.ver){L.lang='fa';L.cal='j';L.ver=3}S={...S,...L};sel=iso(Date.now());cm=mfirst(new Date());render();if('serviceWorker'in navigator){navigator.serviceWorker.register('sw.js');if(navigator.serviceWorker.controller)navigator.serviceWorker.addEventListener('controllerchange',()=>location.reload())}})();
 setInterval(()=>tab==='today'&&render(),60000);
