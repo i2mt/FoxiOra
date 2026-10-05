@@ -1,0 +1,14 @@
+{
+  "name": "foxiora",
+  "version": "12.2.0",
+  "private": true,
+  "description": "Local-first roster scanner and Persian shift calendar",
+  "scripts": {
+    "test": "TZ=Asia/Tehran node --test tests/regression.cjs"
+  },
+  "devDependencies": {
+    "@napi-rs/canvas": "1.0.10",
+    "linkedom": "0.18.13",
+    "fake-indexeddb": "6.2.4"
+  }
+}
