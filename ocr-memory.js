@@ -107,6 +107,17 @@ function normalizeOCR(w,text){
 function cellBounds(x0,y0,x1,y1){const mx=Math.min(6,Math.max(1,Math.round((x1-x0)*.19))),my=Math.min(6,Math.max(1,Math.round((y1-y0)*.19)));return [x0+mx,y0+my,x1-mx,y1-my]}
 const smoothedPages=new WeakMap();
 function smoothPage(cv){if(!smoothedPages.has(cv)){const out=document.createElement('canvas');out.width=cv.width;out.height=cv.height;const ctx=out.getContext('2d');ctx.filter='blur(0.65px)';ctx.drawImage(cv,0,0);smoothedPages.set(cv,out)}return smoothedPages.get(cv)}
+// Persian leave marker: use the existing Persian model only when Latin OCR abstains.
+async function recognizePersianLeave(w,canvas){
+  if(!canvas||!w.codes.some(c=>c.code==='M')||typeof Tesseract==='undefined')return null;
+  if(!sc.fasWk){const B=BASE();sc.fasWk=await Tesseract.createWorker('fas',1,{workerPath:B+'worker.min.js',corePath:B,langPath:B+'lang',gzip:true});}
+  await sc.fasWk.setParameters({tessedit_pageseg_mode:'7',tessedit_char_whitelist:''});
+  const result=await sc.fasWk.recognize(canvas),raw=result.data.text.trim();
+  if(!/^م$/.test(raw)||result.data.confidence<45)return null;
+  await sc.fasWk.setParameters({tessedit_char_whitelist:'م'});
+  const check=await sc.fasWk.recognize(canvas);
+  return check.data.text.trim()==='م'?{text:'M',c:Math.min(65,result.data.confidence,check.data.confidence),raw}:null;
+}
 // Shared by the personal-row and colleague scans. Never globally map O/0 to D.
 async function recognizeShift(w,wk,x0,y0,x1,y1){
   const source=cropC(x0,y0,x1,y1,false,80),modern=glyph(x0,y0,x1,y1),legacy=legacyGlyph(x0,y0,x1,y1);
@@ -141,6 +152,7 @@ async function recognizeShift(w,wk,x0,y0,x1,y1){
     if(uncertain)confidence=Math.min(72,confidence);
     await wk.setParameters({tessedit_pageseg_mode:'7'});
   }
+  if(!text&&modern.canvas){const persian=await recognizePersianLeave(w,modern.canvas);if(persian){text=persian.text;confidence=persian.c;raw=persian.raw;uncertain=true;}}
   if(y1-y0<10||(!modern.dash&&modern.shape&&modern.shape.bh<8)){uncertain=true;confidence=Math.min(65,confidence)}
   const remembered=recallExample('glyphs',w.id,feature);
   const suggestion=remembered&&parse(w,remembered.label)?remembered.label:'';
