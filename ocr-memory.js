@@ -92,14 +92,14 @@ function memoryDialog() {
   dlg(`<h3>${T2('Saved scan corrections','اصلاحات ذخیره‌شدهٔ اسکن')}</h3><p class="mu">${T2('Confirmed examples stay on this device and are included in your backup. Similar scans are suggested for review.','نمونه‌های تأییدشده روی همین دستگاه ذخیره می‌شوند و در نسخهٔ پشتیبان هم هستند. نتیجهٔ مشابه برای بررسی پیشنهاد می‌شود.')}</p>`+
     ['names','glyphs'].map(kind=>`<h1>${kind==='names'?T2('Names','نام‌ها'):T2('Shift symbols','علامت‌های شیفت')}</h1>`+
       (m[kind].map((x,i)=>`<div class="pk"><span>${bidi(x.label)} <small class="mu">${esc(wp(x.wp).name)}</small></span><button class="x" aria-label="${T2('Forget example','حذف نمونه')}" onclick="forgetExample('${kind}',${i})">×</button></div>`).join('')||`<p class="mu">${T2('No examples yet.','هنوز نمونه‌ای ذخیره نشده.')}</p>`)).join('')+
-    `<button class="p s" onclick="close()">${T2('Close','بستن')}</button>`);
+    `<button class="p s" onclick="closeDialog()">${T2('Close','بستن')}</button>`);
 }
-function forgetExample(kind,index){memoryStore()[kind].splice(index,1);save();close();memoryDialog()}
+function forgetExample(kind,index){memoryStore()[kind].splice(index,1);save();closeDialog();memoryDialog()}
 
-function offCode(w){return w.codes.some(x=>x.type==='off')?'-':''}
+function offCode(w){const cs=w?.codes||[],off=cs.find(c=>c.code==='-'&&c.type==='off')||cs.find(c=>c.type==='off');return off?cs.some(c=>c.code==='-'&&c.type!=='off')||!['OFF','*','-'].includes(off.code)?off.code:'-':''}
 function normalizeOCR(w,text){
   text=cleanCode(nrm(text).replace(/\s/g,''));
-  if(text==='*')return offCode(w)||'*';
+  if(text==='*'&&!w.codes.some(c=>c.code==='*'&&c.type!=='off'))return offCode(w)||'*';
   if(text&&!parse(w,text)&&parse(w,text.toUpperCase()))return text.toUpperCase();
   return text;
 }
@@ -123,7 +123,7 @@ async function recognizeShift(w,wk,x0,y0,x1,y1){
   const source=cropC(x0,y0,x1,y1,false,80),modern=glyph(x0,y0,x1,y1),legacy=legacyGlyph(x0,y0,x1,y1);
   const feature=visualFeature(modern.canvas||source),preview=cropC(x0,y0,x1,y1,false,44).toDataURL('image/jpeg',.8);
   let text='',confidence=0,raw='',uncertain=false;
-  if(modern.dash){text=offCode(w);confidence=text?90:0}
+  if(modern.dash){text=parse(w,'-')?canonicalShift(w,'-'):'';confidence=text?90:0}
   else if(modern.blank&&legacy.blank){uncertain=true;confidence=0}
   else{
     const candidates=[];
@@ -131,7 +131,7 @@ async function recognizeShift(w,wk,x0,y0,x1,y1){
       await wk.setParameters({tessedit_pageseg_mode:psm});
       const result=await wk.recognize(canvas);let value=normalizeOCR(w,result.data.text);
       if(nc===1&&!w.codes.some(code=>code.code===value))value=value.replace(/(.)\1+/g,'$1');
-      const parsed=value&&parse(w,value),unsafeOff=(value==='-'||value==='*')&&!modern.dash;
+      const parsed=value&&parse(w,value),unsafeOff=parsed?.every(c=>c.type==='off')&&(value==='-'||value==='*')&&!modern.dash;
       const mixedOff=parsed&&parsed.length>1&&parsed.some(c=>c.type==='off')&&parsed.some(c=>c.type!=='off');
       const implausibleCombo=mixedOff||(parsed&&parsed.length>1&&modern.shape&&modern.shape.bw/modern.shape.bh<1.05);
       const candidate={text:value,c:result.data.confidence||0,raw:result.data.text,valid:!!parsed&&!unsafeOff&&!implausibleCombo};

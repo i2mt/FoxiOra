@@ -1,1 +1,1 @@
-{"name":"ShiftFox","short_name":"ShiftFox","start_url":".","display":"standalone","background_color":"#0f1216","theme_color":"#0f1216","icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]}
+{"name":"FoxiOra","short_name":"FoxiOra","start_url":".","display":"standalone","background_color":"#0f1216","theme_color":"#0f1216","icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}],"description":"برنامهٔ شیفت، وقت آزاد و سفر","lang":"fa","dir":"rtl"}
