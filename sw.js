@@ -1,5 +1,5 @@
 // Versioned shell. Optional OCR assets are cached on first successful use.
-const C='shiftfox-v12.2';
+const C='shiftfox-v12.4';
 const F=['./','index.html','style.css','app.js','calendar-data.js','ocr-memory.js','manifest.json','icon.svg','vendor/fonts/vazirmatn-arabic-wght-normal.woff2','vendor/fonts/vazirmatn-latin-wght-normal.woff2'];
 self.addEventListener('install',event=>{
  event.waitUntil(caches.open(C).then(cache=>cache.addAll(F)).then(()=>self.skipWaiting()));
