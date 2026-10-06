@@ -131,7 +131,7 @@ async function recognizeShift(w,wk,x0,y0,x1,y1){
       await wk.setParameters({tessedit_pageseg_mode:psm});
       const result=await wk.recognize(canvas);let value=normalizeOCR(w,result.data.text);
       if(nc===1&&!w.codes.some(code=>code.code===value))value=value.replace(/(.)\1+/g,'$1');
-      const parsed=value&&parse(w,value),unsafeOff=parsed?.every(c=>c.type==='off')&&(value==='-'||value==='*')&&!modern.dash;
+      const parsed=value?parse(w,value):null,unsafeOff=parsed?.every(c=>c.type==='off')&&(value==='-'||value==='*')&&!modern.dash;
       const mixedOff=parsed&&parsed.length>1&&parsed.some(c=>c.type==='off')&&parsed.some(c=>c.type!=='off');
       const implausibleCombo=mixedOff||(parsed&&parsed.length>1&&modern.shape&&modern.shape.bw/modern.shape.bh<1.05);
       const candidate={text:value,c:result.data.confidence||0,raw:result.data.text,valid:!!parsed&&!unsafeOff&&!implausibleCombo};
@@ -152,7 +152,7 @@ async function recognizeShift(w,wk,x0,y0,x1,y1){
     if(uncertain)confidence=Math.min(72,confidence);
     await wk.setParameters({tessedit_pageseg_mode:'7'});
   }
-  if(!text&&modern.canvas){const persian=await recognizePersianLeave(w,modern.canvas);if(persian){text=persian.text;confidence=persian.c;raw=persian.raw;uncertain=true;}}
+  if(!text&&modern.canvas&&!sc.fallbackError){try{const persian=await recognizePersianLeave(w,modern.canvas);if(persian){text=persian.text;confidence=persian.c;raw=persian.raw;uncertain=true;}}catch(e){sc.fallbackError=e.message;uncertain=true;confidence=0}}
   if(y1-y0<10||(!modern.dash&&modern.shape&&modern.shape.bh<8)){uncertain=true;confidence=Math.min(65,confidence)}
   const remembered=recallExample('glyphs',w.id,feature);
   const suggestion=remembered&&parse(w,remembered.label)?remembered.label:'';

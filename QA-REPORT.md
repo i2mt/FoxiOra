@@ -1,27 +1,32 @@
-# FoxiOra v12.6 verification
+# FoxiOra v12.7 verification
 
-## Automated results
+## Major OCR failure
 
-- 42/42 regression tests passed in Asia/Tehran timezone.
-- 30 light/dark view/viewport checks passed at 320×568, 360×640 and 390×844: Today, Calendar, Shift swap, Settings and Digital roster. No horizontal page overflow or browser runtime errors.
-- All nine dialog types: entry choice, workplace, new shift, existing shift, event, trip booking, colleague name, OCR memory and colleague cell. Actual close/cancel button clicks and native Escape were exercised; each dismissed its dialog.
-- D→DE: an E colleague is suggested despite the approved D/E handover overlap. Conflicting previous nights, uncertain dates and disallowed combination rules are tested.
-- Same-workplace DE/EN/En: no overlap warning; continuous combined-duty cards end at the final segment. Cross-workplace overlap remains detected.
-- Preset shift editing: one entry remains for the chosen workplace/date. Moving a date/workplace removes the old entry.
-- Symbol setup: hospital-specific aliases, custom hours, off equivalence, explicit conflicting definitions, custom asterisk duty and case sensitivity are tested. Midnight 24:00 displays as 00:00 in the browser time editor.
-- Digital roster: search, seven-day paging, full month, name corrections, cell corrections and unknown markers are exercised. Reviewed colleague cells immediately influence cover results.
-- v12.5→v12.6 service-worker update preserved state. Theme/switches, trip suggestion and booking, multi-day calendar markers and offline app-shell reopening passed.
-- Fox SVG: traced from the exact FoxiMed alpha mask. Browser rendering agrees with 99.526% silhouette intersection-over-union at 512 pixels. Contains vector paths with no embedded raster.
+Before: the actual browser scan found 23 names, then failed after selecting a row with `parsed?.every is not a function`. The failure was reproduced against v12.6 using the supplied photo.
 
-## OCR sample
+After: fresh setup → photo → 23-row name picker → first-row selection → 30-date review → manual confirmation of the marked leave cell → 30 imported shifts. All first-row codes matched the expected labels. No runtime errors. The selected name was saved when the optional name field was empty.
 
-The first three rows of the supplied IMG_6179.jpeg contain 90 labeled cells. v12.6 matched 90/90: D 21/21 and off 26/26. One Persian leave reading remains flagged for review. Layout found 23 rows and read dates without guessing.
+An injected worker interruption returned to the same picker, retained the photo, saved no partial shifts, and successfully recreated the worker and read the row on retry. A separate regression verifies optional Persian-model failure yields an uncertain blank instead of aborting or inventing off days.
 
-This reuses the earlier supplied photo, not an unseen hospital roster. Names and glare-covered cells were not scored. The previous v12.5 resized/blurred benchmarks are not claimed as new v12.6 measurements.
+## Automated checks
 
-## Limits
+- 45/45 Node regression tests passed, including empty OCR readings, optional-model failure, failed-row recovery, first setup, existing off/alias handling, case sensitivity, overnight duties, conflict rules, trips and roster corrections.
+- 30 main-view/theme/viewport checks in Chromium: Today, Calendar, Shift swap, Settings, Digital roster; light and dark at 320×568, 360×640 and 390×844. No horizontal page overflow or runtime errors.
+- First setup at those three viewport sizes: workspace → photo directly; returning home and resuming creates no duplicate workspace. Photo actions remain above bottom navigation at every size. The optional name field is collapsed during guided setup.
+- Manual first-shift entry finishes setup. Existing schedules retain the normal home screen.
+- Fox mask midpoint and OCR progress updates were checked in the browser. Both the fill and ARIA progress values update together.
+- Nine dialog types were closed through actual close/cancel clicks and native Escape: entry choice, workplace, new shift, existing shift, event, trip, colleague name, OCR memory, colleague cell.
+- Existing preset editing, hospital aliases, roster search/edit/full month and D→DE colleague cover passed.
+- v12.6 → v12.7 service-worker upgrade retained saved state. Settings switch/theme changes, shift edit, cover result, four-day trip suggestion, two-day trip booking and reopening the cached app shell offline passed.
 
-- Expanded settings, long cover results and many colleague rows still scroll vertically. Seven-day roster pages fit the width; full-month mode intentionally scrolls inside the table.
-- Preview schedules are seeded demonstration data, not the user's real roster.
-- OCR/model performance on real phones, offline OCR, iOS/Android keyboard behavior, enlarged text and production-host update timing remain unverified.
-- Cover suggestions represent saved roster facts and configured combinations. They do not approve, arrange or record a reciprocal swap automatically.
+## OCR sample benchmark
+
+First three rows of supplied `IMG_6179.jpeg`: **90/90 checked cells matched**, including 21/21 D and 26/26 off cells. One Persian leave reading remained flagged for review. Layout found 23 rows and read dates without guessing.
+
+This is one previously supplied hospital roster. Names, glare-covered areas and arbitrary hospitals were not scored. The browser checks use local copies of the existing OCR engines and validated English/Persian models; vendor assets are not replaced by this update.
+
+## Scope and limits
+
+Preview calendar data is a seeded demonstration. The static loading preview shows a known midpoint of the actual CSS mask effect. Calendar shift codes are larger; the full month for one workplace fits above navigation at 320×568. Details below it can require scrolling. Multiple workplaces, six-row months, larger system text and long lists can also require scrolling.
+
+Real-device OCR performance, iOS/Android keyboards, enlarged-text accessibility, production deployment timing and offline OCR were not tested. Offline-shell reopening does not establish offline model availability. No deployment or repository push was performed.

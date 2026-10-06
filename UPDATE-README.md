@@ -1,49 +1,37 @@
-# FoxiOra v12.6 manual update
+# FoxiOra v12.7 manual update
 
-This is a cumulative update package for the existing FoxiOra repository. It includes v12.5's continuous free-time/trip planner and OCR improvements.
+Cumulative update for the existing FoxiOra repository. Includes the earlier trip planner, digital roster, symbol editor, quick shift editing and combined-duty cover suggestions.
 
-## Upload
+## Install
 
-1. Export a backup in Settings → Backup & data (پشتیبان و اطلاعات).
-2. Replace these **nine files** at the existing repository root:
-   - app.js
-   - style.css
-   - index.html
-   - sw.js
-   - calendar-data.js
-   - ocr-memory.js
-   - manifest.json
-   - fox-mark.svg (new)
-   - icon.svg
-3. Keep existing vendor files, fonts, OCR language models.
-4. Commit the nine files together. After deployment, open the app online, then close and reopen it. Settings should show v12.6.
-5. Do not clear browser/site data. The existing database identity is retained so saved schedules, colleagues and correction memory survive the update.
+1. Export a backup from Settings → Backup & data.
+2. Replace these **nine files together** at the repository root: `app.js`, `style.css`, `index.html`, `sw.js`, `calendar-data.js`, `ocr-memory.js`, `manifest.json`, `fox-mark.svg`, `icon.svg`.
+3. Keep the existing `vendor/` folder, fonts and OCR models.
+4. Commit the files and open the deployed app online. Close and reopen it; Settings should show **v12.7**. Existing saved data uses the same database identity.
 
-Only the nine app files are needed for hosting. Reports, tests, package files, screenshots and verification data are for review.
+Only those nine files are needed for hosting. Package files, tests, reports, preview and verification results are for review. This package does not publish anything automatically.
 
-## What changed
+## This update
 
-- Monthly calendar: neutral cells, small shift markers and restrained shift colors. Today keeps its filled circle; selected dates have a separate outline. Fox no longer paints every calendar shift orange.
-- Settings: neutral, readable headings and icons in dark mode, bright theme accents for actions, compact groups, and an explicit FoxiOra version badge.
-- Credits: Mohammad Mahdi Taghavi and direct Telegram contact at https://t.me/i_2mt.
-- FoxiMed identity: fox-mark.svg is a vector trace of the exact FoxiMed fox silhouette from icons/fox-mark-clean-mask.png. The FoxiMed repository currently contains PNG masks, not an original SVG. The new SVG contains paths, not an embedded bitmap, and is used by the loading screen, settings, and app icon. Loading phrases are written for FoxiOra; the screen disappears when stored data is ready, without a forced wait.
-- App name: browser title and install manifest now use FoxiOra. The internal database name stays unchanged to preserve existing data.
-- Shift editing: tap a shift or choose ثبت / تغییر شیفت. Preset keys replace the current code, including combined shifts, with explicit Save, Cancel and Delete actions.
-- Symbol setup: Settings → Workplaces → Define symbols & hours. Each symbol has a meaning, kind, hours and optional aliases. Equivalent off codes appear once. Legacy OFF, * and − off entries share the same meaning; explicit hospital definitions take priority. Saved shift times stay unchanged when definitions are edited.
-- Scanner: symbol setup is available before taking a photo and during review. Aliases participate in OCR whitelists and parsing. Manually confirmed scan corrections still teach device-local memory. Blank/unknown cells remain separate from off days.
-- Shift cover: month selection is the default; toggle to an uncapped list. D cover includes E colleagues when DE is allowed, including the expected handover overlap. Results distinguish colleagues who are off from those whose duty can extend to a combined shift. Previous-night conflicts and uncertain dates are excluded. New workplace defaults include DE, EN and En; existing explicitly configured combination rules are respected.
-- Conflict rules: overlap at the same workplace is not a double-booking warning, including DE, EN and En. Overlap between different workplaces remains detectable. Short rest between separate duties is still shown. Today merges continuous parts of one combined duty and counts down to its final end.
-- Digital roster: Calendar → جدول, or Shift swap → برنامهٔ دیجیتال. Names and saved shifts appear in a readable table. Seven-day pages fit the phone; Whole month enables scrolling inside the table. Search names, correct names, edit colleague cells, and distinguish uncertain cells from missing data. Your row stays at the top. Read colleagues during scan import to fill their rows; the table reflects saved data and does not invent missing entries.
-- Dialogs: close/cancel actions use an explicit dialog handler instead of the browser window-close function. Close has a circular control; cancel has a neutral outlined shape. All nine dialog types were exercised in Chromium.
+- **OCR crash fixed:** empty Tesseract output was represented as an empty string, then treated as an array by `parsed?.every(...)`. Empty output now produces a null parse and safely proceeds to alternative readings or review.
+- **Retry without another upload:** a failed row read returns to the existing name picker, preserves the photo, discards partial cells, and recreates the English OCR worker on retry. Duplicate row clicks are ignored while reading.
+- **Optional model failure:** failure of the secondary Persian leave reader no longer aborts the whole Latin shift row. Unreadable cells remain flagged for checking; the app does not turn them into off days.
+- **Shift-first calendar:** larger, heavier shift codes with subtle semantic tints. Date numbers are smaller; today has a filled circle and the selected date an outline. The today shortcut shares the month header, saving a separate row. Multiple-workplace cells grow when needed.
+- **Fox-fill loading:** the FoxiMed fox silhouette fills from the bottom using two SVG masks. Startup follows database/render milestones, then allows a 450 ms finishing transition. The same effect follows actual OCR stage progress; the progress bar now updates correctly. Reduced motion is respected by CSS.
+- **One first-run flow:** Start → workplace/name → roster photo → review → calendar. Workplace creation leads directly to photo entry. The name is optional; it can be selected from the photo. Symbol/hour configuration remains accessible. Manual entry is available too.
+- **Resume unfinished setup:** after returning home, one clear “Add my schedule” action resumes the existing workplace without creating another one. Saving the first scan or manual shift finishes onboarding. Existing populated schedules are not interrupted.
+- **Friendlier Persian:** clearer empty states, row-selection instructions, review prompts and recoverable errors. Error details remain available in a collapsed panel.
 
-## Free time and trips
+## Retained features
 
-Free periods continue through nights and across dates; the old 08:00–22:00 restriction remains removed. Trip planning searches for 1–14 days of continuous free time, within known saved roster coverage and at most 60 days ahead. Missing or unreviewed dates are excluded.
+FoxiOra branding, Mohammad Mahdi Taghavi credit, Telegram contact `https://t.me/i_2mt`, English Fox / Siren / Forest / Hedo theme names, contrast improvements, settings switches and explicit dialog close/cancel controls remain included.
 
-Colleague recommendations can include approved combined-duty options. Suggestions require agreement and do not change shifts automatically. A return shift must remain outside the proposed trip; workplace approval and appropriate rest still need to be checked. Exclude a former workplace from travel calculations in its options without deleting its history.
+Off aliases `OFF`, `*`, and `-` share the configured off meaning; explicit hospital definitions take priority. Blank or unknown cells remain unknown. Case-sensitive `N` and `n` are preserved. D cover can include an E colleague as DE when that combination is allowed. Same-workplace DE / EN / En handover overlaps are not double booking; cross-workplace overlaps remain detectable.
+
+Free-time windows cross nights and continue beyond 22:00. Trips use known reviewed roster coverage and can suggest eligible colleagues for a shift that would extend time off. Suggestions do not change shifts automatically. The digital roster and individual shift preset editor remain available.
 
 ## Validation
 
-42 regression tests pass. Chromium exercised phone layouts at 320×568, 360×640 and 390×844 in light/dark mode, with no horizontal page overflow or runtime errors. Actual button clicks verified close/cancel/Escape behavior, preset editing, symbol setup, roster search/corrections and D→DE cover suggestions. A v12.5→v12.6 service-worker update preserved state and reopened offline.
+See `QA-REPORT.md` and `verification/`. 45 regression tests pass. Real Chromium tested the supplied roster through first setup, upload, name selection, review, retry and import. A separate three-row OCR benchmark matched 90/90 checked cells on that photo; one Persian leave cell remains flagged for review. Phone layout, dialogs, editing, cover, trips, saved-data upgrade and offline-shell reopening were checked.
 
-OCR: the first three rows of the supplied photo still match 90/90 labeled cells, with one Persian leave reading flagged for review. Names and the glare-covered area were not scored. This is one photo, not a general accuracy guarantee. Real iOS/Android keyboard behavior, enlarged-text accessibility, production update timing and offline OCR have not been verified.
+OCR results describe this photo, not general accuracy on other rosters. Expanded settings, long name/results lists and multiple workplaces may still require scrolling.
