@@ -1,37 +1,61 @@
-# FoxiOra v12.7 manual update
+# FoxiOra v12.8 manual update
 
-Cumulative update for the existing FoxiOra repository. Includes the earlier trip planner, digital roster, symbol editor, quick shift editing and combined-duty cover suggestions.
+Cumulative update for the existing FoxiOra repository. Includes v12.7's OCR crash fix, retry, larger calendar labels, guided setup and FoxiMed fox vector.
 
 ## Install
 
 1. Export a backup from Settings → Backup & data.
 2. Replace these **nine files together** at the repository root: `app.js`, `style.css`, `index.html`, `sw.js`, `calendar-data.js`, `ocr-memory.js`, `manifest.json`, `fox-mark.svg`, `icon.svg`.
 3. Keep the existing `vendor/` folder, fonts and OCR models.
-4. Commit the files and open the deployed app online. Close and reopen it; Settings should show **v12.7**. Existing saved data uses the same database identity.
+4. Commit the files, open the deployed app online, then close and reopen it. Settings should show **v12.8**. Saved schedules and settings use the same database identity.
 
-Only those nine files are needed for hosting. Package files, tests, reports, preview and verification results are for review. This package does not publish anything automatically.
+Only the nine app files are needed for hosting. Reports, tests, package files, preview and verification results are for review. This package does not publish anything automatically.
 
-## This update
+## Reciprocal shift changes
 
-- **OCR crash fixed:** empty Tesseract output was represented as an empty string, then treated as an array by `parsed?.every(...)`. Empty output now produces a null parse and safely proceeds to alternative readings or review.
-- **Retry without another upload:** a failed row read returns to the existing name picker, preserves the photo, discards partial cells, and recreates the English OCR worker on retry. Duplicate row clicks are ignored while reading.
-- **Optional model failure:** failure of the secondary Persian leave reader no longer aborts the whole Latin shift row. Unreadable cells remain flagged for checking; the app does not turn them into off days.
-- **Shift-first calendar:** larger, heavier shift codes with subtle semantic tints. Date numbers are smaller; today has a filled circle and the selected date an outline. The today shortcut shares the month header, saving a separate row. Multiple-workplace cells grow when needed.
-- **Fox-fill loading:** the FoxiMed fox silhouette fills from the bottom using two SVG masks. Startup follows database/render milestones, then allows a 450 ms finishing transition. The same effect follows actual OCR stage progress; the progress bar now updates correctly. Reduced motion is respected by CSS.
-- **One first-run flow:** Start → workplace/name → roster photo → review → calendar. Workplace creation leads directly to photo entry. The name is optional; it can be selected from the photo. Symbol/hour configuration remains accessible. Manual entry is available too.
-- **Resume unfinished setup:** after returning home, one clear “Add my schedule” action resumes the existing workplace without creating another one. Saving the first scan or manual shift finishes onboarding. Existing populated schedules are not interrupted.
-- **Friendlier Persian:** clearer empty states, row-selection instructions, review prompts and recoverable errors. Error details remain available in a collapsed panel.
+Select your shift in Shift swap. The app finds two distinct options:
+
+- **Someone takes your shift:** you have no return shift. The colleague is off, or can add your shift to an allowed combination such as E → DE. A specific request draft can be prepared and copied; nothing is sent automatically.
+- **You exchange two shifts:** the colleague takes yours on one date, and you take theirs on another. Preview both resulting schedules, then choose “توافق کردیم · ثبت تعویض” after arranging agreement. Both local rosters are updated together.
+
+Your example is supported:
+
+| Person | Original | After exchanging the N shifts |
+| --- | --- | --- |
+| You | D, N, −, − | D, −, N, − |
+| Colleague | D, −, N, − | D, N, −, − |
+
+Directly taking your N without giving up the next N is rejected under the day-off rule. The reciprocal move is accepted because both resulting night shifts are followed by an off roster date.
+
+### Rules
+
+- One-for-one exchanges use the same canonical shift code at the same workplace, on different dates within 31 calendar days. Return dates must be today or later. Both receiving dates must have an explicitly recorded, reviewed off symbol. A blank cell is not off.
+- The resulting schedules for both people are checked together. Night recovery, overlaps and the configured minimum break are checked. Your other workplaces and overlapping personal events are considered too.
+- A full night is an N code or a working segment that continues into the next day after midnight. Aliases and custom overnight codes work. The default short `n` ending at 24:00 remains distinct from full `N`.
+- By default, the **next roster date after a night duty must be off**. This matches the supplied overnight N convention: N is written on its start date and ends the following morning; the following roster date has no new duty. It does not mean another 24-hour period starting from the night shift's end.
+- Settings → Workplaces → edit workplace → Other workplace options has “یک روز تعطیل پس از شیفت شب”. It defaults on for existing and new workplaces and can be changed for a hospital with another rule. Leave remains distinct from an explicit off day.
+- Missing or unreviewed dates needed to validate an exchange are excluded, with an explanation under roster review. Daytime direct-cover cards retain neighboring-shift information and disclose missing context; they do not certify an unknown previous day.
+- Multi-shift common cover is checked as a combined change. Two nights on consecutive roster dates are not approved merely because each would be possible individually.
+- Preview is read-only. Saving rechecks the live roster, so a later edit cannot be overwritten by a stale proposal. The two own entries retain their IDs, their times are updated, and the colleague's two stored cells change. The last 50 local exchanges retain before/after data in backups.
+
+## Simpler results
+
+Results use explicit “they take / you take” lines with dates and codes. Filters show All, Reciprocal, and Cover. Reciprocal choices come first. Combined cover appears within the cover group instead of another competing section. Nearby-shift detail, unavailable options and incomplete-data explanations stay collapsed. More than three choices expand on demand. Each proposal is an individual exchange; several selected shifts do not imply simultaneous reciprocal swaps.
+
+The main selector and Find button fit above navigation for the tested five-row month at 320×568. Longer lists, six-row months and multiple workplaces can still scroll. Preview dates use short month/day headings with full dates available as accessible labels, while the two exchanged dates are shown in full above the table.
+
+## Loading and friendlier wording
+
+Startup now keeps the fox visible for roughly two seconds after JavaScript starts, with slower fill transitions, then fades away. OCR loading still follows real scan progress. Reduced-motion preferences disable transitions. The loading slogan and first setup welcome, workplace step, photo step and resume text have been rewritten in warmer Persian.
+
+A legacy global `.off` style is now scoped to the weekly timeline. Off markers no longer stretch across an exchange dialog and intercept Cancel; they also stay in place in calendars and digital tables.
 
 ## Retained features
 
-FoxiOra branding, Mohammad Mahdi Taghavi credit, Telegram contact `https://t.me/i_2mt`, English Fox / Siren / Forest / Hedo theme names, contrast improvements, settings switches and explicit dialog close/cancel controls remain included.
+The OCR empty-reading fix and retry without reupload remain included. A real supplied-photo scan still reaches name selection, review and import. Larger neutral calendar labels, settings switches and readable Fox dark styling, Fox / Siren / Forest / Hedo palettes, Mohammad Mahdi Taghavi credit, Telegram contact, digital roster, quick editing, continuous free-time windows and the earlier trip planner remain included.
 
-Off aliases `OFF`, `*`, and `-` share the configured off meaning; explicit hospital definitions take priority. Blank or unknown cells remain unknown. Case-sensitive `N` and `n` are preserved. D cover can include an E colleague as DE when that combination is allowed. Same-workplace DE / EN / En handover overlaps are not double booking; cross-workplace overlaps remain detectable.
-
-Free-time windows cross nights and continue beyond 22:00. Trips use known reviewed roster coverage and can suggest eligible colleagues for a shift that would extend time off. Suggestions do not change shifts automatically. The digital roster and individual shift preset editor remain available.
+The trip planner retains its existing one-shift-cover logic; it does not yet optimize travel using reciprocal return shifts. Reciprocal proposals are currently in Shift swap. Same-workplace DE / EN / En handovers are not double booking; cross-workplace overlaps remain detectable.
 
 ## Validation
 
-See `QA-REPORT.md` and `verification/`. 45 regression tests pass. Real Chromium tested the supplied roster through first setup, upload, name selection, review, retry and import. A separate three-row OCR benchmark matched 90/90 checked cells on that photo; one Persian leave cell remains flagged for review. Phone layout, dialogs, editing, cover, trips, saved-data upgrade and offline-shell reopening were checked.
-
-OCR results describe this photo, not general accuracy on other rosters. Expanded settings, long name/results lists and multiple workplaces may still require scrolling.
+See `QA-REPORT.md` and `verification/`. Run regression tests with `npm ci` followed by `npm test` on a supported Node installation. Browser screenshots are seeded demonstration data. Only local Chromium was tested; hospital agreement and the actual shared roster remain outside this app.

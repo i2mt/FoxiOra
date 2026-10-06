@@ -1,32 +1,33 @@
-# FoxiOra v12.7 verification
+# FoxiOra v12.8 verification
 
-## Major OCR failure
+## Reciprocal scenario
 
-Before: the actual browser scan found 23 names, then failed after selecting a row with `parsed?.every is not a function`. The failure was reproduced against v12.6 using the supplied photo.
+The supplied D,N,−,− versus D,−,N,− case produces one reciprocal proposal. Simple direct N cover is excluded because the colleague would then have consecutive nights. The accepted exchange yields:
 
-After: fresh setup → photo → 23-row name picker → first-row selection → 30-date review → manual confirmation of the marked leave cell → 30 imported shifts. All first-row codes matched the expected labels. No runtime errors. The selected name was saved when the optional name field was empty.
+- Own schedule: D,−,N,−.
+- Colleague: D,N,−,−.
 
-An injected worker interruption returned to the same picker, retained the photo, saved no partial shifts, and successfully recreated the worker and read the row on retry. A separate regression verifies optional Persian-model failure yields an uncertain blank instead of aborting or inventing off days.
+Both rosters retain an off date after each resulting N. Preview is read-only; saving updates exactly two own entries and two colleague cells. Other own dates, entry IDs and other colleagues remain unchanged. Local reload preserves the result. A stale preview after a manual edit is rejected before any update.
 
-## Automated checks
+## Automated coverage
 
-- 45/45 Node regression tests passed, including empty OCR readings, optional-model failure, failed-row recovery, first setup, existing off/alias handling, case sensitivity, overnight duties, conflict rules, trips and roster corrections.
-- 30 main-view/theme/viewport checks in Chromium: Today, Calendar, Shift swap, Settings, Digital roster; light and dark at 320×568, 360×640 and 390×844. No horizontal page overflow or runtime errors.
-- First setup at those three viewport sizes: workspace → photo directly; returning home and resuming creates no duplicate workspace. Photo actions remain above bottom navigation at every size. The optional name field is collapsed during guided setup.
-- Manual first-shift entry finishes setup. Existing schedules retain the normal home screen.
-- Fox mask midpoint and OCR progress updates were checked in the browser. Both the fill and ARIA progress values update together.
-- Nine dialog types were closed through actual close/cancel clicks and native Escape: entry choice, workplace, new shift, existing shift, event, trip, colleague name, OCR memory, colleague cell.
-- Existing preset editing, hospital aliases, roster search/edit/full month and D→DE colleague cover passed.
-- v12.6 → v12.7 service-worker upgrade retained saved state. Settings switch/theme changes, shift edit, cover result, four-day trip suggestion, two-day trip booking and reopening the cached app shell offline passed.
+- **67 regression tests passed**: 45 retained tests plus 22 exchange/rule tests. New cases cover the exact scenario, save/preview behavior, next-day working shifts without a time overlap, previous-night recovery, missing and unreviewed cells, combined multi-date changes, aliases/custom overnight codes, short n versus N, rule override, other workplaces, personal events, stale proposals, same-code restrictions, month/year boundaries and local request preparation.
+- **18 exchange-result layout checks**: All/Cover/Reciprocal in light/dark mode at 320×568, 360×640 and 390×844. No horizontal page overflow, no content outside the viewport, and no runtime errors. The four-day preview fits the 320-pixel phone width without table scrolling.
+- Actual clicks verified preview Close, Cancel and Escape; saving both rosters; persisted reload; stale-proposal rejection; local request draft; English display; and workplace night-rule editing.
+- A CSS collision between the weekly `.off` overlay and shift-marker `.off` was found by actual Cancel clicks and fixed by scoping the weekly selector. Off markers in the preview now have static positioning and cannot cover the buttons.
+- The five-row monthly picker and Find action fit above fixed navigation at 320×568. Longer months and expanded result lists may still scroll.
+- **30 retained main-view checks**: Today, Calendar, Shift swap, Settings, Digital roster in light/dark mode at the three phone sizes. No horizontal page overflow or runtime errors. Existing preset editing, hospital aliases, roster search/edit/full month, D→DE cover and nine earlier dialog types passed.
+- **v12.7 → v12.8 upgrade** preserved saved state. Settings switch/theme, shift edit, cover, four-day trip suggestion, two-day trip booking and offline app-shell reopening passed.
+- First setup, manual entry, resume without duplicate workplace, and photo-button visibility at all three sizes passed. The new startup screen remained present after 550 ms; startup-to-removal was measured around 2.5 seconds in local Chromium. The fill midpoint and real OCR progress attributes were also checked.
 
-## OCR sample benchmark
+## OCR regression
 
-First three rows of supplied `IMG_6179.jpeg`: **90/90 checked cells matched**, including 21/21 D and 26/26 off cells. One Persian leave reading remained flagged for review. Layout found 23 rows and read dates without guessing.
+The OCR recognizer file is byte-identical to v12.7. A new real-browser run with supplied IMG_6179.jpeg completed guided setup, photo reading, a 23-name picker, the first-row 30-date review, simulated worker interruption and recovery, manual confirmation, and import of all 30 shifts. All 30 codes matched the expected row. One Persian leave cell remained flagged before confirmation. No runtime errors.
 
-This is one previously supplied hospital roster. Names, glare-covered areas and arbitrary hospitals were not scored. The browser checks use local copies of the existing OCR engines and validated English/Persian models; vendor assets are not replaced by this update.
+The earlier v12.7 three-row 90/90 result is retained as prior evidence, not claimed as a new v12.8 benchmark. Names and glare-covered areas were not scored.
 
-## Scope and limits
+## Scope
 
-Preview calendar data is a seeded demonstration. The static loading preview shows a known midpoint of the actual CSS mask effect. Calendar shift codes are larger; the full month for one workplace fits above navigation at 320×568. Details below it can require scrolling. Multiple workplaces, six-row months, larger system text and long lists can also require scrolling.
+Same-code exchanges within 31 days are searched. No different-code trades, chains involving three people, automatic approval, or external roster synchronization are implemented. Reciprocal return shifts are not yet incorporated into trip optimization. Request drafts are not sent automatically. Colleague shifts at other workplaces are unknown unless included in their stored roster; only the user's saved other workplaces are checked.
 
-Real-device OCR performance, iOS/Android keyboards, enlarged-text accessibility, production deployment timing and offline OCR were not tested. Offline-shell reopening does not establish offline model availability. No deployment or repository push was performed.
+Real iOS/Android devices, enlarged text, production update timing and offline OCR models were not tested. The cached app shell reopening offline does not establish offline model availability. No deployment or repository push was performed.
