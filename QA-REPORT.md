@@ -1,33 +1,35 @@
-# FoxiOra v12.8 verification
+# FoxiOra v12.11 verification
 
-## Reciprocal scenario
+## Results
 
-The supplied D,N,−,− versus D,−,N,− case produces one reciprocal proposal. Simple direct N cover is excluded because the colleague would then have consecutive nights. The accepted exchange yields:
+111 Node regression tests passed: the retained 89 tests plus 22 preference/inline cases. All included browser-result JSON files report no runtime errors. No deployment or repository push was performed.
 
-- Own schedule: D,−,N,−.
-- Colleague: D,N,−,−.
+## Matching and preferences
 
-Both rosters retain an off date after each resulting N. Preview is read-only; saving updates exactly two own entries and two colleague cells. Other own dates, entry IDs and other colleagues remain unchanged. Local reload preserves the result. A stale preview after a manual edit is rejected before any update.
+Unit tests cover all-suggestion exclusion; accepted complete codes including the D versus DE distinction; no-combined duty; merged handover duration; custom long atomic shifts; sufficient reviewed evidence; default suggestion-only behavior; uncertain and mixed data; combination-only and stale-pattern rejection; manual overrides; aliases; explicit empty/all choices; workplace scope; persistence; Undo; and rejection of an exchange preview after preferences change.
 
-## Automated coverage
+The browser uses actual switches, buttons and selects to confirm a D-only pattern, enable automatic filtering, override an E-only pattern, choose all accepted shifts, exclude/reinclude via Undo, disallow DE and set an eight-hour limit. Reload retains the saved preferences. Eligible result counts respond to each change, with readable exclusion reasons. Search and comparison remain functional.
 
-- **67 regression tests passed**: 45 retained tests plus 22 exchange/rule tests. New cases cover the exact scenario, save/preview behavior, next-day working shifts without a time overlap, previous-night recovery, missing and unreviewed cells, combined multi-date changes, aliases/custom overnight codes, short n versus N, rule override, other workplaces, personal events, stale proposals, same-code restrictions, month/year boundaries and local request preparation.
-- **18 exchange-result layout checks**: All/Cover/Reciprocal in light/dark mode at 320×568, 360×640 and 390×844. No horizontal page overflow, no content outside the viewport, and no runtime errors. The four-day preview fits the 320-pixel phone width without table scrolling.
-- Actual clicks verified preview Close, Cancel and Escape; saving both rosters; persisted reload; stale-proposal rejection; local request draft; English display; and workplace night-rule editing.
-- A CSS collision between the weekly `.off` overlay and shift-marker `.off` was found by actual Cancel clicks and fixed by scoping the weekly selector. Off markers in the preview now have static positioning and cannot cover the buttons.
-- The five-row monthly picker and Find action fit above fixed navigation at 320×568. Longer months and expanded result lists may still scroll.
-- **30 retained main-view checks**: Today, Calendar, Shift swap, Settings, Digital roster in light/dark mode at the three phone sizes. No horizontal page overflow or runtime errors. Existing preset editing, hospital aliases, roster search/edit/full month, D→DE cover and nine earlier dialog types passed.
-- **v12.7 → v12.8 upgrade** preserved saved state. Settings switch/theme, shift edit, cover, four-day trip suggestion, two-day trip booking and offline app-shell reopening passed.
-- First setup, manual entry, resume without duplicate workplace, and photo-button visibility at all three sizes passed. The new startup screen remained present after 550 ms; startup-to-removal was measured around 2.5 seconds in local Chromium. The fill midpoint and real OCR progress attributes were also checked.
+Twelve colleague-settings layouts passed: Persian/English, light/dark and 320×568, 360×640, 390×844. No horizontal overflow or out-of-bounds controls. Preference cards preserve expanded state after saving. There are still three main navigation destinations.
 
-## OCR regression
+## Inline editing and continuity
 
-The OCR recognizer file is byte-identical to v12.7. A new real-browser run with supplied IMG_6179.jpeg completed guided setup, photo reading, a 23-name picker, the first-row 30-date review, simulated worker interruption and recovery, manual confirmation, and import of all 30 shifts. All 30 codes matched the expected row. One Persian leave cell remained flagged before confirmation. No runtime errors.
+Draft values and folded state survive same-page renders. Starting another tool leaves only one active inline editor. Navigation discards the unsaved tool. Save/cancel removes it. Escape folds a focused inline tool. Editors attached within a collapsed section are moved outside the collapsed parent. Preference Undo retains selected shifts that still exist, and clears stale results.
 
-The earlier v12.7 three-row 90/90 result is retained as prior evidence, not claimed as a new v12.8 benchmark. Names and glare-covered areas were not scored.
+Real browser checks verify inline request-draft folding/resumption, manual shift editing and Undo. The routine editor’s preset keys and Save actions fit above navigation at 320×568; date/workplace/deletion fields are folded under shift details. Exchange preview/cancel/save, both-roster persistence, stale-proposal rejection and request copying behavior retain their earlier contract. Eighteen exchange-filter layouts passed at the three phone sizes and both themes. Complex workplace dialogs still close with the actual Close button or Escape.
 
-## Scope
+Thirty main-view layouts passed. Actual cancellation/folding or modal dismissal covered nine action types: schedule choice, workplace, shift, shift edit, event, trip, name, OCR memory and colleague cell. Digital roster editing/search/full-month display, code aliases, D→DE cover and readable dark settings passed.
 
-Same-code exchanges within 31 days are searched. No different-code trades, chains involving three people, automatic approval, or external roster synchronization are implemented. Reciprocal return shifts are not yet incorporated into trip optimization. Request drafts are not sent automatically. Colleague shifts at other workplaces are unknown unless included in their stored roster; only the user's saved other workplaces are checked.
+The v12.10 → v12.11 service-worker update preserved stored schedules/settings. Theme switches, manual edit, cover calculation, travel suggestion/booking and offline app-shell reopening passed. Guided setup/manual entry/resume at three sizes passed.
 
-Real iOS/Android devices, enlarged text, production update timing and offline OCR models were not tested. The cached app shell reopening offline does not establish offline model availability. No deployment or repository push was performed.
+## Calendar, result visibility and OCR
+
+Twenty-four focused month layouts (five/six rows, one/two workplaces, three sizes, both themes) passed. Single-workplace grids fit the smallest tested screen. A further 24 current-month layouts show one through four workplaces without clipped standard codes or horizontal overflow. All eligible shift-change/free-time/trip results remain rendered directly without show-more controls.
+
+Undo continues to restore manual changes, both exchanged rosters, reviewed imports, colleague corrections and trips through actual clicks/reloads. Public occasions remain independent of working duty: Nurse Day can contain D and Eid can contain N. Lunar mappings remain 1405 only.
+
+The supplied original photograph again reached the 23-name picker and 30-date review. All 30 expected dates matched and were imported, after confirming the review item. A simulated OCR-worker failure recovered through retry without reupload. OCR recognizer and calendar-data files are unchanged from v12.10; this release does not claim improved accuracy across unseen photos.
+
+## Limits
+
+Pattern recognition establishes an observed schedule, not a person's willingness, qualifications or permanent assignment. Automatic filtering starts off; rules/preferences can override it. Date-specific exceptions, weekday availability and role matching are not implemented. Inline editors and long lists may scroll, particularly with multiple workplaces. Only local Chromium was tested; real mobile devices, enlarged text and offline OCR-model availability were not tested. Travel optimization still does not include reciprocal return shifts. Screenshot rosters are demonstration data.

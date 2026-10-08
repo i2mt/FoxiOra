@@ -89,12 +89,12 @@ function rememberExample(kind, workplace, feature, raw, label) {
 
 function memoryDialog() {
   const m=memoryStore();
-  dlg(`<h3>${T2('Saved scan corrections','اصلاحات ذخیره‌شدهٔ اسکن')}</h3><p class="mu">${T2('Confirmed examples stay on this device and are included in your backup. Similar scans are suggested for review.','نمونه‌های تأییدشده روی همین دستگاه ذخیره می‌شوند و در نسخهٔ پشتیبان هم هستند. نتیجهٔ مشابه برای بررسی پیشنهاد می‌شود.')}</p>`+
+  dlg(`<h3>${T2('Saved scan corrections','اصلاحات ذخیره‌شدهٔ اسکن')}</h3><p class="mu">${T2('Confirmed examples stay on this device and are included in your backup. Similar scans are suggested for review.','اصلاحات شما به خواندن اسکن بعدی کمک می‌کند. برای حذف هر مورد، × را بزنید.')}</p>`+
     ['names','glyphs'].map(kind=>`<h1>${kind==='names'?T2('Names','نام‌ها'):T2('Shift symbols','علامت‌های شیفت')}</h1>`+
       (m[kind].map((x,i)=>`<div class="pk"><span>${bidi(x.label)} <small class="mu">${esc(wp(x.wp).name)}</small></span><button class="x" aria-label="${T2('Forget example','حذف نمونه')}" onclick="forgetExample('${kind}',${i})">×</button></div>`).join('')||`<p class="mu">${T2('No examples yet.','هنوز نمونه‌ای ذخیره نشده.')}</p>`)).join('')+
     `<button class="p s" onclick="closeDialog()">${T2('Close','بستن')}</button>`);
 }
-function forgetExample(kind,index){memoryStore()[kind].splice(index,1);save();closeDialog();memoryDialog()}
+function forgetExample(kind,index){const change=beginChange('Scan correction removal','حذف اصلاح اسکن',['ocrMemory']);memoryStore()[kind].splice(index,1);finishChange(change);save();closeDialog();render();memoryDialog()}
 
 function offCode(w){const cs=w?.codes||[],off=cs.find(c=>c.code==='-'&&c.type==='off')||cs.find(c=>c.type==='off');return off?cs.some(c=>c.code==='-'&&c.type!=='off')||!['OFF','*','-'].includes(off.code)?off.code:'-':''}
 function normalizeOCR(w,text){

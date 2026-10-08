@@ -1,61 +1,81 @@
-# FoxiOra v12.8 manual update
+# FoxiOra v12.11 manual update
 
-Cumulative update for the existing FoxiOra repository. Includes v12.7's OCR crash fix, retry, larger calendar labels, guided setup and FoxiMed fox vector.
+Cumulative update for the existing FoxiOra app. No deployment is performed by this package.
 
 ## Install
 
 1. Export a backup from Settings → Backup & data.
 2. Replace these **nine files together** at the repository root: `app.js`, `style.css`, `index.html`, `sw.js`, `calendar-data.js`, `ocr-memory.js`, `manifest.json`, `fox-mark.svg`, `icon.svg`.
-3. Keep the existing `vendor/` folder, fonts and OCR models.
-4. Commit the files, open the deployed app online, then close and reopen it. Settings should show **v12.8**. Saved schedules and settings use the same database identity.
+3. Keep your existing `vendor/` folder, fonts and OCR models.
+4. Commit the files, open the deployed app online, then close and reopen it. Settings should show **v12.11**. Schedules and settings retain the same database identity.
 
-Only the nine app files are needed for hosting. Reports, tests, package files, preview and verification results are for review. This package does not publish anything automatically.
+Only the nine app files are needed for hosting. Reports, tests, package files and previews are for review.
 
-## Reciprocal shift changes
+## v12.11: colleague-specific suggestions
 
-Select your shift in Shift swap. The app finds two distinct options:
+Open Shift change → **همکاران**, or use “تنظیمات همکاران” from results or the digital roster. There are still three main navigation destinations. Search names, expand a colleague and set:
 
-- **Someone takes your shift:** you have no return shift. The colleague is off, or can add your shift to an allowed combination such as E → DE. A specific request draft can be prepared and copied; nothing is sent automatically.
-- **You exchange two shifts:** the colleague takes yours on one date, and you take theirs on another. Preview both resulting schedules, then choose “توافق کردیم · ثبت تعویض” after arranging agreement. Both local rosters are updated together.
+- **در پیشنهادها باشد**: switch off to exclude the colleague from cover, reciprocal exchanges and trip-cover suggestions.
+- **شیفت‌های قابل‌قبول**: select complete duties such as D, E or DE. D alone does not authorize adding D to an existing E to make DE.
+- **بدون شیفت ترکیبی**: reject combinations for that person.
+- **حداکثر مدت شیفت**: limit the actual resulting duty duration, using the workplace's configured times and merging handover overlaps.
 
-Your example is supported:
+A reviewed D-only or E-only roster can show an observed-pattern card with its date range and evidence count. “فقط همین شیفت‌ها” confirms that pattern as explicit accepted shifts. Detection is recalculated from saved cells; unreadable or uncertain cells are excluded. A pattern needs at least 20 reviewed dates and eight duties, all of one atomic working code, in a bounded window near the requested date. It does not infer age, health, seniority, skills or willingness.
 
-| Person | Original | After exchanging the N shifts |
-| --- | --- | --- |
-| You | D, N, −, − | D, −, N, − |
-| Colleague | D, −, N, − | D, N, −, − |
+**Automatic filtering starts off.** “فیلتر خودکار الگوهای روشن” enables it for that workplace. Confirmed/manual choices take priority. “همه” in accepted shifts explicitly ignores automatic pattern filtering while preserving independent length/combination limits. “برنامهٔ منعطف” clears the manual limits and ignores automatic patterns for that colleague. The ignore-pattern switch can re-enable pattern use when there is no explicit accepted-shift list.
 
-Directly taking your N without giving up the next N is rejected under the day-off rule. The reciprocal move is accepted because both resulting night shifts are followed by an off roster date.
+Excluded colleagues stay in the digital roster and remain editable. Suggestions explain preference-related exclusions separately. Preferences persist across reopening, backups and matched colleague-roster updates; they are specific to the colleague record and workplace. They are undoable. Automatic heuristics are not proof of eligibility; use explicit colleague preferences where known.
 
-### Rules
+## v12.11: everyday tools within the page
 
-- One-for-one exchanges use the same canonical shift code at the same workplace, on different dates within 31 calendar days. Return dates must be today or later. Both receiving dates must have an explicitly recorded, reviewed off symbol. A blank cell is not off.
-- The resulting schedules for both people are checked together. Night recovery, overlaps and the configured minimum break are checked. Your other workplaces and overlapping personal events are considered too.
-- A full night is an N code or a working segment that continues into the next day after midnight. Aliases and custom overnight codes work. The default short `n` ending at 24:00 remains distinct from full `N`.
-- By default, the **next roster date after a night duty must be off**. This matches the supplied overnight N convention: N is written on its start date and ends the following morning; the following roster date has no new duty. It does not mean another 24-hour period starting from the night shift's end.
-- Settings → Workplaces → edit workplace → Other workplace options has “یک روز تعطیل پس از شیفت شب”. It defaults on for existing and new workplaces and can be changed for a hospital with another rule. Leave remains distinct from an explicit off day.
-- Missing or unreviewed dates needed to validate an exchange are excluded, with an explanation under roster review. Daytime direct-cover cards retain neighboring-shift information and disclose missing context; they do not certify an unknown previous day.
-- Multi-shift common cover is checked as a combined change. Two nights on consecutive roster dates are not approved merely because each would be possible individually.
-- Preview is read-only. Saving rechecks the live roster, so a later edit cannot be overwritten by a stale proposal. The two own entries retain their IDs, their times are updated, and the colleague's two stored cells change. The last 50 local exchanges retain before/after data in backups.
+Routine shift edits keep the date, workplace and deletion controls under “مشخصات شیفت”, so preset keys and Save remain easy to reach.
 
-## Simpler results
+Manual shift edits, colleague-cell edits, name corrections, exchange previews, request drafts, personal events, trip booking and the add-schedule choice now expand within the current page. The background remains usable, and the navigation remains available. The tools can be folded and resumed without discarding a draft. Same-page re-renders preserve their fields. Save/cancel removes the tool; navigating to another destination discards an unsaved draft. Only one inline tool is open at a time. Escape folds it when focus is inside.
 
-Results use explicit “they take / you take” lines with dates and codes. Filters show All, Reciprocal, and Cover. Reciprocal choices come first. Combined cover appears within the cover group instead of another competing section. Nearby-shift detail, unavailable options and incomplete-data explanations stay collapsed. More than three choices expand on demand. Each proposal is an individual exchange; several selected shifts do not imply simultaneous reciprocal swaps.
+Detailed workplace/symbol configuration and OCR-memory management remain focused dialogs; their Close/Cancel/Escape behavior is retained. Native deletion confirmations remain confirmations. Scanning and travel planning remain dedicated pages because they are longer workflows. Comparison now lives under a foldable section in **همکاران**, alongside the preferences rather than as another top-level tab.
 
-The main selector and Find button fit above navigation for the tested five-row month at 320×568. Longer lists, six-row months and multiple workplaces can still scroll. Preview dates use short month/day headings with full dates available as accessible labels, while the two exchanged dates are shown in full above the table.
+Editors are placed beside the relevant schedule or proposal, or outside a folded section so they stay visible. Undo keeps selected shift IDs that still exist and clears stale calculated results. Inline forms and long lists may require scrolling; they do not cover the page with a backdrop.
 
-## Loading and friendlier wording
+## Clearer language and simpler results
 
-Startup now keeps the fox visible for roughly two seconds after JavaScript starts, with slower fill transitions, then fades away. OCR loading still follows real scan progress. Reduced-motion preferences disable transitions. The loading slogan and first setup welcome, workplace step, photo step and resume text have been rewritten in warmer Persian.
+Personal roster statuses are **off، مرخصی، استعلاجی**. Public holidays are separate calendar information and never imply that a person is off. Existing off-code labels are normalized; hospital symbols and aliases remain configurable. Blank or unreadable roster cells are still unknown, not off.
 
-A legacy global `.off` style is now scoped to the weekly timeline. Off markers no longer stretch across an exchange dialog and intercept Cancel; they also stay in place in calendars and digital tables.
+The selection instruction is “شیفت یا شیفت‌های مورد نظر خود برای تعویض را انتخاب کنید.” Proposal cards and previews use “برنامهٔ شما” and “برنامهٔ همکار”, with your outcome first. Direct cover keeps “off میشی”. Repeated rule-success notes and implementation explanations have been removed from results; useful reasons remain when someone cannot be suggested. Night recovery, overlaps and minimum-break validation remain active.
 
-## Retained features
+Scan selection, roster correction, colleague import, request drafts and trip copy are shorter. Personal-event fields now have visible labels. All eligible shift-change and trip results remain visible without show-more controls. Longer lists scroll normally.
 
-The OCR empty-reading fix and retry without reupload remain included. A real supplied-photo scan still reaches name selection, review and import. Larger neutral calendar labels, settings switches and readable Fox dark styling, Fox / Siren / Forest / Hedo palettes, Mohammad Mahdi Taghavi credit, Telegram contact, digital roster, quick editing, continuous free-time windows and the earlier trip planner remain included.
+## One calendar for all workplaces
 
-The trip planner retains its existing one-shift-cover logic; it does not yet optimize travel using reciprocal return shifts. Reciprocal proposals are currently in Shift swap. Same-workplace DE / EN / En handovers are not double booking; cross-workplace overlaps remain detectable.
+Every shift from every workplace appears in the month cell. A small numbered color marker matches the workplace key above the grid; the number also distinguishes workplaces without relying on color. There is no two-shift cap or hidden extra-shift counter. Selecting a day shows its full shift details and occasion names.
 
-## Validation
+Neutral backgrounds and strong codes remain. Five- and six-row single-workplace months fit the tested 320×568 viewport. Multiple-workplace months grow vertically to keep every code legible; those months and selected-day details may require scrolling.
 
-See `QA-REPORT.md` and `verification/`. Run regression tests with `npm ci` followed by `npm test` on a supported Node installation. Browser screenshots are seeded demonstration data. Only local Chromium was tested; hospital agreement and the actual shared roster remain outside this app.
+## National and religious occasions
+
+The calendar includes selected national, cultural, religious and health-profession occasions, including Nurse Day and Physician Day. Public holidays have a separate tag in the selected-day detail. Occasions do not change schedules or free-time calculations.
+
+Religious dates are explicitly mapped for **1405 only**, using the University of Tehran Calendar Center's official calendar. No lunar dates are guessed for later years. Fixed solar occasions recur by Jalali date; international health occasions recur by Gregorian date. This is a selected occasion set, not every observance in the official calendar.
+
+Source: https://calendar.ut.ac.ir/documents/2139738/7092644/Calendar-1405.pdf/64228cbb-f4de-dc32-4d2b-57db3c8e322f?t=1761972997587
+
+## Undo
+
+After a saved change, use “برگرداندن” in the feedback message, the header undo button, or Settings → Backup & data. Undo remains available after reopening the app.
+
+Up to 20 recent changes are retained, with an overall size limit that may discard older records sooner for large imports. Supported changes include manual shift edits/deletions, saved exchanges (both rosters together), roster imports, colleague corrections, workplace changes, and personal events/trips. Related scan learning is restored when undoing an import or colleague-name correction. Ordinary edits use small field patches instead of duplicating stored roster photos.
+
+Undo preserves unrelated settings. It refuses to overwrite data that no longer matches the recorded change. There is no redo. It does not reconstruct a history for changes made before this release. Clear-all-data and backup restoration are not undo operations; export a backup before using them.
+
+## Retained behavior
+
+- Reciprocal N swaps support D,N,−,− versus D,−,N,−, checking both resulting schedules.
+- Same-workplace DE/EN/En combinations are allowed; cross-workplace conflicts remain detectable.
+- Direct cover can include E → DE where configured; reciprocal swaps remain one-for-one within the existing date/code rules.
+- Guided setup, original-photo import/retry, editable code meanings, digital roster, continuous free-time windows, FoxiMed fox loading animation, Fox/Siren/Forest/Hedo themes, developer credit/contact and version indicator remain included.
+- The trip planner still evaluates one-way cover; it does not optimize reciprocal return shifts for travel.
+
+## Verification
+
+111 regression tests passed. Real Chromium checks covered the three phone sizes, light/dark modes, dialog closing, full result visibility, multiple workplaces, undo through clicks and reloads, upgrade and offline shell. The supplied-photo scan imported all 30 expected dates, including recovery after a simulated OCR-worker failure. No new OCR accuracy benchmark is claimed.
+
+See `QA-REPORT.md` and `verification/`. Run `npm ci` then `npm test` on a supported Node installation. Browser screenshots use demonstration data. Real iOS/Android devices, enlarged system text and offline OCR-model availability were not tested.
