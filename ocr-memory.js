@@ -94,7 +94,7 @@ function memoryDialog() {
       (m[kind].map((x,i)=>`<div class="pk"><span>${bidi(x.label)} <small class="mu">${esc(wp(x.wp).name)}</small></span><button class="x" aria-label="${T2('Forget example','حذف نمونه')}" onclick="forgetExample('${kind}',${i})">×</button></div>`).join('')||`<p class="mu">${T2('No examples yet.','هنوز نمونه‌ای ذخیره نشده.')}</p>`)).join('')+
     `<button class="p s" onclick="closeDialog()">${T2('Close','بستن')}</button>`);
 }
-function forgetExample(kind,index){const change=beginChange('Scan correction removal','حذف اصلاح اسکن',['ocrMemory']);memoryStore()[kind].splice(index,1);finishChange(change);save();closeDialog();render();memoryDialog()}
+async function forgetExample(kind,index){const change=beginChange('Scan correction removal','حذف اصلاح اسکن',['ocrMemory']);memoryStore()[kind].splice(index,1);if(!await commitChange(change))return;closeDialog();render();memoryDialog()}
 
 function offCode(w){const cs=w?.codes||[],off=cs.find(c=>c.code==='-'&&c.type==='off')||cs.find(c=>c.type==='off');return off?cs.some(c=>c.code==='-'&&c.type!=='off')||!['OFF','*','-'].includes(off.code)?off.code:'-':''}
 function normalizeOCR(w,text){

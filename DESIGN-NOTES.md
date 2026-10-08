@@ -1,40 +1,40 @@
-# FoxiOra v12.11 design decisions
+# FoxiOra v12.12 design decisions
 
-The user's proposed pattern recognition is useful when observed habits and confirmed preferences have different authority. A single D-only month may reflect a temporary assignment; it is insufficient evidence of a permanent prohibition. Therefore the app detects patterns automatically, offers one-click confirmation, and makes automatic exclusion an opt-in workplace setting. A manual override remains available per colleague.
+The visual direction stays: neutral month surfaces, dominant shift codes, a seven-day strip, numbered workplace markers, restrained Fox accents and three main destinations. The changes focus on meaning, continuity and fewer decisions per task.
 
-## Matching approach
+## Status
 
-| Information | Effect |
+| Display | Meaning |
 | --- | --- |
-| Exclude colleague | Skip every cover/exchange/trip-cover option; keep the roster visible |
-| Accepted complete shifts | Offer only those resulting codes |
-| No combined duties | Reject combinations such as DE/EN/DN when defined at the workplace |
-| Maximum duration | Check the complete resulting duty using its real configured times |
-| Clear observed single-code pattern | Show evidence; filter only if automatic filtering is enabled |
-| Manual accepted shifts / ignore-pattern override | Take priority over inference |
-| Missing/unreviewed data | Keep it unknown; do not infer off or a preference from it |
+| Hospital off symbol | Confirmed off |
+| M or workplace leave code | مرخصی |
+| S or workplace sick-leave code | استعلاجی |
+| ؟ | Missing or unreviewed roster information |
+| Blank confirmed cell | Blank information; never automatically converted to off |
+| Occasion dot/public-holiday label | Calendar information, independent of working duty |
 
-The pattern detector is deterministic and runs locally. It requires at least 20 reviewed dates and eight working entries of a single atomic code. For a requested date it examines the range from 62 days before to 31 days after; older distant patterns do not restrict that date. The manager summarizes the most recent available reviewed roster. Mixed-code and combination-only rosters do not establish a single atomic-code pattern.
+Today states coverage. Travel requires coverage across all active workplaces. The default calendar shows every workplace; the filter is optional. Tapping a date reveals details within the page, with the full month kept underneath. Folding details returns space to the grid.
 
-Manual rules are checked against the colleague's final duty. Someone allowed to take D can cover a standalone D; taking D while already on E would need DE permission and must pass any duration/combination limit. Reciprocal exchange previews recheck rules before saving. Shared multi-date cover and travel-cover suggestions use the same engine.
+## Actions and disclosure
 
-## Navigation and overlays
+Routine editing stays inline. Navigation retains the detached live form in its original view; a draft shortcut returns to it. Save/Cancel are explicit endings. One draft per view avoids multiple copies of input IDs. Focus returns to the resumed tool and Escape folds it.
 
-| Task | Presentation | Reason |
-| --- | --- | --- |
-| Own shift / colleague cell edit | Inline editor near calendar/table | Retain schedule context |
-| Name correction | Inline editor near the colleague | Preserve the list |
-| Exchange preview / request draft | Inline editor beside the proposal | Compare alternatives without a backdrop |
-| Personal event / save trip | Inline editor | Keep the date or travel result in view |
-| Colleague preferences | Searchable expandable cards in the team tab | Immediate saved controls, undo, no extra page |
-| Schedule comparison | Foldable section in the colleague tab | Secondary task without another navigation destination |
-| Detailed workplace/symbol configuration | Existing focused dialog | Longer configuration task |
-| OCR memory | Existing focused dialog | Occasional maintenance |
-| Scan / travel search | Dedicated pages | Multi-step workflows |
-| Deletion confirmation | Confirmation | Deliberate destructive action |
+Personal-event taps edit rather than delete. Multi-day events have explicit end dates. A successful save returns attention to the selected date. Only complex configuration keeps a dialog.
 
-Inline tools can be folded without losing their draft. Same-page re-renders preserve input state; save/cancel dismisses the tool. Changing destinations discards an unsaved draft. Inline content still needs vertical space, especially on small screens; progressive disclosure avoids shrinking controls.
+Colleague cards expose common presets first. Evidence and uncommon limits are optional disclosure. Each colleague's accordions retain their own state. Weekday availability and date-limited absence are explicit preferences, not inferred personal characteristics.
 
-## Worth considering next
+Identity reconciliation requires a user's deliberate choice. Unique exact normalized names/aliases can match automatically; fuzzy spelling never automatically merges two staff members. The chosen existing record supplies its preferences, with newly scanned cells supplying the new dates.
 
-Date-limited availability and allowed weekdays would handle temporary assignments and fixed weekly commitments. Explicit ward/role permissions could improve suitability if the user supplies them; a roster alone cannot establish clinical qualifications. These are not implemented in this release. Avoid inferring age or health from names or schedules.
+Every eligible shift-change and travel option remains visible. Grouped colleague headings and warning types reduce repeated text. Long lists can scroll; shrinking controls or hiding eligible options would be a worse tradeoff.
+
+## Reliable local behavior
+
+Success means the IndexedDB transaction completed. Failed core writes roll back the related state/history, leaving editable input available. Settings and setup also recover their previous saved values. Undo stays persisted and focused on the last eligible change.
+
+Reciprocal travel suggestions are measured from the actual proposed personal schedule, including the return duty, all workplace duties and personal events. Matching remains deterministic and local. Within-search caches reuse equivalent matching/window results without dropping options.
+
+## Source and next work
+
+Ordered source sections build into the existing two bundles. Browser globals and cascade order remain compatible. CSS cleanup removes only identical superseded declarations, verified by viewport image equality. Deeper module isolation can follow without changing the nine-file hosting contract.
+
+The next useful evidence is a varied OCR photo corpus and real-device/usability checks, including larger text and screen readers. Explicit ward/role permissions and multi-shift travel optimization are later product work; this release does not infer clinical suitability.

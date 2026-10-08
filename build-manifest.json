@@ -1,0 +1,19 @@
+{
+  "app.js": [
+    "src/00-state-storage.js",
+    "src/10-shift-engine.js",
+    "src/20-interface.js",
+    "src/30-calendar-planning.js",
+    "src/40-scanner.js",
+    "src/50-colleagues-swaps.js",
+    "src/60-digital-roster.js",
+    "src/70-startup.js"
+  ],
+  "style.css": [
+    "src/00-base.css",
+    "src/10-components.css",
+    "src/20-calendar-roster.css",
+    "src/30-inline-preferences.css",
+    "src/40-clarity.css"
+  ]
+}

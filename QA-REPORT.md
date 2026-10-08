@@ -1,35 +1,27 @@
-# FoxiOra v12.11 verification
+# FoxiOra v12.12 verification
 
-## Results
+## Result
 
-111 Node regression tests passed: the retained 89 tests plus 22 preference/inline cases. All included browser-result JSON files report no runtime errors. No deployment or repository push was performed.
+132 Node tests passed: 111 retained regression cases, updated to await durable writes, plus 21 new cases for the review changes. The included browser JSON reports contain no page runtime errors. Generated bundles match their ordered source files. No deployment or repository push was performed.
 
-## Matching and preferences
+## New behavior
 
-Unit tests cover all-suggestion exclusion; accepted complete codes including the D versus DE distinction; no-combined duty; merged handover duration; custom long atomic shifts; sufficient reviewed evidence; default suggestion-only behavior; uncertain and mixed data; combination-only and stale-pattern rejection; manual overrides; aliases; explicit empty/all choices; workplace scope; persistence; Undo; and rejection of an exchange preview after preferences change.
+Tests cover unknown versus explicit off/leave, missing second-workplace data, calendar filters and selected-day placement, editable multi-day events, invalid event dates, cross-page drafts and independent editing context, delayed/failed durable storage, import retry without partial changes, settings/setup failure, retained roster context, quick full-code presets, temporary/weekday limits, identity linking and Undo, ambiguous aliases, independent accordion state, all grouped eligible options, reciprocal travel return duty, and missing active-workplace coverage.
 
-The browser uses actual switches, buttons and selects to confirm a D-only pattern, enable automatic filtering, override an E-only pattern, choose all accepted shifts, exclude/reinclude via Undo, disallow DE and set an eight-hour limit. Reload retains the saved preferences. Eligible result counts respond to each change, with readable exclusion reasons. Search and comparison remain functional.
+A real Chromium browser uses the visible buttons/fields to navigate and restore a draft, edit a multi-day trip, filter all workplaces, select colleague presets, set/clear a temporary exclusion, change weekday availability, link two scanned identities, Undo that link, reuse the canonical digital roster, recover from a rejected save and retry, preview a reciprocal travel exchange, and choose 12-hour time. Reduced motion is enabled in this run. Twelve Persian/English, light/dark phone layouts passed at 320×568, 360×640 and 390×844.
 
-Twelve colleague-settings layouts passed: Persian/English, light/dark and 320×568, 360×640, 390×844. No horizontal overflow or out-of-bounds controls. Preference cards preserve expanded state after saving. There are still three main navigation destinations.
+The benchmark uses 25 colleagues and a 60-date roster, without a result cap. The included review-results.json records wall-clock search timing and proposal count from the local test browser. This is not a measurement on real phones.
 
-## Inline editing and continuity
+## Retained flows
 
-Draft values and folded state survive same-page renders. Starting another tool leaves only one active inline editor. Navigation discards the unsaved tool. Save/cancel removes it. Escape folds a focused inline tool. Editors attached within a collapsed section are moved outside the collapsed parent. Preference Undo retains selected shifts that still exist, and clears stale results.
+Thirty main-view layouts, eighteen exchange layouts, twelve colleague-settings layouts, twenty-four focused five/six-row month layouts and twenty-four one-to-four-workplace month layouts were checked. The routine shift editor's preset/save actions fit above navigation at 320×568. All standard codes remain visible and main pages have no horizontal overflow. Larger rosters and selected-date details may scroll.
 
-Real browser checks verify inline request-draft folding/resumption, manual shift editing and Undo. The routine editor’s preset keys and Save actions fit above navigation at 320×568; date/workplace/deletion fields are folded under shift details. Exchange preview/cancel/save, both-roster persistence, stale-proposal rejection and request copying behavior retain their earlier contract. Eighteen exchange-filter layouts passed at the three phone sizes and both themes. Complex workplace dialogs still close with the actual Close button or Escape.
+Actual close/cancel/fold actions cover schedule entry, workplace configuration, own/colleague shift edits, event, trip, name and OCR-memory tools. Digital table editing, search, whole-month mode, symbol aliases, D→DE cover, both-roster exchange saving, stale-proposal rejection, Undo persistence, comparison, guided setup/manual entry/resume and offline app-shell reopening passed. The real v12.11 → v12.12 service-worker upgrade retains existing schedules/settings.
 
-Thirty main-view layouts passed. Actual cancellation/folding or modal dismissal covered nine action types: schedule choice, workplace, shift, shift edit, event, trip, name, OCR memory and colleague cell. Digital roster editing/search/full-month display, code aliases, D→DE cover and readable dark settings passed.
+The original supplied photograph reaches 23 detected names and the 30-date review. All 30 expected codes match and import after confirming the review item. An interrupted OCR worker recovers without reupload. The recognizer logic and calendar mappings are retained. The OCR-memory file changes only its removal action's durable-save handling.
 
-The v12.10 → v12.11 service-worker update preserved stored schedules/settings. Theme switches, manual edit, cover calculation, travel suggestion/booking and offline app-shell reopening passed. Guided setup/manual entry/resume at three sizes passed.
-
-## Calendar, result visibility and OCR
-
-Twenty-four focused month layouts (five/six rows, one/two workplaces, three sizes, both themes) passed. Single-workplace grids fit the smallest tested screen. A further 24 current-month layouts show one through four workplaces without clipped standard codes or horizontal overflow. All eligible shift-change/free-time/trip results remain rendered directly without show-more controls.
-
-Undo continues to restore manual changes, both exchanged rosters, reviewed imports, colleague corrections and trips through actual clicks/reloads. Public occasions remain independent of working duty: Nurse Day can contain D and Eid can contain N. Lunar mappings remain 1405 only.
-
-The supplied original photograph again reached the 23-name picker and 30-date review. All 30 expected dates matched and were imported, after confirming the review item. A simulated OCR-worker failure recovered through retry without reupload. OCR recognizer and calendar-data files are unchanged from v12.10; this release does not claim improved accuracy across unseen photos.
+124 duplicate CSS declarations were removed. All six before/after preview images were pixel-identical. Build verification checks source/bundle agreement; ZIP verification checks bytes and integrity.
 
 ## Limits
 
-Pattern recognition establishes an observed schedule, not a person's willingness, qualifications or permanent assignment. Automatic filtering starts off; rules/preferences can override it. Date-specific exceptions, weekday availability and role matching are not implemented. Inline editors and long lists may scroll, particularly with multiple workplaces. Only local Chromium was tested; real mobile devices, enlarged text and offline OCR-model availability were not tested. Travel optimization still does not include reciprocal return shifts. Screenshot rosters are demonstration data.
+Only local Chromium was tested. Real iOS/Android devices, assistive technology, enlarged-text workflows and offline OCR-model availability were not tested. The OCR check uses the supplied photograph, not a representative multi-hospital corpus. Clinical role eligibility requires explicit information; schedule patterns do not establish it. Drafts persist through in-session navigation, not reload. One draft per view can be replaced by a new editor. Travel supports single same-code reciprocal exchanges and direct cover; it does not optimize multi-shift chains.
