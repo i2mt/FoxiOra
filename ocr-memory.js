@@ -76,14 +76,14 @@ function recallExample(kind, workplace, feature, raw='') {
   return {label:best.label,source:'visual',distance:best.d};
 }
 
-function rememberExample(kind, workplace, feature, raw, label) {
+function rememberExample(kind, workplace, feature, raw, label, image='') {
   if(S.learnOCR===false || !label || (!feature && (kind!=='names'||nn(raw).length<3))) return;
-  const memory=memoryStore(),list=memory[kind];
+  const memory=memoryStore(),list=memory[kind],preview=typeof image==='string'&&image.length<=120000&&/^data:image\/(?:png|jpeg|webp);base64,/.test(image)?{image}:{};
   // A corrected identical example supersedes its old label. Distinct conflicting
   // examples remain distinct and therefore abstain during ambiguous matching.
   const same=list.find(x=>x.wp===workplace && ((feature && featureDistance(feature,x.feature)<.025) || (!feature&&!x.feature&&x.raw===raw)));
-  if(same) Object.assign(same,{label,raw,feature,at:Date.now()});
-  else list.push({id:'ocr-'+Date.now()+'-'+Math.random().toString(36).slice(2,8),wp:workplace,feature,raw,label,at:Date.now()});
+  if(same) Object.assign(same,{label,raw,feature,...preview,at:Date.now()});
+  else list.push({id:'ocr-'+Date.now()+'-'+Math.random().toString(36).slice(2,8),wp:workplace,feature,raw,label,...preview,at:Date.now()});
   memory[kind]=list.sort((a,b)=>b.at-a.at).slice(0,kind==='names'?200:300);
 }
 
@@ -124,7 +124,7 @@ async function recognizeShift(w,wk,x0,y0,x1,y1){
   const feature=visualFeature(modern.canvas||source),preview=cropC(x0,y0,x1,y1,false,44).toDataURL('image/jpeg',.8);
   let text='',confidence=0,raw='',uncertain=false;
   if(modern.dash){text=parse(w,'-')?canonicalShift(w,'-'):'';confidence=text?90:0}
-  else if(modern.blank&&legacy.blank){uncertain=true;confidence=0}
+  else if(modern.blank&&legacy.blank){text=w.blankMeansOff?offCode(w):'';uncertain=!text;confidence=text?90:0}
   else{
     const candidates=[];
     const read=async(canvas,psm,nc)=>{
@@ -157,5 +157,5 @@ async function recognizeShift(w,wk,x0,y0,x1,y1){
   const remembered=recallExample('glyphs',w.id,feature);
   const suggestion=remembered&&parse(w,remembered.label)?remembered.label:'';
   if(suggestion&&suggestion!==text){text=suggestion;confidence=70;uncertain=true}
-  return {text,c:confidence,raw,feature,img:preview,suggestion,uncertain,confirmed:false};
+  return {text,c:confidence,raw,feature,img:preview,suggestion,uncertain,blank:!!(modern.blank&&legacy.blank),confirmed:false};
 }

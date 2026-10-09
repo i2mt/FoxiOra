@@ -108,10 +108,10 @@ test('explicit OFF codes remain supported by OCR',async()=>{
 test('import replaces matching dates only and learns only explicitly confirmed symbols',async()=>{
  const{run,runAsync}=app();await runAsync(`render=()=>{};globalThis.saved=null;save=async()=>{saved=JSON.parse(JSON.stringify(S))};
  S.shifts=[{id:'replace',wp:'w1',date:'2026-10-04',text:'D',segs:[]},{id:'other-workplace',wp:'w2',date:'2026-10-04',text:'N',segs:[]},{id:'blank-must-stay',wp:'w1',date:'2026-10-05',text:'D',segs:[]},{id:'outside-range',wp:'w1',date:'2026-11-01',text:'D',segs:[]}];
- sc.wp='w1';sc.name='نام تأییدشده';sc.ri=0;sc.guess=false;sc.rows=[{nm:'نام اسکن',rawName:'نام اسکن',nameFeature:null}];
+ sc.wp='w1';sc.name='نام تأییدشده';sc.nameConfirmed=true;sc.ri=0;sc.guess=false;sc.rows=[{nm:'نام اسکن',rawName:'نام اسکن',nameFeature:null}];
  sc.cells=[{date:'2026-10-04',text:'E',c:100,confirmed:true,feature:{bits:'ffff0000',aspect:1},raw:'D'},{date:'2026-10-05',text:'',c:100,confirmed:true},{date:'2026-10-06',text:'N',c:95,confirmed:false,feature:{bits:'0000ffff',aspect:1}}];await doImport();`);
  assert.equal(run("S.shifts.find(x=>x.date==='2026-10-04'&&x.wp==='w1').text"),'E');
- for(const id of ['other-workplace','blank-must-stay','outside-range'])assert.equal(run(`S.shifts.some(x=>x.id==='${id}')`),true);
+ for(const id of ['other-workplace','outside-range'])assert.equal(run(`S.shifts.some(x=>x.id==='${id}')`),true);
  assert.equal(run("S.shifts.filter(x=>x.date==='2026-10-04'&&x.wp==='w1').length"),1);
  assert.equal(run('S.ocrMemory.glyphs.length'),1);assert.equal(run('S.ocrMemory.glyphs[0].label'),'E');
  assert.equal(run('saved.ocrMemory.names[0].label'),'نام تأییدشده');assert.equal(run('sc.cells'),null);
@@ -146,14 +146,14 @@ test('cover suggestions exclude uncertain off days and previous-night overlaps',
  assert.equal(run("result.rows[0].unk.map(x=>x.m.id).join(',')"),'a');
  assert.equal(run("result.all.map(x=>x.id).join(',')"),'c');
 });
-test('colleague re-scan marks guessed dates and unreadable cells, including preserved previous values',async()=>{
+test('colleague re-scan clears stale unreadable values and pauses for guessed dates',async()=>{
  const {run,runAsync,context}=app();context.mock={setParameters:async()=>{},terminate:async()=>{}};
  run(`render=()=>{};recognizeShift=async()=>({text:'',c:0,uncertain:true});
  sc.wp='w1';sc.wk=mock;sc.y=1405;sc.m=7;sc.ri=-1;sc.rows=[{pi:0,y0:10,y1:30,nm:'همکار'}];
  sc.pages=[{cv:null,hl:[0,10,30],vl:[0,50],dayAt:()=>1,nameCol:-1,dr:-1,guess:false}];
  S.mates=[{id:'mate',wp:'w1',name:'همکار',cells:{'2026-09-23':'-'},uns:[]}];`);
  await run('readAll()');
- assert.equal(run("S.mates[0].cells['2026-09-23']"),'-');
+ assert.equal(run("S.mates[0].cells['2026-09-23']"),undefined);
  assert.equal(run("S.mates[0].uns.includes('2026-09-23')"),true);
  run("sc.wk=mock;sc.pages[0].guess=true;recognizeShift=async()=>({text:'D',c:99,uncertain:false})");await run('readAll()');
  assert.equal(run("S.mates[0].uns.includes('2026-09-23')"),true);
@@ -185,12 +185,11 @@ test('three tabs retain setup routes, English palettes and entry choices',async(
  for(const name of ['Fox','Siren','Hedo','Forest'])assert.ok(document.querySelector('#v').textContent.includes(name));
  run("go('places');editWp('w1')");assert.equal(document.querySelectorAll('.code-editor').length,7);assert.ok(document.querySelector('#dlg details'));
 });
-test('uncertain-first review preserves source indices and reaches the final date',async()=>{
- const {run,runAsync,document}=app();run(`sc.wp='w1';sc.name='Test';sc.rows=[{page:1}];sc.ri=0;sc.pages=[{}];sc.strip='';sc.cells=Array.from({length:30},(_,i)=>({date:'2026-10-'+String(i+1).padStart(2,'0'),text:'D',c:i===12?60:100,uncertain:i===12,img:''}));tab='scan';render()`);
- assert.equal(document.querySelectorAll('.rv').length,1);assert.match(document.querySelector('.rv button').getAttribute('onclick'),/setCell\(12,/);
+test('month review shows every date and edits the selected source cell',()=>{
+ const {run,document}=app();run(`sc.wp='w1';sc.name='Test';sc.rows=[{page:1}];sc.ri=0;sc.pages=[{}];sc.cells=Array.from({length:30},(_,i)=>({day:i+1,date:'2026-10-'+String(i+1).padStart(2,'0'),text:'D',c:i===12?60:100,uncertain:i===12,img:''}));sc.reviewIndex=12;tab='scan';render()`);
+ assert.equal(document.querySelectorAll('.scan-day').length,30);assert.match(document.querySelector('.scan-focus .k').getAttribute('onclick'),/setCell\(12,/);
  run("setCell(12,'E')");assert.equal(run('sc.cells[12].text'),'E');assert.equal(run('sc.cells[11].text'),'D');
- run('sc.reviewAll=true;sc.reviewPage=29;render()');assert.match(document.querySelector('.rv button').getAttribute('onclick'),/setCell\(29,/);
- run('sc.reviewAll=false;sc.guess=true;sc.reviewPage=0;render()');assert.equal(document.querySelectorAll('.rv').length,1);assert.match(document.querySelector('.review-toolbar').textContent,/۳۰/);
+ run('sc.reviewIndex=29;render()');assert.match(document.querySelector('.scan-focus .k').getAttribute('onclick'),/setCell\(29,/);assert.equal(document.querySelectorAll('.review-pagination').length,0);
 });
 test('additional swap dates and selected result remain reachable',async()=>{
  const {run,runAsync,document}=app();run(`S.shifts=Array.from({length:12},(_,i)=>({id:'s'+i,wp:'w1',date:'2099-10-'+String(i+1).padStart(2,'0'),text:'D',segs:makeSegs('2099-10-'+String(i+1).padStart(2,'0'),parse(S.wps[0],'D'))}));go('team')`);

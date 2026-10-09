@@ -1,40 +1,43 @@
-# FoxiOra v12.13 — manual update
+# FoxiOra v12.14 — manual update
 
-This is a cumulative, self-contained update. It includes the corrected scanner files, fonts, editable source and tests. No repository push or deployment has been performed.
+This cumulative update includes the app, exact scanner assets, editable source, build scripts and regression tests. It has not been pushed or deployed.
 
-## Install the app files
+## Install
 
-1. Export a backup from Settings before updating.
-2. Replace these nine root files together: `app.js`, `style.css`, `index.html`, `sw.js`, `calendar-data.js`, `ocr-memory.js`, `manifest.json`, `fox-mark.svg`, `icon.svg`.
-3. **Also copy the included `vendor/` folder, preserving its subfolders.** This step is required: the English model in the inherited local vendor folder was truncated. This release validates the exact scanner assets; leaving different or damaged files will prevent scanning.
-4. Reopen online. Settings should show **v12.13**. Existing schedules and preferences use the same database and are retained.
-5. In Settings → **اسکن و یادآوری**, press **آماده‌سازی اسکن آفلاین** before scanning without internet. Wait for the ready message. Preparation downloads about 11 MB and validates every file. If it fails, reconnect and retry; saved schedules are unaffected.
+1. Export a backup from Settings.
+2. Copy all root hosting files together: `app.js`, `style.css`, `index.html`, `sw.js`, `calendar-data.js`, `ocr-memory.js`, `manifest.json`, `fox-mark.svg`, `icon.svg`.
+3. Copy the complete included `vendor/` folder, preserving its subfolders. The inherited English model was damaged in an earlier release; the included assets match the scanner's checksum manifest.
+4. Reopen online and check that Settings shows **v12.14**. Existing schedules, preferences and local corrections use the same database.
+5. To scan offline, open Settings → اسکن و یادآوری → آماده‌سازی اسکن آفلاین. Wait for the ready message before disconnecting. About 11 MB of scanner assets are verified and cached.
 
-The ZIP's `vendor/` contains both language models, the scanner library, worker, two embedded WASM cores and fonts. Root-level `eng.traineddata.gz` / `fas.traineddata.gz` are not used by the app. Existing duplicate root copies can be removed after the correct vendor files are uploaded. Do not remove `vendor/lang/`.
+The app can be hosted directly without building. Duplicate root `eng.traineddata.gz` and `fas.traineddata.gz` files are unused; preserve `vendor/lang/`.
 
-## Commit the development files too
+## Changes in this update
 
-For a repository others can rebuild and test, also commit `src/`, `tests/`, `build.py`, `build-manifest.json`, `package.json` and `package-lock.json`. Uploading only the hosting files leaves npm scripts without their source and tests.
+- **Colleague pages without your own row:** choose فقط برنامهٔ همکاران, or use افزودن صفحات همکاران in the digital roster. Select multiple photos together. Every detected nurse row is imported; selecting your own name is unnecessary. Your own shifts are retained.
+- **A whole-month review:** see every scanned date together, tap a date and use the preset shift keys. No two-row preview, pagination or Show more.
+- **Dates checked once per page:** uncertain column/date mapping no longer marks every otherwise clear symbol doubtful. A date preview asks for day 1 and direction before saving an uncertain mapping.
+- **Corrections after import:** the digital roster keeps source crops for pending cells. Select matching crops and correct the group with one preset. Selection alone never confirms a shift. Undo restores the previous values and learning.
+- **Blank conventions:** an empty cell remains unknown by default. A workplace can explicitly define genuinely blank cells as off. Failed OCR is not treated as off.
+- **Local learning:** explicit corrections retain bounded symbol/name crops on the device and in backups. Unconfirmed OCR names are not learned automatically. This is conservative example matching, not automatic retraining of Tesseract.
+- **Scanner reliability:** short crops cannot allocate a negative typed array; date crops use adaptive margins; name crops use the wider edge interval; orientation no longer assumes the roster has fewer nurse rows than dates. Interrupted personal-row recognition returns to name selection and can be retried.
+- **Rescans:** unique colleague identities are updated while previous months are kept. Identical OCR names in separate rows are not silently merged. Unreadable new cells remain pending rather than preserving an old off value as current.
 
-- `npm ci` installs the pinned test dependencies.
-- `npm test` runs 144 regression tests.
-- `python3 build.py` regenerates `app.js` and `style.css` from ordered source sections.
-- `python3 build.py --check` confirms generated files match source.
+Previously implemented calendar styling, multi-workplace shifts, national/religious calendar data, reciprocal night exchanges, same-workplace combined shifts, colleague preferences, trip planning, Undo, theme names and fox loading animation remain included.
 
-The app can still be hosted directly with no build step. `verification/` and the reports are review evidence rather than required hosting files.
+## Development
 
-## What changed
+Commit `src/`, `tests/`, `build.py`, `build-manifest.json`, `package.json` and `package-lock.json` with the hosting files so the repository is reproducible.
 
-- Month cells outside imported roster coverage are quiet. Unknown cells within imported coverage still show **؟**. Tapping an uncovered day still says its shift is unknown; trip planning never treats it as off.
-- Imports remember their exact date range separately for each workplace. Gaps between separate imports are not mistaken for covered periods. Existing imports use their stored dates until reimported.
-- Today no longer carries a permanent Undo icon. Confirmation messages, Calendar/editing views and Settings retain Undo.
-- Secondary text is larger; typography responds to browser text size. Enlarged layouts may scroll vertically, and bottom navigation has adequate content clearance.
-- Imported names, labels, identifiers, image attributes and codes are rendered safely. Saved workplace colors are restricted to valid hexadecimal colors; backup images remain local raster data.
-- Offline preparation checks all six scanner assets by SHA-256 before caching or declaring readiness. Its verified cache survives app-shell updates; old `shiftfox-` shell caches are removed.
-- The damaged English language model has been replaced. Recognition logic is retained; this is an asset/reliability repair, not a claim of improved accuracy across unseen hospital photos.
+- `npm ci`
+- `npm test` — 161 regression tests
+- `python3 build.py` — rebuild generated JS/CSS
+- `python3 build.py --check` — check source/output consistency
 
-Existing shift combinations, reciprocal exchanges, colleague preferences, multi-workplace calendars, events, local learning, Persian wording and fox loading animation remain available.
+`verification/`, `QA-REPORT.md` and `DESIGN-NOTES.md` are review evidence, not hosting dependencies. Full schedule photographs and staff names are excluded.
 
-## Next real-world check
+## OCR limits
 
-Try a complete scan → choose name → review → import on an iPhone and an Android phone, using several hospital formats. Ask nurses to complete it without coaching. Desktop browser checks and one supplied photo do not establish accuracy or usability on all phones. See `QA-REPORT.md` for measured results and the short field-test guide.
+All 20 supplied photos were loaded and benchmarked. The negative-array failures were fixed, but several tables still have missing or misplaced rows/columns. A runtime success is not a correct roster. This update does **not** yet establish reliable automatic import of six pages / 100+ nurses.
+
+A small model trained on labelled symbols performed well on another row of the same photo but still made errors on a different roster and a leave marker. It is not installed in the app. See the separate OCR experiment files and `QA-REPORT.md` for exact results.

@@ -1,13 +1,17 @@
-# FoxiOra v12.13 design decisions
+# FoxiOra v12.14 design decisions
 
-Keep the existing calm visual direction. This pass reduces noise and improves reliability rather than adding another main page.
+The target is one useful import, with questions only where a decision needs uncertain evidence. Correcting 100 nurses one by one is not an acceptable primary workflow.
 
-**Calendar:** an empty visual cell outside imported coverage does not mean off. The detail view and free-time engine preserve unknown status. Each workplace has independent coverage; the default calendar continues to combine their shifts. Larger weekday labels and neutral shift cells keep accent color focused on today and selected dates.
+**Page purpose:** personal schedules and colleague-only pages are explicit choices within the existing scan flow. The digital roster has a direct entry for adding colleague pages. The app does not require the user's name to appear on each page.
 
-**Undo:** Today keeps the header simpler. Immediately after an edit, the confirmation offers Undo. A persistent action remains where schedules are edited and in Settings.
+**Review:** a compact whole-month grid replaces a short paginated list. Selecting a date reveals its source crop and preset codes. Larger text can scroll vertically instead of shrinking into an unreadable calendar.
 
-**Scanner:** offline preparation belongs beside scan memory, in Settings. It is explicit so installing the app does not require downloading all OCR assets. Readiness means all six exact assets have been validated and saved locally, not merely requested successfully. Browser storage may be cleared or evicted; check readiness again before going offline.
+**Dates and symbols:** date uncertainty is checked once for the page and remains distinct from symbol confidence. Unknown cells never become off simply because a nurse saved the page. Blank meaning is a workplace convention, not a global OCR guess.
 
-**Text size:** useful secondary text is generally at least 12 px at default browser settings. Small decorative markers remain smaller. Relative typography supports larger browser text. At 200% text size, vertical scrolling is appropriate; text is not shrunk to force it into one screen. Calendars, tabs and navigation adapt within the viewport.
+**After import:** valid dates remain usable; pending dates retain visual evidence. Group correction and Undo reduce repeated work, but are fallback tools. They are not a substitute for better recognition.
 
-**What to learn next:** observe nurses importing several real rosters on their phones; record unclear symbols and corrections. Address repeated failures from that evidence before introducing new scanner modes or wider feature scope. Any future scanner asset change must update the embedded checksum manifest and be tested with the exact shipped files.
+**Identity:** names are corrected from the photo and can learn explicit aliases locally. Duplicate OCR text cannot safely prove two nurse rows are the same person. Whole-roster manual name confirmation is not required.
+
+**Experiments:** a trained model and a curved-table mesh were tested, then kept out of production because cross-photo recognition and alignment were insufficient. Lowering confidence thresholds to remove prompts would make the app seem easier while worsening its schedule data.
+
+**Next priority:** reliable page geometry, cross-photo symbol/name evaluation and original digital roster import. More main tabs or explanatory notes would add complexity without solving the ER workload.

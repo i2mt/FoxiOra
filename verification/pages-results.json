@@ -1,0 +1,15 @@
+{
+  "mode": true,
+  "rowChoice": -1,
+  "ownName": "My row is absent",
+  "own": [
+    {
+      "id": "own",
+      "text": "N"
+    }
+  ],
+  "mates": 23,
+  "detectedRows": 23,
+  "tab": "roster",
+  "errors": ""
+}
