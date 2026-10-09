@@ -1,0 +1,297 @@
+{
+  "metrics": [
+    {
+      "tab": "today",
+      "theme": "light",
+      "width": 320,
+      "height": 568,
+      "scrollWidth": 320,
+      "bottom": 504.625,
+      "overflow": []
+    },
+    {
+      "tab": "agenda",
+      "theme": "light",
+      "width": 320,
+      "height": 568,
+      "scrollWidth": 320,
+      "bottom": 625.78125,
+      "overflow": []
+    },
+    {
+      "tab": "team",
+      "theme": "light",
+      "width": 320,
+      "height": 568,
+      "scrollWidth": 320,
+      "bottom": 529.125,
+      "overflow": []
+    },
+    {
+      "tab": "set",
+      "theme": "light",
+      "width": 320,
+      "height": 568,
+      "scrollWidth": 320,
+      "bottom": 503.6875,
+      "overflow": []
+    },
+    {
+      "tab": "roster",
+      "theme": "light",
+      "width": 320,
+      "height": 568,
+      "scrollWidth": 320,
+      "bottom": 648.515625,
+      "overflow": []
+    },
+    {
+      "tab": "today",
+      "theme": "dark",
+      "width": 320,
+      "height": 568,
+      "scrollWidth": 320,
+      "bottom": 504.625,
+      "overflow": []
+    },
+    {
+      "tab": "agenda",
+      "theme": "dark",
+      "width": 320,
+      "height": 568,
+      "scrollWidth": 320,
+      "bottom": 625.78125,
+      "overflow": []
+    },
+    {
+      "tab": "team",
+      "theme": "dark",
+      "width": 320,
+      "height": 568,
+      "scrollWidth": 320,
+      "bottom": 529.125,
+      "overflow": []
+    },
+    {
+      "tab": "set",
+      "theme": "dark",
+      "width": 320,
+      "height": 568,
+      "scrollWidth": 320,
+      "bottom": 503.6875,
+      "overflow": []
+    },
+    {
+      "tab": "roster",
+      "theme": "dark",
+      "width": 320,
+      "height": 568,
+      "scrollWidth": 320,
+      "bottom": 648.515625,
+      "overflow": []
+    },
+    {
+      "tab": "today",
+      "theme": "light",
+      "width": 360,
+      "height": 640,
+      "scrollWidth": 360,
+      "bottom": 504.625,
+      "overflow": []
+    },
+    {
+      "tab": "agenda",
+      "theme": "light",
+      "width": 360,
+      "height": 640,
+      "scrollWidth": 360,
+      "bottom": 608.984375,
+      "overflow": []
+    },
+    {
+      "tab": "team",
+      "theme": "light",
+      "width": 360,
+      "height": 640,
+      "scrollWidth": 360,
+      "bottom": 512.328125,
+      "overflow": []
+    },
+    {
+      "tab": "set",
+      "theme": "light",
+      "width": 360,
+      "height": 640,
+      "scrollWidth": 360,
+      "bottom": 503.6875,
+      "overflow": []
+    },
+    {
+      "tab": "roster",
+      "theme": "light",
+      "width": 360,
+      "height": 640,
+      "scrollWidth": 360,
+      "bottom": 648.515625,
+      "overflow": []
+    },
+    {
+      "tab": "today",
+      "theme": "dark",
+      "width": 360,
+      "height": 640,
+      "scrollWidth": 360,
+      "bottom": 504.625,
+      "overflow": []
+    },
+    {
+      "tab": "agenda",
+      "theme": "dark",
+      "width": 360,
+      "height": 640,
+      "scrollWidth": 360,
+      "bottom": 608.984375,
+      "overflow": []
+    },
+    {
+      "tab": "team",
+      "theme": "dark",
+      "width": 360,
+      "height": 640,
+      "scrollWidth": 360,
+      "bottom": 512.328125,
+      "overflow": []
+    },
+    {
+      "tab": "set",
+      "theme": "dark",
+      "width": 360,
+      "height": 640,
+      "scrollWidth": 360,
+      "bottom": 503.6875,
+      "overflow": []
+    },
+    {
+      "tab": "roster",
+      "theme": "dark",
+      "width": 360,
+      "height": 640,
+      "scrollWidth": 360,
+      "bottom": 648.515625,
+      "overflow": []
+    },
+    {
+      "tab": "today",
+      "theme": "light",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "bottom": 583.75,
+      "overflow": []
+    },
+    {
+      "tab": "agenda",
+      "theme": "light",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "bottom": 625.640625,
+      "overflow": []
+    },
+    {
+      "tab": "team",
+      "theme": "light",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "bottom": 523.984375,
+      "overflow": []
+    },
+    {
+      "tab": "set",
+      "theme": "light",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "bottom": 520.296875,
+      "overflow": []
+    },
+    {
+      "tab": "roster",
+      "theme": "light",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "bottom": 648.578125,
+      "overflow": []
+    },
+    {
+      "tab": "today",
+      "theme": "dark",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "bottom": 583.75,
+      "overflow": []
+    },
+    {
+      "tab": "agenda",
+      "theme": "dark",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "bottom": 625.640625,
+      "overflow": []
+    },
+    {
+      "tab": "team",
+      "theme": "dark",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "bottom": 523.984375,
+      "overflow": []
+    },
+    {
+      "tab": "set",
+      "theme": "dark",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "bottom": 520.296875,
+      "overflow": []
+    },
+    {
+      "tab": "roster",
+      "theme": "dark",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "bottom": 648.578125,
+      "overflow": []
+    }
+  ],
+  "dismissal": [
+    "entry",
+    "workplace",
+    "shift",
+    "editShift",
+    "event",
+    "trip",
+    "name",
+    "memory",
+    "colleagueCell"
+  ],
+  "coverDE": true,
+  "presetEdit": true,
+  "symbolAliases": true,
+  "rosterEdit": true,
+  "rosterSearch": true,
+  "wholeMonth": true,
+  "darkContrast": {
+    "text": "rgb(238, 241, 245)",
+    "background": "rgb(25, 30, 36)",
+    "icon": "rgb(161, 169, 180)"
+  },
+  "errors": []
+}

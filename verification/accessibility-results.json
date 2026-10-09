@@ -1,0 +1,128 @@
+{
+  "metrics": [
+    {
+      "width": 320,
+      "pageWidth": 320,
+      "codeFont": "17px"
+    },
+    {
+      "width": 360,
+      "pageWidth": 360,
+      "codeFont": "17px"
+    },
+    {
+      "width": 390,
+      "pageWidth": 390,
+      "codeFont": "17px"
+    },
+    {
+      "width": 320,
+      "pageWidth": 320,
+      "codeFont": "17px"
+    },
+    {
+      "width": 360,
+      "pageWidth": 360,
+      "codeFont": "17px"
+    },
+    {
+      "width": 390,
+      "pageWidth": 390,
+      "codeFont": "17px"
+    }
+  ],
+  "largeText": [
+    {
+      "tab": "today",
+      "lang": "fa",
+      "width": 320,
+      "pageWidth": 320,
+      "navHeight": 126.1875,
+      "padding": 152,
+      "outside": []
+    },
+    {
+      "tab": "agenda",
+      "lang": "fa",
+      "width": 320,
+      "pageWidth": 320,
+      "navHeight": 126.1875,
+      "padding": 152,
+      "outside": []
+    },
+    {
+      "tab": "team",
+      "lang": "fa",
+      "width": 320,
+      "pageWidth": 320,
+      "navHeight": 126.1875,
+      "padding": 152,
+      "outside": []
+    },
+    {
+      "tab": "set",
+      "lang": "fa",
+      "width": 320,
+      "pageWidth": 320,
+      "navHeight": 126.1875,
+      "padding": 152,
+      "outside": []
+    },
+    {
+      "tab": "roster",
+      "lang": "fa",
+      "width": 320,
+      "pageWidth": 320,
+      "navHeight": 126.1875,
+      "padding": 152,
+      "outside": []
+    },
+    {
+      "tab": "today",
+      "lang": "en",
+      "width": 320,
+      "pageWidth": 320,
+      "navHeight": 126.1875,
+      "padding": 152,
+      "outside": []
+    },
+    {
+      "tab": "agenda",
+      "lang": "en",
+      "width": 320,
+      "pageWidth": 320,
+      "navHeight": 126.1875,
+      "padding": 152,
+      "outside": []
+    },
+    {
+      "tab": "team",
+      "lang": "en",
+      "width": 320,
+      "pageWidth": 320,
+      "navHeight": 126.1875,
+      "padding": 152,
+      "outside": []
+    },
+    {
+      "tab": "set",
+      "lang": "en",
+      "width": 320,
+      "pageWidth": 320,
+      "navHeight": 126.1875,
+      "padding": 152,
+      "outside": []
+    },
+    {
+      "tab": "roster",
+      "lang": "en",
+      "width": 320,
+      "pageWidth": 320,
+      "navHeight": 126.1875,
+      "padding": 152,
+      "outside": []
+    }
+  ],
+  "dialogCloses": true,
+  "errors": []
+}

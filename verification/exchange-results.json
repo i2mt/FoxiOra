@@ -1,0 +1,152 @@
+{
+  "case": "D,N,-,- ↔ D,-,N,-",
+  "mineAfter": [
+    "D",
+    "-",
+    "N",
+    "-"
+  ],
+  "colleagueAfter": [
+    "D",
+    "N",
+    "-",
+    "-"
+  ],
+  "startupElapsedMs": 2577,
+  "metrics": [
+    {
+      "theme": "light",
+      "filter": "all",
+      "width": 320,
+      "bodyWidth": 320,
+      "outside": []
+    },
+    {
+      "theme": "light",
+      "filter": "cover",
+      "width": 320,
+      "bodyWidth": 320,
+      "outside": []
+    },
+    {
+      "theme": "light",
+      "filter": "swap",
+      "width": 320,
+      "bodyWidth": 320,
+      "outside": []
+    },
+    {
+      "theme": "dark",
+      "filter": "all",
+      "width": 320,
+      "bodyWidth": 320,
+      "outside": []
+    },
+    {
+      "theme": "dark",
+      "filter": "cover",
+      "width": 320,
+      "bodyWidth": 320,
+      "outside": []
+    },
+    {
+      "theme": "dark",
+      "filter": "swap",
+      "width": 320,
+      "bodyWidth": 320,
+      "outside": []
+    },
+    {
+      "theme": "light",
+      "filter": "all",
+      "width": 360,
+      "bodyWidth": 360,
+      "outside": []
+    },
+    {
+      "theme": "light",
+      "filter": "cover",
+      "width": 360,
+      "bodyWidth": 360,
+      "outside": []
+    },
+    {
+      "theme": "light",
+      "filter": "swap",
+      "width": 360,
+      "bodyWidth": 360,
+      "outside": []
+    },
+    {
+      "theme": "dark",
+      "filter": "all",
+      "width": 360,
+      "bodyWidth": 360,
+      "outside": []
+    },
+    {
+      "theme": "dark",
+      "filter": "cover",
+      "width": 360,
+      "bodyWidth": 360,
+      "outside": []
+    },
+    {
+      "theme": "dark",
+      "filter": "swap",
+      "width": 360,
+      "bodyWidth": 360,
+      "outside": []
+    },
+    {
+      "theme": "light",
+      "filter": "all",
+      "width": 390,
+      "bodyWidth": 390,
+      "outside": []
+    },
+    {
+      "theme": "light",
+      "filter": "cover",
+      "width": 390,
+      "bodyWidth": 390,
+      "outside": []
+    },
+    {
+      "theme": "light",
+      "filter": "swap",
+      "width": 390,
+      "bodyWidth": 390,
+      "outside": []
+    },
+    {
+      "theme": "dark",
+      "filter": "all",
+      "width": 390,
+      "bodyWidth": 390,
+      "outside": []
+    },
+    {
+      "theme": "dark",
+      "filter": "cover",
+      "width": 390,
+      "bodyWidth": 390,
+      "outside": []
+    },
+    {
+      "theme": "dark",
+      "filter": "swap",
+      "width": 390,
+      "bodyWidth": 390,
+      "outside": []
+    }
+  ],
+  "cancelXEscape": true,
+  "saveBothRosters": true,
+  "reloadPreserves": true,
+  "stalePreviewRejected": true,
+  "requestDraft": true,
+  "nightRuleSetting": true,
+  "englishRTL": true,
+  "errors": []
+}

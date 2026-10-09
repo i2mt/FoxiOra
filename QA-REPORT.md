@@ -1,27 +1,39 @@
-# FoxiOra v12.12 verification
+# FoxiOra v12.13 verification
 
-## Result
+## Automated results
 
-132 Node tests passed: 111 retained regression cases, updated to await durable writes, plus 21 new cases for the review changes. The included browser JSON reports contain no page runtime errors. Generated bundles match their ordered source files. No deployment or repository push was performed.
+- 144 Node regression tests, including roster coverage, safe text/identifier rendering, imports/Undo, asset hashes, corrupt downloads and cache cleanup.
+- Build consistency and JavaScript syntax checks.
+- Browser layouts at 320, 360 and 390 CSS pixels; light/dark Fox and Persian/English flows. Monthly previews retain all workplaces, readable duty codes and distinctive today styling.
+- 200% browser root text size across Today, Calendar, shift change, Settings and digital roster at 320 pixels, in both languages. No document horizontal overflow; navigation clearance grows with text size. Vertical scrolling increases at large text sizes.
+- Actual close/cancel flows for everyday editors, workplace dialog and scan memory. Persistent and toast Undo, reload preservation, event editing, failed-save rollback and draft recovery.
+- Existing reciprocal `D,N,-,- ↔ D,-,N,-` exchange, DE cover suggestions, colleague preferences and travel calculations remain covered.
+- Real service-worker update from v12.11 to v12.13 preserved schedules/settings and worked offline. A cache-lifecycle regression additionally checks preservation of the verified OCR cache and removal of legacy shell caches.
 
-## New behavior
+## OCR and offline checks
 
-Tests cover unknown versus explicit off/leave, missing second-workplace data, calendar filters and selected-day placement, editable multi-day events, invalid event dates, cross-page drafts and independent editing context, delayed/failed durable storage, import retry without partial changes, settings/setup failure, retained roster context, quick full-code presets, temporary/weekday limits, identity linking and Undo, ambiguous aliases, independent accordion state, all grouped eligible options, reciprocal travel return duty, and missing active-workplace coverage.
+The inherited local English vendor model failed gzip decompression. The intact English model now shipped is 2,952,873 compressed bytes; both shipped language models decompress and match the browser checksum manifest. No test substitutes a separate model directory for the release files.
 
-A real Chromium browser uses the visible buttons/fields to navigate and restore a draft, edit a multi-day trip, filter all workplaces, select colleague presets, set/clear a temporary exclusion, change weekday availability, link two scanned identities, Undo that link, reuse the canonical digital roster, recover from a rejected save and retry, preview a reciprocal travel exchange, and choose 12-hour time. Reduced motion is enabled in this run. Twelve Persian/English, light/dark phone layouts passed at 320×568, 360×640 and 390×844.
+Using the supplied roster photograph, the browser identified 23 name rows. Choosing the first row read all 30 dates with this expected sequence:
 
-The benchmark uses 25 colleagues and a 60-date roster, without a result cap. The included review-results.json records wall-clock search timing and proposal count from the local test browser. This is not a measurement on real phones.
+`N,-,E,M,E,-,E,N,-,D,E,D,E,-,N,-,D,E,-,E,D,N,-,E,E,D,E,-,N,-`
 
-## Retained flows
+One M cell required review. Confirmation/import saved all 30 shifts. An interrupted worker returned to row selection and a retry succeeded.
 
-Thirty main-view layouts, eighteen exchange layouts, twelve colleague-settings layouts, twenty-four focused five/six-row month layouts and twenty-four one-to-four-workplace month layouts were checked. The routine shift editor's preset/save actions fit above navigation at 320×568. All standard codes remain visible and main pages have no horizontal overflow. Larger rosters and selected-date details may scroll.
+A separate browser check prepared the scanner before loading Tesseract, then disconnected the browser, reloaded, selected the photograph and completed recognition, review and import offline. A deliberately damaged English model was rejected during preparation; restoring the correct server file allowed retry to complete. Assets are verified before the ready message.
 
-Actual close/cancel/fold actions cover schedule entry, workplace configuration, own/colleague shift edits, event, trip, name and OCR-memory tools. Digital table editing, search, whole-month mode, symbol aliases, D→DE cover, both-roster exchange saving, stale-proposal rejection, Undo persistence, comparison, guided setup/manual entry/resume and offline app-shell reopening passed. The real v12.11 → v12.12 service-worker upgrade retains existing schedules/settings.
+## Limits and next field test
 
-The original supplied photograph reaches 23 detected names and the 30-date review. All 30 expected codes match and import after confirming the review item. An interrupted OCR worker recovers without reupload. The recognizer logic and calendar mappings are retained. The OCR-memory file changes only its removal action's durable-save handling.
+These are desktop Chromium checks with mobile-sized viewports, not physical iPhone/Android validation. OCR evidence covers one supplied photograph and its first selected nurse row; it does not establish broad accuracy across other rosters, lighting, handwriting or phone cameras.
 
-124 duplicate CSS declarations were removed. All six before/after preview images were pixel-identical. Build verification checks source/bundle agreement; ZIP verification checks bytes and integrity.
+Ask several nurses to perform these tasks on their own phones without coaching:
 
-## Limits
+1. First setup, choose a photo and find their row; review a doubtful code and save.
+2. Find today's shift and edit one changed duty; Undo it.
+3. Find a reciprocal exchange and understand both resulting schedules.
+4. Prepare the scanner online, switch off connectivity and import a new photograph.
+5. Increase system/browser text size and check readability and reachable controls.
 
-Only local Chromium was tested. Real iOS/Android devices, assistive technology, enlarged-text workflows and offline OCR-model availability were not tested. The OCR check uses the supplied photograph, not a representative multi-hospital corpus. Clinical role eligibility requires explicit information; schedule patterns do not establish it. Drafts persist through in-session navigation, not reload. One draft per view can be replaced by a new editor. Travel supports single same-code reciprocal exchanges and direct cover; it does not optimize multi-shift chains.
+Record time, wrong selections, requests for help, OCR corrections and whether users correctly distinguish unknown, off, leave and public holidays. Prioritize repeated blockers from this evidence.
+
+Recorded browser JSON and screenshots are included in `verification/`.

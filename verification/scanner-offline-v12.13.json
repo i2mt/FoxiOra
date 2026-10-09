@@ -1,0 +1,21 @@
+{
+  "result": {
+    "version": "v12.13",
+    "pick": false,
+    "stage": "review",
+    "count": 30,
+    "msg": "",
+    "unknown": 0,
+    "review": 1,
+    "expectedMatches": 30,
+    "imported": 30,
+    "guidedSetup": true,
+    "nameRemembered": true,
+    "reviewConfirmed": true,
+    "recoveredAfterWorkerFailure": true,
+    "offlinePreparation": true,
+    "damagedAssetRejected": true,
+    "freshOfflineScan": true
+  },
+  "errors": []
+}

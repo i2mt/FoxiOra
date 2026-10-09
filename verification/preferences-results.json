@@ -1,0 +1,100 @@
+{
+  "patternConfirmation": true,
+  "autoOptIn": true,
+  "manualOverrides": true,
+  "noCombined": true,
+  "maxHours": true,
+  "exclusionUndo": true,
+  "reloadPersistence": true,
+  "inlineDrafts": true,
+  "inlineEditUndo": true,
+  "comparisonRetained": true,
+  "complexDialogRetained": true,
+  "metrics": [
+    {
+      "theme": "light",
+      "lang": "fa",
+      "width": 320,
+      "pageWidth": 320,
+      "clipped": []
+    },
+    {
+      "theme": "light",
+      "lang": "en",
+      "width": 320,
+      "pageWidth": 320,
+      "clipped": []
+    },
+    {
+      "theme": "dark",
+      "lang": "fa",
+      "width": 320,
+      "pageWidth": 320,
+      "clipped": []
+    },
+    {
+      "theme": "dark",
+      "lang": "en",
+      "width": 320,
+      "pageWidth": 320,
+      "clipped": []
+    },
+    {
+      "theme": "light",
+      "lang": "fa",
+      "width": 360,
+      "pageWidth": 360,
+      "clipped": []
+    },
+    {
+      "theme": "light",
+      "lang": "en",
+      "width": 360,
+      "pageWidth": 360,
+      "clipped": []
+    },
+    {
+      "theme": "dark",
+      "lang": "fa",
+      "width": 360,
+      "pageWidth": 360,
+      "clipped": []
+    },
+    {
+      "theme": "dark",
+      "lang": "en",
+      "width": 360,
+      "pageWidth": 360,
+      "clipped": []
+    },
+    {
+      "theme": "light",
+      "lang": "fa",
+      "width": 390,
+      "pageWidth": 390,
+      "clipped": []
+    },
+    {
+      "theme": "light",
+      "lang": "en",
+      "width": 390,
+      "pageWidth": 390,
+      "clipped": []
+    },
+    {
+      "theme": "dark",
+      "lang": "fa",
+      "width": 390,
+      "pageWidth": 390,
+      "clipped": []
+    },
+    {
+      "theme": "dark",
+      "lang": "en",
+      "width": 390,
+      "pageWidth": 390,
+      "clipped": []
+    }
+  ],
+  "errors": []
+}

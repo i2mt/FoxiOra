@@ -1,0 +1,113 @@
+{
+  "unknownVsOff": true,
+  "draftsAcrossPages": true,
+  "eventEditing": true,
+  "multiDayPreserved": true,
+  "calendarSelection": true,
+  "allWorkplacesAndFilter": true,
+  "quickPresets": true,
+  "temporaryAndWeekdayLimits": true,
+  "identityLinkUndo": true,
+  "rosterContext": true,
+  "failedSaveRetry": true,
+  "reciprocalTravel": true,
+  "clockChoices": true,
+  "reducedMotion": true,
+  "todayFit": {
+    "freeBottom": 496.625,
+    "navTop": 501.203125
+  },
+  "metrics": [
+    {
+      "width": 320,
+      "height": 568,
+      "theme": "light",
+      "lang": "fa",
+      "pageWidth": 320
+    },
+    {
+      "width": 320,
+      "height": 568,
+      "theme": "light",
+      "lang": "en",
+      "pageWidth": 320
+    },
+    {
+      "width": 320,
+      "height": 568,
+      "theme": "dark",
+      "lang": "fa",
+      "pageWidth": 320
+    },
+    {
+      "width": 320,
+      "height": 568,
+      "theme": "dark",
+      "lang": "en",
+      "pageWidth": 320
+    },
+    {
+      "width": 360,
+      "height": 640,
+      "theme": "light",
+      "lang": "fa",
+      "pageWidth": 360
+    },
+    {
+      "width": 360,
+      "height": 640,
+      "theme": "light",
+      "lang": "en",
+      "pageWidth": 360
+    },
+    {
+      "width": 360,
+      "height": 640,
+      "theme": "dark",
+      "lang": "fa",
+      "pageWidth": 360
+    },
+    {
+      "width": 360,
+      "height": 640,
+      "theme": "dark",
+      "lang": "en",
+      "pageWidth": 360
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "theme": "light",
+      "lang": "fa",
+      "pageWidth": 390
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "theme": "light",
+      "lang": "en",
+      "pageWidth": 390
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "theme": "dark",
+      "lang": "fa",
+      "pageWidth": 390
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "theme": "dark",
+      "lang": "en",
+      "pageWidth": 390
+    }
+  ],
+  "performance": {
+    "elapsedMs": 729,
+    "colleagues": 25,
+    "days": 60,
+    "proposals": 617
+  },
+  "errors": []
+}

@@ -1,60 +1,40 @@
-# FoxiOra v12.12 manual update
+# FoxiOra v12.13 — manual update
 
-Cumulative update. Replace the same nine hosting files together. No deployment or repository push is performed.
+This is a cumulative, self-contained update. It includes the corrected scanner files, fonts, editable source and tests. No repository push or deployment has been performed.
 
-## Install
+## Install the app files
 
-1. Export a backup from Settings → اطلاعات و پشتیبان.
-2. Replace `app.js`, `style.css`, `index.html`, `sw.js`, `calendar-data.js`, `ocr-memory.js`, `manifest.json`, `fox-mark.svg`, and `icon.svg` at your existing repository root.
-3. Keep your existing `vendor/` folder, fonts and OCR models.
-4. Reopen the app online. Settings should show **v12.12**. The existing database identity is retained.
+1. Export a backup from Settings before updating.
+2. Replace these nine root files together: `app.js`, `style.css`, `index.html`, `sw.js`, `calendar-data.js`, `ocr-memory.js`, `manifest.json`, `fox-mark.svg`, `icon.svg`.
+3. **Also copy the included `vendor/` folder, preserving its subfolders.** This step is required: the English model in the inherited local vendor folder was truncated. This release validates the exact scanner assets; leaving different or damaged files will prevent scanning.
+4. Reopen online. Settings should show **v12.13**. Existing schedules and preferences use the same database and are retained.
+5. In Settings → **اسکن و یادآوری**, press **آماده‌سازی اسکن آفلاین** before scanning without internet. Wait for the ready message. Preparation downloads about 11 MB and validates every file. If it fails, reconnect and retry; saved schedules are unaffected.
 
-Only these nine files are needed for hosting. The source, tests, reports and preview are included for review/development.
+The ZIP's `vendor/` contains both language models, the scanner library, worker, two embedded WASM cores and fonts. Root-level `eng.traineddata.gz` / `fas.traineddata.gz` are not used by the app. Existing duplicate root copies can be removed after the correct vendor files are uploaded. Do not remove `vendor/lang/`.
 
-## Clear status and calendar
+## Commit the development files too
 
-Missing/unreviewed dates show **؟** rather than looking like off. Explicit hospital off symbols, مرخصی and استعلاجی remain separate. Today shows the saved roster horizon. An active workplace with no roster blocks free-time/travel suggestions; it can be excluded through its existing workplace setting.
+For a repository others can rebuild and test, also commit `src/`, `tests/`, `build.py`, `build-manifest.json`, `package.json` and `package-lock.json`. Uploading only the hosting files leaves npm scripts without their source and tests.
 
-The monthly view defaults to **همهٔ محل‌های کار** and has a workplace filter. Numbered workplace markers retain combined visibility. Tap a date to reveal its details within the calendar; the detail heading clears the sticky header. Fold it to return to the compact grid. Full details no longer load below every month by default. Official occasions never determine a person's duty status.
+- `npm ci` installs the pinned test dependencies.
+- `npm test` runs 144 regression tests.
+- `python3 build.py` regenerates `app.js` and `style.css` from ordered source sections.
+- `python3 build.py --check` confirms generated files match source.
 
-## Everyday editing and continuity
+The app can still be hosted directly with no build step. `verification/` and the reports are review evidence rather than required hosting files.
 
-Tap a personal event to edit its title, type, start/end dates and times. Multi-day trips keep their duration and record identity. Deletion is a separate action. Changes are undoable.
+## What changed
 
-An unfinished inline tool remains in its original page when you navigate. A **پیش‌نویس ذخیره نشده** shortcut returns you to it. Values and folded state survive re-renders. Each page/subview has at most one draft; opening a different editor in that same view replaces the old one. Save/Cancel clears that draft. Drafts last during the current open session, not a reload or browser close.
+- Month cells outside imported roster coverage are quiet. Unknown cells within imported coverage still show **؟**. Tapping an uncovered day still says its shift is unknown; trip planning never treats it as off.
+- Imports remember their exact date range separately for each workplace. Gaps between separate imports are not mistaken for covered periods. Existing imports use their stored dates until reimported.
+- Today no longer carries a permanent Undo icon. Confirmation messages, Calendar/editing views and Settings retain Undo.
+- Secondary text is larger; typography responds to browser text size. Enlarged layouts may scroll vertically, and bottom navigation has adequate content clearance.
+- Imported names, labels, identifiers, image attributes and codes are rendered safely. Saved workplace colors are restricted to valid hexadecimal colors; backup images remain local raster data.
+- Offline preparation checks all six scanner assets by SHA-256 before caching or declaring readiness. Its verified cache survives app-shell updates; old `shiftfox-` shell caches are removed.
+- The damaged English language model has been replaced. Recognition logic is retained; this is an asset/reliability repair, not a claim of improved accuracy across unseen hospital photos.
 
-Routine actions stay within their page. Detailed workplace/symbol and OCR-memory configuration retain focused dialogs. Escape folds a focused inline editor. Requests are drafts for the user to copy/send; the app sends nothing.
+Existing shift combinations, reciprocal exchanges, colleague preferences, multi-workplace calendars, events, local learning, Persian wording and fox loading animation remain available.
 
-## Colleague controls and clearer results
+## Next real-world check
 
-Quick presets: **منعطف، فقط D، فقط E، بدون ترکیبی، کنار گذاشته**. D/E presets appear only when those workplace symbols are recognized. Detailed controls are under **تنظیمات بیشتر**:
-
-- Accepted complete duty codes; D permission alone never permits DE.
-- No combined duty and maximum actual duty duration.
-- Available weekdays.
-- An inclusive temporary exclusion period. Limits outside that period remain as configured.
-- Explicit identity linking when OCR has read an existing colleague's name differently.
-
-Linking keeps the chosen existing record's preferences, combines dates and remembers name aliases. New scanned cells take priority on overlapping dates; unreviewed status is preserved. This is undoable. Automatic matching requires a unique normalized name/alias; ambiguous names are never silently merged. Name correction also remembers the previous name.
-
-Observed single-code patterns remain suggestions by default; automatic filtering is opt-in. Manual rules take priority. The app does not infer health, age, skills or willingness from a roster.
-
-Shift-change choices are grouped by colleague within their type. Every eligible option is rendered; there are no show-more caps. Repeated warnings of the same type are grouped. Large result lists remain scrollable.
-
-## Smarter travel planning
-
-The planner now includes supported reciprocal same-code exchanges as well as direct cover. It removes the outgoing shift AND includes the return shift when measuring the new continuous break. Shared matching checks recovery, configured breaks, preferences, other workplaces and personal plans. Each suggestion names the return date and leads to the exchange preview. Nothing is changed until the user confirms agreement.
-
-Matching/window calculations are reused within a search to avoid duplicate work. Searches still cover at most 60 days within saved roster coverage; this is single-shift optimization, not a multi-person or multi-shift optimizer.
-
-## OCR review and durable saving
-
-Preset codes, **خالی**, and **علامت دیگر** are visually separate. Empty cells are never automatically treated as off. Imports retain the review cells until storage succeeds. Failed schedule/event/preference writes restore the prior data/history and retain the editor for retry; success feedback follows transaction completion. Settings, first setup, backup restore and Undo handle failed writes too.
-
-The supplied photo still passes all 30 expected dates, including retry after an interrupted worker. The recognition engine is unchanged: this release does not claim higher accuracy across other hospital formats or unseen photos.
-
-## Development
-
-`src/` contains ordered JavaScript and CSS sections. Run `python3 build.py` (or `npm run build`) to generate `app.js` and `style.css`. `python3 build.py --check` verifies that bundles match source. No additional hosting files or build dependency is required. Shared browser globals are retained for compatibility.
-
-124 identical superseded CSS declarations were removed; conditional rules, differing declarations and fallbacks were preserved. Six viewport comparisons were pixel-identical before/after this cleanup. Run `npm ci` and `npm test` for the 132 Node tests. Browser evidence and screenshots are in `verification/`.
+Try a complete scan → choose name → review → import on an iPhone and an Android phone, using several hospital formats. Ask nurses to complete it without coaching. Desktop browser checks and one supplied photo do not establish accuracy or usability on all phones. See `QA-REPORT.md` for measured results and the short field-test guide.

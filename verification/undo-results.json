@@ -1,0 +1,281 @@
+{
+  "manualUndo": true,
+  "reloadUndo": true,
+  "persistedUndo": true,
+  "exchangeBothRosters": true,
+  "importUndo": true,
+  "colleagueCorrection": true,
+  "tripUndo": true,
+  "statusLabels": true,
+  "nurseDayWorking": true,
+  "eidWorking": true,
+  "metrics": [
+    {
+      "count": 1,
+      "theme": "light",
+      "width": 320,
+      "bodyWidth": 320,
+      "headerOutside": [],
+      "clipped": []
+    },
+    {
+      "count": 1,
+      "theme": "dark",
+      "width": 320,
+      "bodyWidth": 320,
+      "headerOutside": [],
+      "clipped": []
+    },
+    {
+      "count": 2,
+      "theme": "light",
+      "width": 320,
+      "bodyWidth": 320,
+      "headerOutside": [],
+      "clipped": []
+    },
+    {
+      "count": 2,
+      "theme": "dark",
+      "width": 320,
+      "bodyWidth": 320,
+      "headerOutside": [],
+      "clipped": []
+    },
+    {
+      "count": 3,
+      "theme": "light",
+      "width": 320,
+      "bodyWidth": 320,
+      "headerOutside": [],
+      "clipped": []
+    },
+    {
+      "count": 3,
+      "theme": "dark",
+      "width": 320,
+      "bodyWidth": 320,
+      "headerOutside": [],
+      "clipped": []
+    },
+    {
+      "count": 4,
+      "theme": "light",
+      "width": 320,
+      "bodyWidth": 320,
+      "headerOutside": [],
+      "clipped": []
+    },
+    {
+      "count": 4,
+      "theme": "dark",
+      "width": 320,
+      "bodyWidth": 320,
+      "headerOutside": [],
+      "clipped": []
+    },
+    {
+      "count": 1,
+      "theme": "light",
+      "width": 360,
+      "bodyWidth": 360,
+      "headerOutside": [],
+      "clipped": []
+    },
+    {
+      "count": 1,
+      "theme": "dark",
+      "width": 360,
+      "bodyWidth": 360,
+      "headerOutside": [],
+      "clipped": []
+    },
+    {
+      "count": 2,
+      "theme": "light",
+      "width": 360,
+      "bodyWidth": 360,
+      "headerOutside": [],
+      "clipped": []
+    },
+    {
+      "count": 2,
+      "theme": "dark",
+      "width": 360,
+      "bodyWidth": 360,
+      "headerOutside": [],
+      "clipped": []
+    },
+    {
+      "count": 3,
+      "theme": "light",
+      "width": 360,
+      "bodyWidth": 360,
+      "headerOutside": [],
+      "clipped": []
+    },
+    {
+      "count": 3,
+      "theme": "dark",
+      "width": 360,
+      "bodyWidth": 360,
+      "headerOutside": [],
+      "clipped": []
+    },
+    {
+      "count": 4,
+      "theme": "light",
+      "width": 360,
+      "bodyWidth": 360,
+      "headerOutside": [],
+      "clipped": []
+    },
+    {
+      "count": 4,
+      "theme": "dark",
+      "width": 360,
+      "bodyWidth": 360,
+      "headerOutside": [],
+      "clipped": []
+    },
+    {
+      "count": 1,
+      "theme": "light",
+      "width": 390,
+      "bodyWidth": 390,
+      "headerOutside": [],
+      "clipped": []
+    },
+    {
+      "count": 1,
+      "theme": "dark",
+      "width": 390,
+      "bodyWidth": 390,
+      "headerOutside": [],
+      "clipped": []
+    },
+    {
+      "count": 2,
+      "theme": "light",
+      "width": 390,
+      "bodyWidth": 390,
+      "headerOutside": [],
+      "clipped": []
+    },
+    {
+      "count": 2,
+      "theme": "dark",
+      "width": 390,
+      "bodyWidth": 390,
+      "headerOutside": [],
+      "clipped": []
+    },
+    {
+      "count": 3,
+      "theme": "light",
+      "width": 390,
+      "bodyWidth": 390,
+      "headerOutside": [],
+      "clipped": []
+    },
+    {
+      "count": 3,
+      "theme": "dark",
+      "width": 390,
+      "bodyWidth": 390,
+      "headerOutside": [],
+      "clipped": []
+    },
+    {
+      "count": 4,
+      "theme": "light",
+      "width": 390,
+      "bodyWidth": 390,
+      "headerOutside": [],
+      "clipped": []
+    },
+    {
+      "count": 4,
+      "theme": "dark",
+      "width": 390,
+      "bodyWidth": 390,
+      "headerOutside": [],
+      "clipped": []
+    }
+  ],
+  "headerMetrics": [
+    {
+      "lang": "fa",
+      "tab": "today",
+      "width": 320,
+      "outside": []
+    },
+    {
+      "lang": "fa",
+      "tab": "agenda",
+      "width": 320,
+      "outside": []
+    },
+    {
+      "lang": "fa",
+      "tab": "team",
+      "width": 320,
+      "outside": []
+    },
+    {
+      "lang": "fa",
+      "tab": "set",
+      "width": 320,
+      "outside": []
+    },
+    {
+      "lang": "fa",
+      "tab": "roster",
+      "width": 320,
+      "outside": []
+    },
+    {
+      "lang": "fa",
+      "tab": "trip",
+      "width": 320,
+      "outside": []
+    },
+    {
+      "lang": "en",
+      "tab": "today",
+      "width": 320,
+      "outside": []
+    },
+    {
+      "lang": "en",
+      "tab": "agenda",
+      "width": 320,
+      "outside": []
+    },
+    {
+      "lang": "en",
+      "tab": "team",
+      "width": 320,
+      "outside": []
+    },
+    {
+      "lang": "en",
+      "tab": "set",
+      "width": 320,
+      "outside": []
+    },
+    {
+      "lang": "en",
+      "tab": "roster",
+      "width": 320,
+      "outside": []
+    },
+    {
+      "lang": "en",
+      "tab": "trip",
+      "width": 320,
+      "outside": []
+    }
+  ],
+  "errors": []
+}

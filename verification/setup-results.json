@@ -1,0 +1,30 @@
+{
+  "measurements": [
+    {
+      "width": 320,
+      "bodyWidth": 320,
+      "photoBottom": 427.65625,
+      "navTop": 501.203125,
+      "formBottom": 518.65625
+    },
+    {
+      "width": 360,
+      "bodyWidth": 360,
+      "photoBottom": 427.65625,
+      "navTop": 573.203125,
+      "formBottom": 518.65625
+    },
+    {
+      "width": 390,
+      "bodyWidth": 390,
+      "photoBottom": 413.71875,
+      "navTop": 777.203125,
+      "formBottom": 504.71875
+    }
+  ],
+  "manualSetup": true,
+  "resumeWithoutDuplication": true,
+  "foxFill": true,
+  "ocrProgress": true,
+  "errors": []
+}

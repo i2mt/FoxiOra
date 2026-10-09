@@ -1,0 +1,13 @@
+{
+  "upgrade": "v12.11 → v12.13",
+  "statePreserved": true,
+  "switches": true,
+  "theme": true,
+  "editShift": true,
+  "swap": true,
+  "tripSuggestion": true,
+  "tripBooking": true,
+  "offlineShell": true,
+  "englishDarkOverflow": false,
+  "errors": []
+}
