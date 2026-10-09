@@ -51,7 +51,7 @@ test('visual examples match rescaled D, reject N and do not learn suggestions au
  context.cv=fixture('D');
  context.mock={setParameters:async()=>{},recognize:async()=>({data:{text:'O',confidence:65}})};
  const result=await run('sc.cv=cv;recognizeShift(S.wps[0],mock,20,20,100,60)');
- assert.equal(result.text,'D');assert.equal(result.uncertain,true);assert.equal(result.confirmed,false);assert.equal(result.c,70);
+ assert.equal(result.text,'D');assert.equal(result.uncertain,false);assert.equal(result.confirmed,false);assert.equal(result.c,100);assert.equal(result.rememberedExact,true);
  assert.equal(run('memoryStore().glyphs.length'),1);
 });
 test('manual confirmation is idempotent and explicit blank is separate from off',async()=>{

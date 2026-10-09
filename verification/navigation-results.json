@@ -1,0 +1,13 @@
+{
+  "responsiveLayouts": 16,
+  "unclearList": true,
+  "previousNext": true,
+  "allDatesEditable": true,
+  "singleCorrectionUndo": true,
+  "staffListSaveUndo": true,
+  "homonymGuard": true,
+  "allSwapOptionsVisible": true,
+  "preferencesReturn": true,
+  "cancelPreview": true,
+  "errors": []
+}

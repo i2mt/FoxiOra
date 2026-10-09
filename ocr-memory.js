@@ -119,7 +119,7 @@ async function recognizePersianLeave(w,canvas){
   return check.data.text.trim()==='م'?{text:'M',c:Math.min(65,result.data.confidence,check.data.confidence),raw}:null;
 }
 // Shared by the personal-row and colleague scans. Never globally map O/0 to D.
-async function recognizeShift(w,wk,x0,y0,x1,y1){
+async function recognizeBaseShift(w,wk,x0,y0,x1,y1){
   const source=cropC(x0,y0,x1,y1,false,80),modern=glyph(x0,y0,x1,y1),legacy=legacyGlyph(x0,y0,x1,y1);
   const feature=visualFeature(modern.canvas||source),preview=cropC(x0,y0,x1,y1,false,44).toDataURL('image/jpeg',.8);
   let text='',confidence=0,raw='',uncertain=false;
@@ -157,5 +157,35 @@ async function recognizeShift(w,wk,x0,y0,x1,y1){
   const remembered=recallExample('glyphs',w.id,feature);
   const suggestion=remembered&&parse(w,remembered.label)?remembered.label:'';
   if(suggestion&&suggestion!==text){text=suggestion;confidence=70;uncertain=true}
-  return {text,c:confidence,raw,feature,img:preview,suggestion,uncertain,blank:!!(modern.blank&&legacy.blank),confirmed:false};
+  if(suggestion&&remembered.distance===0){text=suggestion;confidence=100;uncertain=false}
+  return {text,c:confidence,raw,feature,img:preview,suggestion,rememberedExact:!!(suggestion&&remembered.distance===0),uncertain,blank:!!(modern.blank&&legacy.blank),confirmed:false};
+}
+
+function knownStaffNames(w){const corrected=(S.mates||[]).filter(m=>m.wp===w.id&&(m.nameConfirmed||!m.rawName&&!m.img)).map(m=>m.name),remembered=memoryStore().names.filter(x=>x.wp===w.id).map(x=>x.label);return [...new Set([...(w.staffNames||[]),...corrected,...remembered].map(x=>x.trim()).filter(Boolean))]}
+function staffNameSuggestion(w,raw){if(S.learnOCR===false)return null;const key=nn(raw);if(key.length<6)return null;const ranks=knownStaffNames(w).map(name=>({name,key:nn(name)})).filter(x=>x.key.length>=6).map(x=>({...x,d:lev(key,x.key)/Math.max(key.length,x.key.length)})).sort((a,b)=>a.d-b.d),best=ranks[0],other=ranks.find(x=>x.key!==best?.key);if(!best||best.d>.22||(other&&other.d-best.d<.12))return null;return {label:best.name,distance:best.d}}
+
+// The ward-symbol model reads the original grayscale crop. The general model
+// retains dates/custom codes; its mask-based readings provide an independent
+// check. Expert guesses are never remembered as confirmed training labels.
+function specialistSupports(w){return (w.codes||[]).filter(c=>c.type!=='off').every(c=>/^[DENnMS]+$/.test(c.code)&&(c.aliases||[]).every(a=>/^[DENnMS]+$/.test(a)))}
+async function recognizeShift(w,wk,x0,y0,x1,y1){
+ const base=await recognizeBaseShift(w,wk,x0,y0,x1,y1);
+ if(base.rememberedExact||!specialistSupports(w)||typeof Tesseract==='undefined'||sc.expertError)return base;
+ try{
+  if(!sc.expertWk){const B=BASE();sc.expertWk=await Tesseract.createWorker('ora',1,{workerPath:B+'worker.min.js',corePath:B,langPath:B+'lang',gzip:true})}
+  const expert=sc.expertWk,cv=document.createElement('canvas');cv.width=84;cv.height=84;cv.getContext('2d').drawImage(sc.cv,x0,y0,Math.max(1,x1-x0),Math.max(1,y1-y0),0,0,84,84);await expert.setParameters({tessedit_pageseg_mode:'13',tessedit_char_whitelist:codeTokens(w)});
+  const read=await expert.recognize(cv),value=normalizeOCR(w,read.data.text),cs=value&&parse(w,value),confidence=read.data.confidence||0;
+  if(!cs||confidence<85)return base;
+  if(base.text===value&&!base.uncertain&&base.c>=80)return {...base,expert:value};
+  if(confidence<90)return base;
+  const modern=glyph(x0,y0,x1,y1),legacy=legacyGlyph(x0,y0,x1,y1),off=cs.every(c=>c.type==='off');
+  if(off&&!modern.dash&&!legacy.dash)return {...base,expert:value};
+  if(cs.some(c=>c.type==='off')&&cs.some(c=>c.type!=='off'))return base;
+  if(cs.length>1&&modern.shape&&modern.shape.bw/modern.shape.bh<1.05)return base;
+  await expert.setParameters({tessedit_pageseg_mode:'7'});const check=await expert.recognize(cv);
+  if(normalizeOCR(w,check.data.text)!==value||(check.data.confidence||0)<85)return {...base,expert:value};
+  if(base.text&&parse(w,base.text)&&base.text!==value)return {...base,c:Math.min(72,base.c),uncertain:true,expert:value};
+  if(base.suggestion&&base.suggestion!==value)return {...base,expert:value};
+  return {...base,text:value,c:Math.min(confidence,check.data.confidence),uncertain:false,expert:value};
+ }catch(e){sc.expertError=e.message;return base}
 }

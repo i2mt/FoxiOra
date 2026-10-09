@@ -1,0 +1,101 @@
+{
+  "version": "v12.15",
+  "labels": 615,
+  "splits": {
+    "validation": 62,
+    "train": 435,
+    "test": 118
+  },
+  "train_photos": [
+    "03",
+    "04",
+    "05",
+    "09",
+    "10",
+    "15",
+    "17"
+  ],
+  "validation_photos": [
+    "02"
+  ],
+  "test_photos": [
+    "13",
+    "20",
+    "original"
+  ],
+  "real_training_classes": {
+    "D": 100,
+    "-": 138,
+    "N": 79,
+    "E": 103,
+    "M": 9,
+    "DN": 3,
+    "DE": 3
+  },
+  "training_examples": 2190,
+  "synthetic_examples": 330,
+  "browser_cropped_cells": {
+    "v12.14": {
+      "total": 180,
+      "exact": 170,
+      "pending": 12,
+      "accepted": 168,
+      "wrong_accepted": 0,
+      "wrong_off": 0,
+      "photos": {
+        "02": {
+          "total": 62,
+          "exact": 58,
+          "pending": 5
+        },
+        "13": {
+          "total": 30,
+          "exact": 30,
+          "pending": 0
+        },
+        "20": {
+          "total": 58,
+          "exact": 53,
+          "pending": 6
+        },
+        "original": {
+          "total": 30,
+          "exact": 29,
+          "pending": 1
+        }
+      }
+    },
+    "v12.15": {
+      "total": 180,
+      "exact": 172,
+      "pending": 8,
+      "accepted": 172,
+      "wrong_accepted": 0,
+      "wrong_off": 0,
+      "photos": {
+        "02": {
+          "total": 62,
+          "exact": 60,
+          "pending": 2
+        },
+        "13": {
+          "total": 30,
+          "exact": 30,
+          "pending": 0
+        },
+        "20": {
+          "total": 58,
+          "exact": 53,
+          "pending": 5
+        },
+        "original": {
+          "total": 30,
+          "exact": 29,
+          "pending": 1
+        }
+      }
+    }
+  },
+  "annotation_status": "Assistant visual transcriptions, not user-reviewed",
+  "evaluation_scope": "Fixed manually located crops; excludes full-page geometry and identity correctness. Pipeline thresholds were developed against these examples; this is not a blind external benchmark."
+}
