@@ -1,31 +1,17 @@
-# FoxiOra v12.17 — monthly hours verification
+# FoxiOra v12.18 — verification
 
-Prepared 10 October 2026. This release adds monthly presence and بهره‌وری totals. It has not been deployed. No OCR weights or scanner assets changed.
-
-## Accounting
-
-Confirmed D/E duties use 1× on regular days and 1.5× on Fridays/official holidays. N/n always use 1.5×; Friday/public-holiday coincidence does not double the factor. مرخصی credits the workplace's D reference and follows the same date factor. Off credits zero. The user explicitly chose to sum each combined-shift component for بهره‌وری and apply the D holiday factor to leave. Overlapping actual presence counts once. Full overnight shifts belong to their starting month.
-
-Totals derive from current saved records and definitions, without a stored balance or migration. Personal work entries retain saved segments; colleague durations and leave reference use current definitions. All workplaces can be aggregated or filtered, independently of trip inclusion. Same-duty duplicate segments and duplicate leave records are not counted twice.
-
-Only determined shifts contribute. Partial months, pending OCR cells, missing/invalid segments, unmapped symbols and missing leave references are visible as incomplete totals. No whole-roster manual confirmation is introduced. Sick leave is unresolved until a workplace rule is chosen, or explicitly excluded. Missing lunar-year data produces an estimate label and explanation. Holiday visibility and the display weekend setting do not affect calculations.
+The month grid precedes monthly hours and selected-day controls. Shift editing opens beneath the selected day, and trip planning is reachable directly beside the calendar view controls. Repeated instructional paragraphs were trimmed across planning, hours, roster, swaps, scanning and settings.
 
 ## Automated checks
 
-**213 checks passed**: the previous 188 checks plus 25 monthly-accounting checks. New checks cover exact minute totals, regular/Friday/solar/lunar days, coinciding holidays, short n, DE/EN/En, leave and sick-leave configuration, off, custom aliases, Jalali boundaries, complete last-day nights, saved times after definition changes, duplicates, multiple workplaces, unknown/pending/missing entries, missing lunar years, 120 colleagues across six synthetic pages, live edits/deletion/serialization/Undo, within-month D swaps and cross-month N swaps, escaped names/IDs and workplace rule persistence.
-
-Build/source consistency and JavaScript syntax checks passed. App and service-worker version are v12.17; IndexedDB and verified OCR cache remain compatible.
+All 213 existing checks pass. Calendar placement expectations and cache-upgrade fixtures were updated for the requested arrangement and v12.18. Coverage includes accounting, edits, swaps, Undo, retained drafts, failed saves, scan review, imported-text escaping and verified OCR asset checksums. Generated bundles match source; app and service-worker syntax checks pass.
 
 ## Browser checks
 
-Playwright Chromium, timezone Asia/Tehran, tested **32 combinations** of 320/390 px, Persian/English, light/dark, 100%/200% text size and Gregorian/Jalali calendars. Personal summaries, expanded breakdowns and expanded colleague summaries had no page-level horizontal overflow. Enlarged text and expanded details may scroll vertically.
+Chromium in Asia/Tehran tested 32 combinations of 320/390 px, Persian/English, light/dark, 100%/200% text size and Gregorian/Jalali calendars. No page-level horizontal overflow or page errors occurred. The visible trip shortcut opens the planner with one click, search runs, and Back returns to Calendar. The grid is above totals and selected-day controls. Tapping a date, opening its editor, saving an N correction and Undo update both data and the displayed hours. The editor is mounted below the selected date.
 
-At 390 × 844 with normal text, the complete month grid and compact totals fit above bottom navigation. Interactive tests exercised expansion, ordinary shift-key editing/save/Undo, all 121 person options (self + 120 colleagues), saving a sick-leave rule, and an offline reload with identical totals. No page errors occurred.
+The suite also checks expanded breakdowns, 121 person choices (self + 120 synthetic colleagues), custom symbol-rule saves and an offline reload with unchanged totals. The normal 390 × 844 view fits the whole month grid; selected-day details and larger text can scroll vertically.
 
-The v12.16 presence suite was rerun: 32 combinations, off/no-personal-roster lookup, all 120 names, workplace isolation, search independence, unclear cells, combined duties, date/week synchronization, correction/Undo and offline reload passed. This is synthetic roster/persistence validation, not unattended OCR validation on six actual staff pages.
+## Scope
 
-Screenshots use synthetic demonstration identities. Private uploaded schedules are excluded.
-
-## Scope and limits
-
-This feature reports roster hours and specified productivity credit. It does not calculate pay, monthly required hours or individual reductions. Lunar holiday data covers 1405; calculations needing other years are estimates. Missing pages/unreadable cells cannot contribute confirmed hours. Original OCR weights and their v12.15 benchmark/limitations remain unchanged.
+This is a layout and copy update. No OCR models, training data, accounting factors or swap/trip eligibility rules changed. The seven scanner assets are included unchanged. The preserved v12.15 OCR report describes model limits. Browser viewport checks are not physical-phone testing. No deployment was performed. Screenshots use synthetic names and schedules.

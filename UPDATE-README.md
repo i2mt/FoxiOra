@@ -1,19 +1,19 @@
-# FoxiOra v12.17 — manual update
+# FoxiOra v12.18 — manual update
 
-This cumulative release adds monthly work hours and بهره‌وری for you and any saved colleague. It includes the complete app, the v12.16 کیا شیفتن؟ lookup and the trained OCR model from v12.15. It has not been deployed.
+This cumulative release puts monthly hours and selected-day editing beneath the month grid, makes trip planning visible beside the calendar view controls, and removes repeated instructions from routine screens. It includes the complete app, the v12.16 کیا شیفتن؟ lookup and the trained OCR model from v12.15. It has not been deployed.
 
 ## Install
 
 1. Export a backup from Settings.
 2. Extract the manual-update ZIP and copy its hosting files and complete `vendor/` folder into your repository/hosting, preserving paths.
-3. Reopen online and check v12.17 in Settings. Existing schedules, local corrections and backups use the same database.
+3. Reopen online and check v12.18 in Settings. Existing schedules, local corrections and backups use the same database.
 4. For offline scanning, prepare the scanner from Settings before disconnecting. The seven scanner assets and their checksums are unchanged.
 
 **Only the manual-update ZIP is needed.** The separate OCR-training archive is for training/evaluation, not hosting.
 
 ## Monthly hours
 
-Calendar → Month shows **ساعت حضور** and **با بهره‌وری**. Tap the summary for a breakdown. The workplace filter applies to both the calendar and total; All workplaces includes every workplace, including those excluded from trip planning. Actual presence counts simultaneous/overlapping saved duty minutes once. بهره‌وری is credited separately for each workplace and component.
+Calendar → Month shows the grid first, then **ساعت حضور** / **با بهره‌وری** and the selected day’s shift controls. Tap a date, then its shift or **ثبت / تغییر شیفت**. Tap the hours summary for the breakdown. **برنامه‌ریزی سفر** is always visible beside Month/Week/List/Roster and opens the planner directly. The workplace filter applies to both the calendar and total; All workplaces includes every workplace, including those excluded from trip planning. Actual presence counts simultaneous/overlapping saved duty minutes once. بهره‌وری is credited separately for each workplace and component.
 
 Calendar → جدول has an inline **ساعت کار این ماه** summary. Expand it and choose yourself or any imported colleague, across all pages. The person selector is independent of roster search, swap exclusions and the کیا شیفتن؟ selection.
 
