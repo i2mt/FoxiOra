@@ -1,0 +1,18 @@
+{
+  "version": "v12.16",
+  "layouts": 32,
+  "offUser": true,
+  "noPersonalSchedule": true,
+  "combinedDuty": true,
+  "allPages": true,
+  "all120Names": true,
+  "unclearSeparate": true,
+  "workplaceScope": true,
+  "searchIndependent": true,
+  "readOnly": true,
+  "editUndo": true,
+  "dateHeader": true,
+  "dateWeekSync": true,
+  "offlineReload": true,
+  "errors": []
+}

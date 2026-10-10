@@ -1,37 +1,39 @@
-# FoxiOra v12.15 — manual update
+# FoxiOra v12.16 — manual update
 
-This cumulative update adds a trained shift recognizer, clearer scan editing and simpler shift-change navigation. It includes the running app, exact local scanner assets, editable source, build scripts and tests. It has not been deployed.
+This cumulative update adds **کیا شیفتن؟** directly to the digital roster. It includes the complete app and the trained OCR model from v12.15. It has not been deployed.
 
 ## Install
 
 1. Export a backup from Settings.
-2. Copy all root hosting files and the complete `vendor/` folder together, preserving paths. Do not upload training crops or private roster photos into the public site.
-3. Reopen online and check v12.15 in Settings. Existing schedules and local corrections use the same database.
-4. For offline scans, open Settings → اسکن و یادآوری → آماده‌سازی اسکن آفلاین. Wait for the ready message; all seven scanner assets (about 14 MB) are verified and cached.
+2. Extract the manual-update ZIP and copy its hosting files and complete `vendor/` folder into your repository/hosting, preserving paths.
+3. Reopen online and check v12.16 in Settings. Existing schedules, local corrections and backups use the same database.
+4. For offline scanning, prepare the scanner from Settings before disconnecting. The seven scanner assets and their checksums are unchanged from v12.15.
 
-The app is already built. `src/`, `tests/`, build files, package files and documentation are developer/review files, not hosting dependencies. Keep them in your repository so rebuilding and testing remain possible. Duplicate root language models are not needed; the app reads `vendor/lang/`.
+**Only the manual-update ZIP is needed.** The separate OCR-training archive from v12.15 is for future training/evaluation and is not a hosting dependency.
 
-## Main changes
+## Who is on shift?
 
-- A trained symbol recognizer works alongside the existing English/Persian OCR. Conflicting readings remain pending; custom hospital symbols retain the general recognizer.
-- Exact matches to confirmed local symbol features can be reused; approximate matches stay suggestions. Model guesses are not automatically learned as corrections.
-- False half-column boundaries and transparent crop edges are handled more reliably.
-- Unclear scan dates have a visible list, previous/next controls, the original crop and preset correction keys. The editor appears above the full month. Every date is editable.
-- Saved unclear cells offer single-cell editing or group correction, with visible controls and Undo.
-- Shift change has one main flow and shows all suggestions without extra mode/filter tabs. Colleague preferences and the digital roster remain accessible by links.
-- An optional staff-name list in workplace settings assists conservative name suggestions. Similar names are not silently merged.
+Open Calendar → جدول (digital roster). A compact **کیا شیفتن؟** section appears above the table. Choose a date and shift; names update immediately. Tapping a date heading in the table selects that date too. The date selector covers the whole month and keeps the seven-day table preview in sync.
 
-Colleague-only multi-page import, page-wide date checking, unknown/off distinction, reciprocal N exchange, workplace preferences, trip planning, all-workplace calendar, calendar events, fox loading animation and existing theme/settings polish remain included.
+- The lookup uses every imported colleague row for the selected workplace, across all pages.
+- It works while you are off, on leave, or have no personal schedule. If you work the selected duty, you appear once with a small شما label.
+- Combined duties count: DE appears under D and E; EN appears under E and N. Custom workplace definitions and aliases are supported. A brief handover overlap is insufficient by itself; a time-based match must cover the requested duty.
+- Unknown/uncertain entries are listed separately. Off/leave entries are not asserted as working. Presence is based on saved schedules rather than real-time attendance.
+- Shift-swap restrictions and roster name search do not hide staff from this lookup. People with similar names remain distinct rows.
+- All matching names are visible, with no Show more, extra main tab or feature-opening button. Selecting a date/shift does not edit saved schedules.
+- Roster corrections, swaps and Undo refresh the lookup automatically. It works offline with saved data.
+
+## Included from v12.15
+
+The trained/general hybrid OCR, explicit unclear-date list, previous/next review controls, local correction reuse, group correction/Undo, colleague-only multi-page import and simplified shift-change screen remain included. The OCR model was not retrained in this release. `verification/v12.15-OCR-report.md` preserves the prior measured results and remaining page-geometry/Persian-name limits.
 
 ## Development
 
+The root app files are already built. Keep `src/`, `tests/`, `build.py`, `build-manifest.json`, `package.json` and `package-lock.json` in your source repository.
+
 - `npm ci`
-- `npm test` — 175 regression checks
+- `npm test` — 188 automated regression checks
 - `python3 build.py`
 - `python3 build.py --check`
 
-## Accuracy status
-
-On 180 fixed cells from photographs excluded from model training, the browser pipeline returned 172 exact codes and flagged eight for review. No wrong result was accepted as certain in that limited test. This does not measure full-page geometry or name accuracy. Several table layouts remain incomplete; reliable six-page / 100-nurse automatic import is not yet proven. See `QA-REPORT.md` for methods, corrected labels, actual workflow checks and remaining limits.
-
-Training is a completed local release step, not automatic neural retraining with every scan. The separate training archive preserves audited crops, labels, photo-level splits and reproduction scripts.
+`verification/` and the Markdown documents are review evidence, not runtime dependencies. No private staff rosters or training crops are included in the app ZIP.

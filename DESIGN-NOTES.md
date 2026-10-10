@@ -1,13 +1,11 @@
-# FoxiOra v12.15 design decisions
+# FoxiOra v12.16 — design decisions
 
-A nurse should reach a useful schedule without confirming an entire ward. Better recognition, page-wide date checking and exact confirmed local examples reduce repeated work; pending data stays visible instead of becoming off.
+Presence belongs beside the roster, where date and shift context already exists. A small inline section answers **کیا شیفتن؟**; there is no separate feature page, main button, modal or navigation tab. Date headings are selectable, and the month date selector keeps the visible week aligned.
 
-Scan editing starts with a list of every unclear date. Selecting a date reveals its photo and shift keys above the month grid. Previous/next controls skip clear and corrected cells. Every other date can still be edited directly. A saved roster has single-cell and grouped correction with Undo; its editing controls precede the complete list.
+The same wording works for a nurse who is on duty, off, on leave or checking somebody else's shift. Staff with combined duties carry their actual code as a small badge. The lookup includes everyone in imported pages for the chosen workplace, even when roster search or shift-change preferences exclude them elsewhere.
 
-Shift change has one selection flow, followed by all eligible suggestions in two sections. Colleague settings and the digital roster are secondary links. Removing duplicated navigation and filters reduces decisions without hiding results. Readable enlarged text may scroll vertically rather than shrink to fit.
+Accepted names and uncertain entries have distinct visual groups. Every result is shown. Names wrap naturally; enlarged text or unusually large teams can scroll instead of shrinking. The result is a saved-schedule lookup, so missing evidence cannot become a confident absence or presence claim.
 
-The trained specialist reads original cells; the general recognizer reads processed glyphs. Independent agreement can resolve a pending result. Clear disagreements, unsupported symbols and ambiguous identity matches remain conservative. OCR guesses do not train future guesses.
+Date/shift selections are view state only. Existing cells remain directly editable. Saved corrections and Undo refresh the names automatically. There are no AI calls or new scanner dependencies; the feature runs locally from saved schedules.
 
-Staff lists and confirmed corrections can help Persian names, but scan names are not treated as verified identities. Similar/homonymous names must remain distinct until explicitly linked.
-
-The remaining priority is page geometry and diverse independently labelled hospital templates. More tabs, more notes or blanket lower confidence thresholds would not solve that problem. The current cropped-cell results do not establish an unattended six-page import.
+The trained OCR model and v12.15 review/shift-change improvements remain intact. Table geometry, Persian names and more diverse independently labelled hospital examples remain the next OCR priorities.

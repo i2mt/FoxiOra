@@ -2,7 +2,7 @@
    Times are stored as epoch-ms segments, so old shifts keep their real times if a code is later edited. */
 const $=s=>document.querySelector(s), DAY=864e5;
 const DEF=[['N','Night','19:30-08:00'],['D','Morning','07:30-14:30'],['E','Evening','14:00-20:00'],['n','Short night','20:00-24:00'],['M','Leave','leave'],['S','Sick leave','leave'],['OFF','Day off','off'],['*','Day off','off'],['-','Day off','off']];
-const VER='v12.15';
+const VER='v12.16';
 const bootStarted=Date.now();
 const DEFAULT_COMBOS=['DE','EN','En'];
 const DS=()=>({wps:[],shifts:[],events:[],mates:[],gap:120,cal:'j',theme:'auto',lang:'fa',ver:3,myname:'',h24:true,fdow:6,cross:true,same:false,fh:2,weekend:[5],holidays:true,learnOCR:true,themePlaces:true,rosterDays:{},rosterPeriods:[],ocrMemory:{version:1,glyphs:[],names:[]}});
