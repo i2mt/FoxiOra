@@ -1,1 +1,9 @@
-Results and the regression log are included. The browser harness uses synthetic names and a local server; it does not require private roster photos. To rerun it, install Playwright with Chromium in the app or its parent directory, then run `node verification/presence-browser.cjs`. Optional FOXIORA_APP points to the app folder. Screenshots/results are written to verification. The older v12.15 OCR report records prior crop experiments and remaining geometry/name limitations; those scores were not re-measured as new OCR training in v12.16.
+# Verification evidence — FoxiOra v12.17
+
+`unit.log`: 213 passing automated checks. Run them with `npm ci` and `npm test`.
+
+`hours-results.json` and `presence-results.json`: passing Chromium browser checks. Each suite exercises 32 phone layout combinations, interactive corrections and offline reload. Test data uses synthetic names and schedules.
+
+To rerun the optional browser suites, install Playwright 1.51.1 separately (`npm install --no-save playwright@1.51.1`), install its Chromium browser (`npx playwright install chromium`), then run `node verification/hours-browser.cjs` and `node verification/presence-browser.cjs`. The scripts serve the app on local ports 8802/8803 and create screenshots/results beside themselves. Production runtime and normal unit tests do not require Playwright.
+
+`v12.15-OCR-report.md`: preserved prior model benchmark and limitations. This release did not train or reevaluate OCR. Scanner model/license notices remain in `vendor/`.

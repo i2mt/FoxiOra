@@ -1,4 +1,4 @@
-const C='foxiora-v12.16',OCR='foxiora-ocr-v1';
+const C='foxiora-v12.17',OCR='foxiora-ocr-v1';
 const F=['./','index.html','style.css','app.js','calendar-data.js','ocr-memory.js','manifest.json','icon.svg','fox-mark.svg','vendor/fonts/vazirmatn-arabic-wght-normal.woff2','vendor/fonts/vazirmatn-latin-wght-normal.woff2'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(C).then(c=>c.addAll(F)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>(k.startsWith('shiftfox-')||k.startsWith('foxiora-'))&&k!==C&&k!==OCR).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));

@@ -8,6 +8,7 @@
     "src/45-scan-review.js",
     "src/50-colleagues-swaps.js",
     "src/55-roster-presence.js",
+    "src/58-monthly-hours.js",
     "src/60-digital-roster.js",
     "src/70-startup.js"
   ],
@@ -18,6 +19,7 @@
     "src/30-inline-preferences.css",
     "src/40-clarity.css",
     "src/45-scan-review.css",
-    "src/55-roster-presence.css"
+    "src/55-roster-presence.css",
+    "src/58-monthly-hours.css"
   ]
 }

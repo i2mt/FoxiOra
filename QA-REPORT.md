@@ -1,42 +1,31 @@
-# FoxiOra v12.16 — shift presence verification
+# FoxiOra v12.17 — monthly hours verification
 
-Prepared 10 October 2026. This release adds the inline **کیا شیفتن؟** lookup to the digital roster. No OCR weights or scanner assets changed. The app has not been deployed.
+Prepared 10 October 2026. This release adds monthly presence and بهره‌وری totals. It has not been deployed. No OCR weights or scanner assets changed.
 
-## Behaviour
+## Accounting
 
-One inline section uses a date selector and shift selector. Roster date headings provide the same date selection. It queries all imported colleague rows within the chosen workplace, regardless of the user's own schedule, colleague scan page, roster name filter or swap eligibility. Exact shift components and full-duty time coverage include combined/custom duties. Off/leave and small handover overlaps are excluded. Unclear/absent codes are separately visible. Self is included once when the saved duty matches. No guessing, extra main tab, Show more or data mutation is involved.
+Confirmed D/E duties use 1× on regular days and 1.5× on Fridays/official holidays. N/n always use 1.5×; Friday/public-holiday coincidence does not double the factor. مرخصی credits the workplace's D reference and follows the same date factor. Off credits zero. The user explicitly chose to sum each combined-shift component for بهره‌وری and apply the D holiday factor to leave. Overlapping actual presence counts once. Full overnight shifts belong to their starting month.
 
-Changing workplaces retains the selected month/date and uses that workplace's definitions and people. Changing dates keeps the week preview in sync. Full-month selection and existing individual roster editing remain available. Edits and Undo re-render the results.
+Totals derive from current saved records and definitions, without a stored balance or migration. Personal work entries retain saved segments; colleague durations and leave reference use current definitions. All workplaces can be aggregated or filtered, independently of trip inclusion. Same-duty duplicate segments and duplicate leave records are not counted twice.
 
-## Automated verification
+Only determined shifts contribute. Partial months, pending OCR cells, missing/invalid segments, unmapped symbols and missing leave references are visible as incomplete totals. No whole-roster manual confirmation is introduced. Sick leave is unresolved until a workplace rule is chosen, or explicitly excluded. Missing lunar-year data produces an estimate label and explanation. Holiday visibility and the display weekend setting do not affect calculations.
 
-**188 checks passed**, including the previous 175 regression checks and 13 presence checks:
+## Automated checks
 
-- Off user and no personal roster; all colleague scan pages.
-- D/E/N/n, DE/EN/En, combined queries and overnight boundaries.
-- Custom aliases and dedicated long-duty definitions.
-- Off/leave, stale off segments, partial handover and unknown codes.
-- Pending entries separated from accepted working staff.
-- Swap restrictions and roster name search do not filter presence.
-- Workplace isolation and date/month preservation when switching.
-- One self result across multiple duties; separate ranges for disjoint duties.
-- 120 colleagues across six synthetic pages, all visible without truncation.
-- Escaped names/IDs, read-only lookup and edit/Undo refresh.
+**213 checks passed**: the previous 188 checks plus 25 monthly-accounting checks. New checks cover exact minute totals, regular/Friday/solar/lunar days, coinciding holidays, short n, DE/EN/En, leave and sick-leave configuration, off, custom aliases, Jalali boundaries, complete last-day nights, saved times after definition changes, duplicates, multiple workplaces, unknown/pending/missing entries, missing lunar years, 120 colleagues across six synthetic pages, live edits/deletion/serialization/Undo, within-month D swaps and cross-month N swaps, escaped names/IDs and workplace rule persistence.
 
-Source/build consistency and JavaScript syntax checks passed. The complete package retains all seven verified OCR assets byte-for-byte from v12.15, including `ora.traineddata.gz`.
+Build/source consistency and JavaScript syntax checks passed. App and service-worker version are v12.17; IndexedDB and verified OCR cache remain compatible.
 
-## Browser verification
+## Browser checks
 
-Playwright Chromium checked **32 layout combinations**: 320/390 px, Persian/English, light/dark, 100%/200% text size and Gregorian/Jalali calendars. The page had no horizontal overflow and all presence results remained accessible. Normal-size phone previews display the presence section above the table; enlarged text and large lists may scroll vertically.
+Playwright Chromium, timezone Asia/Tehran, tested **32 combinations** of 320/390 px, Persian/English, light/dark, 100%/200% text size and Gregorian/Jalali calendars. Personal summaries, expanded breakdowns and expanded colleague summaries had no page-level horizontal overflow. Enlarged text and expanded details may scroll vertically.
 
-Interactive tests checked date-header taps, whole-month date selection, week synchronization, workplace switching, independence from name search, saved colleague correction/Undo and uncertainty display. Four accepted E-duty colleagues include DE, EN and En, while the user is off. Staff excluded from swap suggestions still appear.
+At 390 × 844 with normal text, the complete month grid and compact totals fit above bottom navigation. Interactive tests exercised expansion, ordinary shift-key editing/save/Undo, all 121 person options (self + 120 colleagues), saving a sick-leave rule, and an offline reload with identical totals. No page errors occurred.
 
-A synthetic six-page / 120-row roster displays all 120 matching names with no personal schedule. After saving, the browser disconnected, reloaded the service-worker shell and still returned all 120 names from saved data. No page errors were recorded. This is a presence-lookup and persistence test, **not OCR validation on six real pages**.
+The v12.16 presence suite was rerun: 32 combinations, off/no-personal-roster lookup, all 120 names, workplace isolation, search independence, unclear cells, combined duties, date/week synchronization, correction/Undo and offline reload passed. This is synthetic roster/persistence validation, not unattended OCR validation on six actual staff pages.
 
-Screenshots use synthetic demonstration identities. The private uploaded roster photographs are not included.
+Screenshots use synthetic demonstration identities. Private uploaded schedules are excluded.
 
-## Limits carried forward
+## Scope and limits
 
-Presence reflects saved schedule information, not physical attendance. It cannot recover unreadable shift codes or missing colleague pages by itself. Uncertain schedules are not presented as confirmed working staff. Persian name spelling remains dependent on saved/imported/corrected names.
-
-The existing v12.15 OCR crop benchmark and limitations are preserved in `verification/v12.15-OCR-report.md`; this release does not claim new OCR accuracy or proven unattended import of 100+ nurses. The v12.15 trained model and its original license/provenance remain unchanged.
+This feature reports roster hours and specified productivity credit. It does not calculate pay, monthly required hours or individual reductions. Lunar holiday data covers 1405; calculations needing other years are estimates. Missing pages/unreadable cells cannot contribute confirmed hours. Original OCR weights and their v12.15 benchmark/limitations remain unchanged.

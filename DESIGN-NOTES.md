@@ -1,4 +1,6 @@
-# FoxiOra v12.16 — design decisions
+# FoxiOra v12.17 — design decisions
+
+Monthly hours belong beside the month they describe. A neutral, compact summary keeps actual presence and بهره‌وری distinct; a disclosure gives the arithmetic without adding a navigation tab or popup. The roster uses the same visual style with a person selector for any imported colleague. Both totals derive from live records so editing, swaps and Undo stay consistent. Unknown cells and unsupported calendar years remain visible as incomplete/estimated results.
 
 Presence belongs beside the roster, where date and shift context already exists. A small inline section answers **کیا شیفتن؟**; there is no separate feature page, main button, modal or navigation tab. Date headings are selectable, and the month date selector keeps the visible week aligned.
 
