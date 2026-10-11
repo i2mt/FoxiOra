@@ -44,7 +44,7 @@ const placeColor=id=>S.themePlaces!==false?['var(--ac)','var(--ac-alt)','var(--a
 const hm=ms=>{const d=new Date(ms);return S.h24?String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'):d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})};
 const iso=d=>{d=new Date(d);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
 const loc=()=>S.lang==='fa'?(S.cal==='j'?'fa-IR-u-ca-persian':'fa-IR-u-ca-gregory'):(S.cal==='j'?'en-GB-u-ca-persian':'en-GB');
-const weekdayShort=d=>S.lang==='fa'?['یک','دو','سه','چهار','پنج','جمعه','شنبه'][d.getDay()]:d.toLocaleDateString(loc(),{weekday:'short'});
+const weekdayShort=d=>S.lang==='fa'?['یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه','شنبه'][d.getDay()]:d.toLocaleDateString(loc(),{weekday:'short'});
 const dateText=value=>{const d=typeof value==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(value)?new Date(value+'T00:00'):new Date(value);const j=S.cal==='j'?jp(d):{d:d.getDate(),m:d.getMonth()+1,y:d.getFullYear()};return `${j.y}/${j.m}/${j.d}`};
 const dateHTML=value=>codeHTML(dateText(value));
 const dlabel=d=>new Date(d+'T00:00').toLocaleDateString(loc(),{weekday:'short'})+' · '+dateText(d);
@@ -54,3 +54,5 @@ const badge=sh=>{const review=S.shifts.find(h=>h.id===sh)?.review?'<span class="
 
 const segTxt=g=>`${codeHTML(g.code)} ${timeRange(g.s,g.e)}`;
 
+
+function weekdayLabel(d){const name=weekdayShort(d);return S.lang==='fa'&&name!=='شنبه'&&name.endsWith('شنبه')?`<span class="weekday-name">${name.slice(0,-4)}<span class="weekday-suffix">شنبه</span></span>`:`<span class="weekday-name">${esc(name)}</span>`}

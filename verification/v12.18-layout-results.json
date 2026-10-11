@@ -1,0 +1,13 @@
+{
+  "version": "v12.18",
+  "layouts": 32,
+  "calendarCompact": true,
+  "gridHoursEditorOrder": true,
+  "tripEntryVisible": true,
+  "tripOneClick": true,
+  "ownEditUndo": true,
+  "colleague120": true,
+  "symbolRuleSave": true,
+  "offlineReload": true,
+  "errors": []
+}

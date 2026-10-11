@@ -1,12 +1,12 @@
-# FoxiOra v12.18 — manual update
+# FoxiOra v12.19 — manual update
 
-This cumulative release puts monthly hours and selected-day editing beneath the month grid, makes trip planning visible beside the calendar view controls, and removes repeated instructions from routine screens. It includes the complete app, the v12.16 کیا شیفتن؟ lookup and the trained OCR model from v12.15. It has not been deployed.
+This cumulative release uses full Persian weekday names, friendlier welcome text, an inline roster view in Calendar, simpler colleague settings, and consistent FoxiOra branding. It includes the complete app, the v12.16 کیا شیفتن؟ lookup and the trained OCR model from v12.15. It has not been deployed.
 
 ## Install
 
 1. Export a backup from Settings.
 2. Extract the manual-update ZIP and copy its hosting files and complete `vendor/` folder into your repository/hosting, preserving paths.
-3. Reopen online and check v12.18 in Settings. Existing schedules, local corrections and backups use the same database.
+3. Reopen online and check v12.19 in Settings. Existing schedules, local corrections and backups use the same database.
 4. For offline scanning, prepare the scanner from Settings before disconnecting. The seven scanner assets and their checksums are unchanged.
 
 **Only the manual-update ZIP is needed.** The separate OCR-training archive is for training/evaluation, not hosting.
@@ -15,7 +15,7 @@ This cumulative release puts monthly hours and selected-day editing beneath the 
 
 Calendar → Month shows the grid first, then **ساعت حضور** / **با بهره‌وری** and the selected day’s shift controls. Tap a date, then its shift or **ثبت / تغییر شیفت**. Tap the hours summary for the breakdown. **برنامه‌ریزی سفر** is always visible beside Month/Week/List/Roster and opens the planner directly. The workplace filter applies to both the calendar and total; All workplaces includes every workplace, including those excluded from trip planning. Actual presence counts simultaneous/overlapping saved duty minutes once. بهره‌وری is credited separately for each workplace and component.
 
-Calendar → جدول has an inline **ساعت کار این ماه** summary. Expand it and choose yourself or any imported colleague, across all pages. The person selector is independent of roster search, swap exclusions and the کیا شیفتن؟ selection.
+Calendar → جدول stays in Calendar, with Month/Week/List controls still visible. It has an inline **ساعت کار این ماه** summary. Expand it and choose yourself or any imported colleague, across all pages. The person selector is independent of roster search, swap exclusions and the کیا شیفتن؟ selection.
 
 | Duty | Regular day | Friday or official public holiday |
 | --- | --- | --- |
@@ -43,8 +43,16 @@ The کیا شیفتن؟ lookup, OCR specialist/general hybrid, local correction 
 Root runtime files are already built. Keep `src/`, `tests/`, `build.py`, `build-manifest.json`, `package.json` and `package-lock.json` in your source repository.
 
 - `npm ci`
-- `npm test` — 213 automated checks
+- `npm test` — 215 automated checks
 - `python3 build.py`
 - `python3 build.py --check`
 
 `verification/` and Markdown documents are review evidence, not runtime dependencies. No private staff photos or training crops are included.
+
+## Simpler colleague settings
+
+Shift swap → Colleague preferences → tap a name. Use the inclusion switch and one shift selector: any shift, D/E/N only, single shifts only, or custom selections. Custom choices stay open while selecting several symbols. These choices preserve existing hour, weekday and temporary-date restrictions.
+
+One additional section contains maximum hours, weekday availability and temporary absence; identity linking has a direct section rather than another submenu. Active day/date restrictions appear in the colleague summary. Optional suggestions from a clear single-shift roster and schedule comparison are grouped at the bottom, with explicit wording. Existing saved rules and Undo remain supported.
+
+Full Persian weekdays wrap onto two lines in the Today strip and month headers. Larger text can scroll vertically. The welcome and loading text were written in conversational Persian. The title, installed app name, icon labels, backup filenames, private package metadata and these delivery files use **FoxiOra**. Compatibility identifiers preserve existing schedules and verified scanner assets.

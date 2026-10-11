@@ -1,17 +1,19 @@
-# FoxiOra v12.18 — verification
+# FoxiOra v12.19 — verification
 
-The month grid precedes monthly hours and selected-day controls. Shift editing opens beneath the selected day, and trip planning is reachable directly beside the calendar view controls. Repeated instructional paragraphs were trimmed across planning, hours, roster, swaps, scanning and settings.
+## Changes
+
+Full Persian weekday names in Today and month calendars, native Persian welcome/loading copy, an inline Calendar roster, simpler colleague controls and consistent FoxiOra display branding. Monthly hours, below-grid editing and visible trip access from v12.18 remain included.
 
 ## Automated checks
 
-All 213 existing checks pass. Calendar placement expectations and cache-upgrade fixtures were updated for the requested arrangement and v12.18. Coverage includes accounting, edits, swaps, Undo, retained drafts, failed saves, scan review, imported-text escaping and verified OCR asset checksums. Generated bundles match source; app and service-worker syntax checks pass.
+215 checks pass: the existing 213 plus behavior checks for separate Calendar/roster drafts and preserving unrelated restrictions when using the simplified shift selector. Rendering expectations reflect inline roster navigation and clearer preference wording. Other coverage includes scanner checksums, missing/unclear roster cells, accounting, save failures, edits, swaps, Undo, identity matching and escaped names/IDs.
+
+Generated bundles match source. App, service worker and optional verification scripts pass syntax checks. Runtime assets and the trained OCR model are unchanged.
 
 ## Browser checks
 
-Chromium in Asia/Tehran tested 32 combinations of 320/390 px, Persian/English, light/dark, 100%/200% text size and Gregorian/Jalali calendars. No page-level horizontal overflow or page errors occurred. The visible trip shortcut opens the planner with one click, search runs, and Back returns to Calendar. The grid is above totals and selected-day controls. Tapping a date, opening its editor, saving an N correction and Undo update both data and the displayed hours. The editor is mounted below the selected date.
+Chromium in Asia/Tehran tested 32 combinations of 320/390 px, Persian/English, light/dark, 100%/200% text size and Gregorian/Jalali calendars. Calendar, Today and expanded colleague settings have no page-level horizontal overflow. Enlarged native date inputs wrap into full-width rows. Eight focused checks confirm full weekday labels are not clipped in Today or the month header at both text scales.
 
-The suite also checks expanded breakdowns, 121 person choices (self + 120 synthetic colleagues), custom symbol-rule saves and an offline reload with unchanged totals. The normal 390 × 844 view fits the whole month grid; selected-day details and larger text can scroll vertically.
+Interactive checks cover visible trip entry/search/return, grid/totals/editor order, monthly edit/save/Undo, all 121 hour-person choices, custom symbol rules and an offline reload. Clicking Table keeps the Calendar header/navigation active. Personal roster-cell corrections and Undo work in the inline view. Custom colleague chips remain editable after selecting just one or no symbols. Welcome continues to setup successfully; the page title is FoxiOra.
 
-## Scope
-
-This is a layout and copy update. No OCR models, training data, accounting factors or swap/trip eligibility rules changed. The seven scanner assets are included unchanged. The preserved v12.15 OCR report describes model limits. Browser viewport checks are not physical-phone testing. No deployment was performed. Screenshots use synthetic names and schedules.
+Screenshots are internal QA using synthetic names and schedules and are not included as deliverables. These are browser viewport checks, not physical-phone testing. No new OCR accuracy claim or deployment is made.

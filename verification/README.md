@@ -1,11 +1,13 @@
-# Verification — FoxiOra v12.18
+# Verification — FoxiOra v12.19
 
-`unit.log`: 213 passing automated checks. Run `npm ci`, then `npm test`.
+`unit.log`: 215 passing checks. Run `npm ci`, then `npm test`.
 
-`layout-results.json`: this release’s passing Chromium checks, including calendar order, visible trip access, edit/save/Undo, 32 layout combinations, colleague totals, custom rules and offline reload. Screenshots use synthetic schedules.
+`layout-results.json`: 32 current layout combinations, inline roster navigation, shift selector interactions, hours/rules/save/Undo and offline persistence.
 
-To rerun the optional browser check, install Playwright 1.51.1 (`npm install --no-save playwright@1.51.1`), install Chromium (`npx playwright install chromium`), and run `node verification/layout-browser.cjs`. It serves the app on port 8803 and writes its screenshots and results here. Runtime and unit tests do not require Playwright.
+`interaction-results.json`: eight focused weekday-clipping checks, personal corrections/Undo in the inline roster, welcome-to-setup navigation and FoxiOra title.
 
-`hours-browser.cjs`, `presence-browser.cjs` and `v12.17-*-results.json` preserve previous-release browser evidence; those older results were not rerun in v12.18. Run browser scripts individually so their local servers do not conflict.
+Optional browser verification: install Playwright 1.51.1 (`npm install --no-save playwright@1.51.1`), install Chromium (`npx playwright install chromium`), then run `node verification/layout-browser.cjs` and `node verification/interaction-browser.cjs` individually. They serve ports 8804/8805 and generate internal QA screenshots and results. Browser screenshots are not release deliverables; all example identities are synthetic. Runtime and normal unit tests do not require Playwright.
 
-`v12.15-OCR-report.md` preserves the prior model benchmark and limitations. No new OCR accuracy claim is made. Scanner notices remain in `vendor/`.
+`v12.17-*-results.json`, `v12.18-layout-results.json`, `hours-browser.cjs` and `presence-browser.cjs` retain historical evidence; these older scripts were not rerun for v12.19.
+
+`v12.15-OCR-report.md` retains the original model benchmark and limitations. No model retraining or new accuracy assessment occurred.

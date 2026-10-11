@@ -1,5 +1,5 @@
 {
-  "version": "v12.18",
+  "version": "v12.19",
   "layouts": 32,
   "calendarCompact": true,
   "gridHoursEditorOrder": true,
@@ -9,5 +9,9 @@
   "colleague120": true,
   "symbolRuleSave": true,
   "offlineReload": true,
+  "inlineRoster": true,
+  "customMultiChoice": true,
+  "flatColleagueLimits": true,
+  "fullWeekdayNames": true,
   "errors": []
 }
