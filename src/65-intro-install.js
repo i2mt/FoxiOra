@@ -23,7 +23,7 @@ function renderTour(){clearTourLocks();$('#intro-card')?.remove();$('#intro-veil
  [T2('Your day, at a glance','برنامه‌ات دم دستته'),T2('Your next shift and the next seven days are right here. Tap a day to explore.','شیفت بعدی و هفت روز پیش‌رو رو اینجا می‌بینی. یه روز رو انتخاب کن.')],
  [T2('A whole month together','کل ماه، یک‌جا'),T2('Tap a date. Its shifts, editing and monthly hours are below the calendar.','روی یه روز بزن؛ شیفت‌ها، ویرایش و ساعت کار ماهانه پایین تقویمه.')],
  [T2('Who is on shift?','کیا شیفتن؟'),T2('Change the date or shift to see who is working.','تاریخ یا شیفت رو عوض کن و ببین کیا سر کارن.')],
- [T2('Try a shift swap','یه تعویض شیفت رو امتحان کن'),T2('Choose a shift, find suggestions, then preview the exchange. You can try it with this sample.','شیفتت رو انتخاب کن، پیشنهادها رو ببین و تعویض رو امتحان کن؛ این برنامه نمونه‌ست.')],
+ [T2('Try a shift swap','یه تعویض شیفت رو امتحان کن'),T2('Choose a shift, find suggestions, then preview the exchange. You can try it with this sample.','شیفتت رو انتخاب کن، پیشنهادها رو ببین و تعویض رو امتحان کن. (برنامه برای نمونه قرار داده شده است.)')],
  [T2('Make time for a trip','یه فرصت برای سفر'),T2('Choose how many days you want and find a free period.','بگو چند روز وقت می‌خوای و فرصت‌های خالیت رو پیدا کن.')],
  [T2('FoxiOra, your way','FoxiOra به سلیقهٔ خودت'),T2('Explore calendar, language, clock and shift-alert settings. Colors and light/dark mode are here too.','تقویم، زبان، ساعت و هشدار شیفت‌ها رو به دلخواهت تنظیم کن. رنگ‌ها و حالت روشن یا تیره هم اینجاست.')]
  ][tour.step],locations=['FoxiOra',T2('Today','امروز'),T2('Calendar','تقویم'),T2('Roster','جدول برنامه'),T2('Shift swap','تعویض شیفت'),T2('Trip planner','برنامهٔ سفر'),T2('Settings','تنظیمات')];

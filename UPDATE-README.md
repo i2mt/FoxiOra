@@ -1,21 +1,18 @@
-# FoxiOra v12.22 — changes-only update from v12.21
+# FoxiOra v12.23 — changes-only update from v12.22
 
-This patch updates the intro, startup installation reminder and app-update behavior. It is not deployed.
+This patch refines Settings, tutorial wording and the Calendar toolbar. It has not been deployed.
 
-- Animated depth-logo welcome with Mohammad Mahdi Taghavi's designer/developer credit.
-- Seven short tutorial stops, including an interactive sample shift swap.
-- Page transitions, focused highlights, dimming/blur and reduced-motion support.
-- Settings intro/install actions moved to the bottom. Personalization covers calendar, language, clock, alerts and appearance.
-- Natural «کیا شیفتن؟» wording and Latin version labels in both languages.
-- Larger startup logo: approximately 265 px on a 390 px phone, versus 152 px previously.
-- Startup install offer: Install, remind after seven days, or never remind again.
-- New-version popup; restart requires a click. Another open tab also waits for its own restart.
-- Open drafts/imports block an update restart. A file preview can be closed without saving.
+- Theme buttons now read Fox, Hedo, Forest, Siren from left to right, in both languages.
+- The sample swap instruction ends with «(برنامه برای نمونه قرار داده شده است.)».
+- Settings has a redesigned Telegram support button labelled «ارتباط با سازنده و پشتیبانی», showing the exact Latin handle @i_2MT.
+- Calendar has Month and Roster controls. Trip planning is a separate compact action below them, so it cannot squeeze their labels.
+- Legacy Week/List navigation falls back to Month. Day selection, editing, hours and the digital roster remain available.
+- First-run behavior remains automatic: a fresh empty installation opens the welcome/tutorial once. Finishing or skipping saves that choice; Settings can replay it later.
 
 ## Apply
 
-Use the accompanying changes-only ZIP on a repository already at v12.21. Copy the contents of its `repo-files/` folder into the repository root, preserving paths and replacing the matching files. Upload those changed files/folders, not the wrapper folder. Production bundles are already built; running a build is optional. No asset or vendor uploads are required.
+Use the changes-only ZIP on a repository already at v12.22. Copy the contents of `repo-files/` into the repository root, preserving paths. Bundles are already built. No assets, fonts, OCR models or other vendor files need uploading, and nothing needs deleting.
 
-Before updating, export a backup from Settings. For this first transition from v12.21, open online, allow the download, then close all FoxiOra tabs/app windows and reopen. Check **v12.22** at the bottom of Settings. Future releases use the new update popup.
+After deployment, wait for the new-version popup and choose Open new version when ready. If it does not appear yet, reopen the app online and let it check. Saved schedules and previous intro/install choices stay in the same database. Version labels show v12.23 using Latin characters.
 
-`READ-ME-FIRST.md` in the patch explains GitHub website uploading and Windows Explorer/CMD with Git. `INSTALLATION-NOTES.md` documents behavior, formats and limits; `QA-REPORT.md` records validation. Scanner models, artwork and schedule data formats are retained.
+See READ-ME-FIRST.md in the patch for GitHub website and Windows Explorer/CMD instructions. The QA report records the checks performed.

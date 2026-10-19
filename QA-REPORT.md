@@ -1,22 +1,18 @@
-# FoxiOra v12.22 — verification
+# FoxiOra v12.23 — verification
 
-242 distinct automated checks pass. The full 240-test suite passed after implementation. The final 27-test onboarding/import/refinement run also passed after adding month-boundary navigation and focused Settings cases, and adjusting the welcome's short-screen bounds. Build consistency and JavaScript syntax checks pass.
+242 existing automated checks pass. Generated bundles match their editable sources; app and service-worker syntax checks pass.
 
-New coverage verifies settings action order, Latin version labels, all seven tour stops, designer credit, natural Persian lookup wording, sample swap suggestions/preview/execution, isolated demo state, broader personalization, install snooze/never/installed behavior, failed preference saves, explicit update approval, no automatic controller-change reload, draft protection, worker activation messages and month-boundary sample dates.
+Focused Chromium browser checks passed with no JavaScript errors:
 
-Chromium 138 browser checks passed with no JavaScript errors:
+- A fresh empty installation automatically opens the tutorial. Skipping persists, suppresses it after reload, and Settings replay still works.
+- The revised sample instruction is parenthesized as requested. The live sample swap still produces suggestions.
+- Theme buttons appear physically left to right as Fox, Hedo, Forest, Siren in Persian and English. Theme selection saves.
+- The support card has the requested Persian label, links to Telegram, and retains the exact Latin handle @i_2MT.
+- Calendar has exactly two mode controls, Month and Roster. Trip planning sits on a separate row, opens its planner, and does not squeeze either mode label.
+- Legacy Week/List modes fall back to Month. Day selection and its editing controls remain available.
+- 24 Settings and 48 Calendar/Roster layout cases cover 320, 390 and 430 px, Persian/English, light/dark, and 100%/200% base text size. No horizontal page overflow; mode labels are not clipped and the trip target is at least 44 px high.
+- Reloading offline preserves schedules and the new Calendar layout without reopening the completed intro.
 
-- Large startup logo (265.1875 px at 390 px viewport).
-- Animated branded welcome, seven live app stops and an interactive sample reciprocal swap, without sample writes to IndexedDB.
-- Settings actions below all settings groups, with Latin version labels.
-- Startup installation offer and persistent Never preference.
-- A real service-worker update from v12.22 to a simulated v12.23 waits, shows its version, can be deferred and only restarts on approval.
-- A second open tab retains its current version until its own restart approval.
-- Unsaved import data prevents restarting.
-- Existing preferences survive an offline reload; declined installation prompts stay hidden.
-- 49 responsive tour views: 320×568, 390×844 and 844×390 in light/dark modes, plus 320 px at 200% base font size. No horizontal page overflow; normal-size panels stay inside the viewport.
-- Reduced-motion mode disables intro animations.
+Calendar, theme and support screenshots were inspected locally. Screenshots are not included in the patch. Testing used a desktop Chromium mobile viewport, not physical phone hardware. This release retains the previously verified manual update and install-prompt behavior. Schedules, OCR readers, approved artwork and storage formats are unchanged.
 
-Settled welcome, Settings and swap-preview screens were visually inspected. QA screenshots remain local and are not part of the update. Existing OCR, import readers and approved depth artwork are unchanged. Native installation on a physical iPhone/Android device was not performed; device detection and guide logic are covered by the existing tests and linked primary documentation.
-
-The old v12.21 client cannot show UI that it did not contain. Its first transition to this release requires closing all app windows once after the worker downloads. New workers no longer force activation or a page reload. Later updates use the new controlled flow.
+The changes-only ZIP is verified against v12.22: every changed repository file is included, unchanged assets/vendor files are omitted, and per-file old/new hashes are listed in PATCH-MANIFEST.json. No repository files need deleting.

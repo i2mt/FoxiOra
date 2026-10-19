@@ -50,3 +50,7 @@ PDFs with up to 12 pages are rendered locally into the existing scanner and phot
 - PDF.js 4.10.38 legacy distribution, Apache 2.0, with bundled font/CMap notices; https://mozilla.github.io/pdf.js/examples/
 
 PDF JavaScript evaluation and XFA are disabled. No file parser uses a remote CDN at runtime. Include the entire `vendor/file-import/` folder when updating hosting. The host must serve `.mjs` as JavaScript.
+
+## Settings and Calendar (v12.23)
+
+Theme buttons have a fixed physical order from the left: Fox, Hedo, Forest, Siren. The support card displays «ارتباط با سازنده و پشتیبانی» and the exact Latin Telegram handle @i_2MT. Calendar offers Month and Roster, with a separate compact trip-planning action below them. Week/List are no longer exposed in Calendar; old transient modes settle on Month. Shift editing and monthly hours remain below the grid.
