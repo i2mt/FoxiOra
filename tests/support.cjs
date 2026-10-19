@@ -10,7 +10,8 @@ function app(options={}){
  const create=document.createElement.bind(document);
  document.createElement=(tag)=>tag==='canvas'?createCanvas(1,1):create(tag);
  const dlg=document.querySelector('#dlg');dlg.open=false;dlg.showModal=()=>dlg.open=true;dlg.close=()=>dlg.open=false;
- const context=vm.createContext({document,NodeFilter:{SHOW_TEXT:4},Intl,Date,console,setTimeout,clearTimeout,URL,Uint8Array,Uint32Array,Int32Array,Float64Array,Math,Map,Set,indexedDB:options.indexedDB,navigator:{},location:{href:'http://localhost/'},window:{},alert:()=>{},confirm:()=>true,prompt:()=>null});
+ const ClockDate=options.now===undefined?Date:class extends Date{constructor(...args){super(...(args.length?args:[options.now]))}static now(){return options.now}};
+ const context=vm.createContext({document,NodeFilter:{SHOW_TEXT:4},Intl,Date:ClockDate,console,setTimeout,clearTimeout,URL,Uint8Array,Uint32Array,Int32Array,Float64Array,Math,Map,Set,indexedDB:options.indexedDB,navigator:{},location:{href:'http://localhost/'},window:{},alert:()=>{},confirm:()=>true,prompt:()=>null});
  for(const file of ['calendar-data.js','ocr-memory.js','app.js']){
   let source=fs.readFileSync(file==='app.js'&&options.source?options.source:path.join(root,file),'utf8');
   if(file==='app.js')source=source.slice(0,source.indexOf('(async()=>{try{loadingProgress(12,'));
