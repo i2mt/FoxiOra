@@ -1,0 +1,20 @@
+{
+  "version": "v12.20",
+  "layouts": 8,
+  "progressOrangePixels": [
+    0,
+    1800,
+    3597,
+    5278,
+    6968
+  ],
+  "clockwiseFromTop": true,
+  "whiteStartup": true,
+  "reducedMotion": true,
+  "depthArtworkEverywhere": true,
+  "darkCenterWhiteFeatures": true,
+  "systemDarkAndManualLight": true,
+  "offlineBrandAssets": 9,
+  "scannerProgress": true,
+  "errors": []
+}

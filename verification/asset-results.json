@@ -1,0 +1,16 @@
+{
+  "productionFilesMatched": {
+    "foxiora-32.png": "icons/white/foxiora-32.png",
+    "foxiora-180.png": "icons/white/foxiora-180.png",
+    "foxiora-192.png": "icons/white/foxiora-192.png",
+    "foxiora-512.png": "icons/white/foxiora-512.png",
+    "foxiora-dark-32.png": "icons/dark/foxiora-32.png",
+    "foxiora-dark-180.png": "icons/dark/foxiora-180.png",
+    "foxiora-mark-light.png": "icons/transparent/foxiora-512.png",
+    "foxiora-mark-dark.png": "icons/dark-transparent/foxiora-512.png",
+    "foxiora-maskable-192.png": "web/maskable-192.png",
+    "foxiora-maskable-512.png": "web/maskable-512.png"
+  },
+  "whiteIcons": true,
+  "maskableSafeArea": true
+}

@@ -1,0 +1,23 @@
+✔ strict dates reject rollover and ambiguous dates, accept Persian digits and Jalali (32.531997ms)
+✔ wide roster detection handles preamble, preserves unknown blanks and maps symbols (9.413893ms)
+✔ day numbers require month confirmation and invalid dates still block (3.661927ms)
+✔ duplicate people, duplicate dates and conflicting long rows are rejected (9.52628ms)
+✔ long roster format deduplicates equal cells and keeps all people (3.370263ms)
+✔ file import updates matching cells, preserves colleague settings, supports undo and repeat (48.439378ms)
+✔ failed file save restores state and keeps preview for retry (8.041581ms)
+✔ colleagues-only imports preserve personal schedule and coverage (17.292706ms)
+✔ tour restores actual state and UI, only appearance preferences and completion persist (104.377924ms)
+✔ platform-specific install instructions detect iPad and embedded browsers (3.600285ms)
+✔ sample state is blocked at the persistence boundary (11.185947ms)
+✔ file values are escaped in preview and mapping actions (10.087845ms)
+✔ Excel serial headers respect both workbook date systems (91.836847ms)
+✔ UTF-8 and BOM-marked UTF-16 retain Persian names and uncoerced date text (3.110386ms)
+✔ reimport updates dates without duplicating people or coverage periods (34.287379ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5754.304584
