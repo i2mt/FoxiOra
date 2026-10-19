@@ -10,6 +10,8 @@
     "src/55-roster-presence.js",
     "src/58-monthly-hours.js",
     "src/60-digital-roster.js",
+    "src/62-file-import.js",
+    "src/65-intro-install.js",
     "src/70-startup.js"
   ],
   "style.css": [
@@ -20,6 +22,8 @@
     "src/40-clarity.css",
     "src/45-scan-review.css",
     "src/55-roster-presence.css",
-    "src/58-monthly-hours.css"
+    "src/58-monthly-hours.css",
+    "src/80-brand-assets.css",
+    "src/85-intro-import.css"
   ]
 }

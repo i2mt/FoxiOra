@@ -1,11 +1,9 @@
-# FoxiOra v12.19 — design decisions
+# FoxiOra v12.20 — depth artwork integration
 
-Full weekday names use two lines where necessary instead of abbreviations. This preserves legibility in seven columns while allowing enlarged text to grow. Welcome copy uses short, natural Persian with one clear action.
+Use the production artwork recommended in the corrected user-supplied pack. Installed icons retain the white background. In-app marks use the light transparent or dark-transparent depth PNG so they sit naturally on the current surface. The dark mark keeps both its outside and centre dark, making the white ears and nose visible. The approved orange shading and symmetrical white tip are preserved.
 
-The digital roster is a Calendar view. Its month, workplace, search, date and person selections remain available; Month/Week/List/Roster and trip planning stay visible. Month and roster editors retain separate drafts so switching views does not insert the wrong correction form. The existing roster renderer remains usable for backward-compatible entry points.
+A shared theme variable selects artwork for the welcome card, setup, settings footer, startup and scan progress. Light/Dark/System choices continue to work. The startup canvas also follows the selected appearance.
 
-Colleague settings start with two decisions: whether to suggest the person, and which shifts they accept. A single selector replaces the preset button row. Custom chips remain open when the selection shrinks to one or zero codes. Selecting a shift mode preserves exclusion, duration, weekday and temporary-date restrictions; Undo still restores the previous rules.
+The supplied loader’s orange-only geometry is reused as a small SVG mask. Layered production PNGs retain the real image shading while the colour reveal starts at 12 o’clock and moves clockwise. Progress remains tied to existing startup/scanner values; reduced motion shows the finished artwork. This avoids duplicating megabytes of embedded image data in every rendered loader.
 
-Occasional limits share one disclosure with flat fields. Name linking no longer adds a nested disclosure. Active day/date limits appear in each person’s summary. Optional inference from a clear single-shift roster is described in ordinary words, not as automatic patterns, and stays out of the main flow.
-
-User-visible branding is FoxiOra across startup, welcome, installation, icons, settings, backups, private package metadata and documentation. Existing database/cache compatibility identifiers remain so upgrades retain saved data and prepared scanner assets. No OCR weights or accounting rules changed.
+PWA, Apple touch, favicon and maskable assets are supplied production exports. Compatibility SVG paths embed the same production images. Brand assets are cached offline along with the app shell. Database identity, saved schedules and OCR weights remain unchanged.

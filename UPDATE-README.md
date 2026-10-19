@@ -1,12 +1,14 @@
-# FoxiOra v12.19 — manual update
+# FoxiOra v12.21 — manual update
 
-This cumulative release uses full Persian weekday names, friendlier welcome text, an inline roster view in Calendar, simpler colleague settings, and consistent FoxiOra branding. It includes the complete app, the v12.16 کیا شیفتن؟ lookup and the trained OCR model from v12.15. It has not been deployed.
+This cumulative release adds a short interactive introduction, phone/browser-specific installation help, and local Excel/CSV/TSV schedule import. PDFs open in the existing photo-review workflow. It retains the corrected depth artwork and all previous roster, monthly hours, trip and OCR improvements. It has not been deployed.
+
+Settings has **آشنایی با برنامه** (replay intro) and **نصب FoxiOra**. Initial schedule setup and Add schedule now offer a file alongside photos. Structured imports require row selection and validation of dates and unfamiliar shift symbols. See `INSTALLATION-NOTES.md` for formats and limits.
 
 ## Install
 
 1. Export a backup from Settings.
-2. Extract the manual-update ZIP and copy its hosting files and complete `vendor/` folder into your repository/hosting, preserving paths.
-3. Reopen online and check v12.19 in Settings. Existing schedules, local corrections and backups use the same database.
+2. Extract the manual-update ZIP and copy its hosting files and complete `assets/` and `vendor/` folders (including `vendor/file-import/`) into your repository/hosting, preserving paths.
+3. Reopen online and check v12.21 in Settings. Existing schedules, local corrections and backups use the same database.
 4. For offline scanning, prepare the scanner from Settings before disconnecting. The seven scanner assets and their checksums are unchanged.
 
 **Only the manual-update ZIP is needed.** The separate OCR-training archive is for training/evaluation, not hosting.
@@ -56,3 +58,11 @@ Shift swap → Colleague preferences → tap a name. Use the inclusion switch an
 One additional section contains maximum hours, weekday availability and temporary absence; identity linking has a direct section rather than another submenu. Active day/date restrictions appear in the colleague summary. Optional suggestions from a clear single-shift roster and schedule comparison are grouped at the bottom, with explicit wording. Existing saved rules and Undo remain supported.
 
 Full Persian weekdays wrap onto two lines in the Today strip and month headers. Larger text can scroll vertically. The welcome and loading text were written in conversational Persian. The title, installed app name, icon labels, backup filenames, private package metadata and these delivery files use **FoxiOra**. Compatibility identifiers preserve existing schedules and verified scanner assets.
+
+## Depth artwork
+
+The supplied `icons/white/` files are the installed app icon and Apple touch icon. The supplied maskable exports retain their safe area. Light screens use the production transparent depth PNG; dark screens use dark-transparent artwork with white ears and nose and a dark centre. Appearance follows Light/Dark/System settings.
+
+The startup and scanner logos stay still while the orange body reveals clockwise from the top as progress advances. The ears, face and symmetrical white tail marking remain visible. Reduced motion displays the completed artwork. Both themes are cached with the app shell for offline use.
+
+`ASSET-NOTICE.md` records exact file choices and the progress-mask source. This release uses the corrected pack (2); none of the earlier simplified-gradient exports are used. The 512 px PNGs preserve the approved shading. The compatibility SVG files embed these production PNGs and are not claimed to be pure vector.
