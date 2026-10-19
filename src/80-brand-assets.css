@@ -14,3 +14,7 @@
 .welcome-card .welcome-fox{width:88px;height:88px}.setup-title .fox-mark{width:40px;height:40px}.creator-brand .fox-mark{width:32px;height:32px}.scan-fox{width:72px;height:72px}
 @media(max-height:650px){.loading-screen{padding:16px}.loading-fox{width:120px;height:120px}.loading-content footer{margin-top:16px}}
 @media(prefers-reduced-motion:reduce){.loading-fox,.loading-fox-fill,.loading-line::after{transition:none;animation:none}.loading-fox-fill.fox-mark{-webkit-mask:none;mask:none}}
+
+/* Large launch mark; scanner marks keep their compact size. */
+.loading-screen .loading-content{max-width:360px}.loading-screen .loading-fox{width:clamp(220px,68vw,300px);height:clamp(220px,68vw,300px);max-width:100%;max-height:300px}.loading-screen .loading-content>small{direction:ltr;unicode-bidi:isolate}
+@media(max-height:650px){.loading-screen .loading-fox{width:min(44vh,220px);height:min(44vh,220px)}.loading-screen .loading-content footer{margin-top:14px}.loading-screen .loading-content>p{margin-bottom:12px}}

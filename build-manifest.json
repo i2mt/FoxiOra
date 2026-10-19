@@ -12,6 +12,7 @@
     "src/60-digital-roster.js",
     "src/62-file-import.js",
     "src/65-intro-install.js",
+    "src/66-app-updates.js",
     "src/70-startup.js"
   ],
   "style.css": [

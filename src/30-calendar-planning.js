@@ -6,7 +6,7 @@ const FA={'Import file':'فایل برنامه','Get started':'شروع کار',
 const KEYS=Object.keys(FA).sort((a,b)=>b.length-a.length), PD='۰۱۲۳۴۵۶۷۸۹';
 const AD='٠١٢٣٤٥٦٧٨٩',nrm=t=>t.replace(/[۰-۹٠-٩]/g,d=>PD.indexOf(d)>=0?PD.indexOf(d):AD.indexOf(d));
 function tr(root){if(S.lang!=='fa')return;const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);let n;
-  while(n=w.nextNode()){if(n.parentNode.tagName==='TEXTAREA')continue;let v=n.nodeValue;for(const k of KEYS)v=v.split(k).join(FA[k]);n.nodeValue=v.replace(/\d/g,d=>PD[d])}}
+  while(n=w.nextNode()){if(n.parentNode.tagName==='TEXTAREA'||n.parentElement.closest('[data-latin],.version-badge'))continue;let v=n.nodeValue;for(const k of KEYS)v=v.split(k).join(FA[k]);n.nodeValue=v.replace(/\d/g,d=>PD[d])}}
 function isolateMixed(root){
   if(!root)return;const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT),nodes=[];let node;
   while(node=walker.nextNode())if(!node.parentElement.closest('bdi,textarea,option,script,style,input,[dir=ltr],.ltr'))nodes.push(node);

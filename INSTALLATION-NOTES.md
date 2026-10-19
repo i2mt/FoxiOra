@@ -2,7 +2,9 @@
 
 ## Quick intro
 
-An empty first installation automatically opens a five-stop tour: Today, Calendar, the colleague lookup in the roster, Trip planning, and Settings. It uses a clearly marked sample schedule. Explore dates, colleague shifts, trip duration and theme controls. Skip is always available. Appearance choices carry over; sample shifts, names and events never enter the database. Completing the tour opens workplace setup. Existing users can replay it in Settings → آشنایی با برنامه.
+An empty first installation opens an animated FoxiOra welcome with the approved depth logo and Mohammad Mahdi Taghavi's designer/developer credit. Seven short stops cover the welcome, Today, Calendar, colleague lookup, shift swapping, Trip planning and Settings. Transitions, a location label, a progress strip, dimming and selective blur make navigation clear. Highlighted controls are usable. Reduced-motion preferences disable animations.
+
+The roster is explicitly labelled as a sample. Users can find swap suggestions, preview a reciprocal exchange and try it. This changes only the isolated sample state: no sample shifts, colleague names, history or OCR examples enter storage. Calendar, language, clock, alert and appearance choices can carry over. Skip is always available. Completing the intro opens workplace setup. Replay and install actions are at the bottom of Settings, above the developer footer. Existing schedules and unsaved drafts are restored after replay.
 
 ## Install help
 
@@ -12,6 +14,23 @@ Installation references checked 2026-10-18:
 
 - https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Guides/Installing
 - https://support.apple.com/guide/iphone/bookmark-a-website-iph42ab2f3a7/ios
+
+## Startup install reminder
+
+Browser users see an installation offer on startup, after the first-time tour when applicable. Install opens the browser's native prompt if available, otherwise the device-specific instructions. Later snoozes the offer for seven days; Never persists that choice. Closing the offer or pressing Escape acts as Later. Installed standalone windows do not get the offer. Settings keeps a manual installation action regardless of reminder preference. An update notice takes priority over install reminders.
+
+## User-controlled updates
+
+New service workers download and wait. A new-version popup offers opening the new version or Later. There is no automatic page reload on controller change. Accepting updates sends an explicit activation message, then reloads only the approving page. Other open pages offer a separate restart. Open imports, scan reviews and inline drafts block restarting until they are finished or closed. Later leaves the current view intact and keeps an update button at the bottom of Settings. Startup, focus and return to the foreground check for updates.
+
+The v12.21 client predates this notice UI. For the first transition to v12.22, open online, allow the new worker to download, then close every FoxiOra tab/app window and reopen. The waiting worker does not force a restart. Once v12.22 is running, subsequent updates use the popup.
+
+Primary references checked 2026-10-19:
+
+- https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
+- https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerGlobalScope/skipWaiting
+- https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeinstallprompt_event
+- https://developer.mozilla.org/en-US/docs/Web/API/BeforeInstallPromptEvent/prompt
 
 ## Schedule files
 

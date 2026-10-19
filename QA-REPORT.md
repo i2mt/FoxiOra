@@ -1,21 +1,22 @@
-# FoxiOra v12.21 — verification
+# FoxiOra v12.22 — verification
 
-230 distinct automated checks pass: 215 existing regression checks and 15 onboarding/import checks. The complete 227-test suite passed after implementation; the three additional import tests passed in the final 15-test import run. Build consistency and JavaScript syntax checks pass.
+242 distinct automated checks pass. The full 240-test suite passed after implementation. The final 27-test onboarding/import/refinement run also passed after adding month-boundary navigation and focused Settings cases, and adjusting the welcome's short-screen bounds. Build consistency and JavaScript syntax checks pass.
 
-New coverage includes strict Gregorian/Jalali dates, invalid dates, month confirmation, Excel 1900/1904 serial dates, wide/long roster layouts, duplicate/conflicting entries, unknown symbols, UTF-8/UTF-16 Persian text, escaped file values, personal/colleague-only import, preserved colleague preferences, Undo, repeated import, failed-save rollback, tour isolation, preference persistence, and install-platform detection.
+New coverage verifies settings action order, Latin version labels, all seven tour stops, designer credit, natural Persian lookup wording, sample swap suggestions/preview/execution, isolated demo state, broader personalization, install snooze/never/installed behavior, failed preference saves, explicit update approval, no automatic controller-change reload, draft protection, worker activation messages and month-boundary sample dates.
 
-Chromium browser checks verified:
+Chromium 138 browser checks passed with no JavaScript errors:
 
-- Empty installation automatically opens the five real app views in the tour.
-- Sample state never enters IndexedDB; selected theme settings persist after completion.
-- Tour completion opens setup; replay and skip restore existing schedules and an unsaved file preview.
-- Real XLSX, legacy XLS and CSV files import through the visible UI; repeated imports retain one colleague.
-- CSV invalid dates remain invalid, Persian text is retained, and unknown shift symbols can be mapped.
-- Excel import works after an offline reload, using the precached parser.
-- A two-page PDF renders locally while offline and hands two PNG pages to the scanner boundary. This test isolates PDF rendering; OCR accuracy is covered by the existing scanner tests and still requires user review.
-- 20 tour layout combinations at 320/390 px, light/dark themes, have no horizontal page overflow.
-- No browser JavaScript errors.
+- Large startup logo (265.1875 px at 390 px viewport).
+- Animated branded welcome, seven live app stops and an interactive sample reciprocal swap, without sample writes to IndexedDB.
+- Settings actions below all settings groups, with Latin version labels.
+- Startup installation offer and persistent Never preference.
+- A real service-worker update from v12.22 to a simulated v12.23 waits, shows its version, can be deferred and only restarts on approval.
+- A second open tab retains its current version until its own restart approval.
+- Unsaved import data prevents restarting.
+- Existing preferences survive an offline reload; declined installation prompts stay hidden.
+- 49 responsive tour views: 320×568, 390×844 and 844×390 in light/dark modes, plus 320 px at 200% base font size. No horizontal page overflow; normal-size panels stay inside the viewport.
+- Reduced-motion mode disables intro animations.
 
-QA screenshots were inspected locally and are not included in this package. Browser scripts and text results are in `verification/`. Actual iPhone/Android native installation was not performed; the device guidance follows the linked Apple/MDN documentation, and platform detection is unit-tested.
+Settled welcome, Settings and swap-preview screens were visually inspected. QA screenshots remain local and are not part of the update. Existing OCR, import readers and approved depth artwork are unchanged. Native installation on a physical iPhone/Android device was not performed; device detection and guide logic are covered by the existing tests and linked primary documentation.
 
-The service-worker activation check preserves the existing OCR cache while replacing older app-shell caches. The seven OCR vendor assets remain unchanged. The approved v12.20 artwork is retained unchanged. All new file readers are vendored, licensed and cached for offline use; PDF OCR still needs scanner preparation in Settings.
+The old v12.21 client cannot show UI that it did not contain. Its first transition to this release requires closing all app windows once after the worker downloads. New workers no longer force activation or a page reload. Later updates use the new controlled flow.
