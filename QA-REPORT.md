@@ -1,18 +1,18 @@
-# FoxiOra v12.23 — verification
+# FoxiOra v12.24 — verification
 
-242 existing automated checks pass. Generated bundles match their editable sources; app and service-worker syntax checks pass.
+46 existing focused checks pass: 34 preferences/refinement checks and 12 UI/service-worker checks. Generated bundles match source, and app/service-worker syntax checks pass.
 
-Focused Chromium browser checks passed with no JavaScript errors:
+Chromium browser checks verified 64 Settings layout combinations: 320/390 px widths, Persian/English, light/dark mode, all four color themes, and 100%/200% text size. There is no horizontal page overflow.
 
-- A fresh empty installation automatically opens the tutorial. Skipping persists, suppresses it after reload, and Settings replay still works.
-- The revised sample instruction is parenthesized as requested. The live sample swap still produces suggestions.
-- Theme buttons appear physically left to right as Fox, Hedo, Forest, Siren in Persian and English. Theme selection saves.
-- The support card has the requested Persian label, links to Telegram, and retains the exact Latin handle @i_2MT.
-- Calendar has exactly two mode controls, Month and Roster. Trip planning sits on a separate row, opens its planner, and does not squeeze either mode label.
-- Legacy Week/List modes fall back to Month. Day selection and its editing controls remain available.
-- 24 Settings and 48 Calendar/Roster layout cases cover 320, 390 and 430 px, Persian/English, light/dark, and 100%/200% base text size. No horizontal page overflow; mode labels are not clipped and the trip target is at least 44 px high.
-- Reloading offline preserves schedules and the new Calendar layout without reopening the completed intro.
+Verified behavior:
 
-Calendar, theme and support screenshots were inspected locally. Screenshots are not included in the patch. Testing used a desktop Chromium mobile viewport, not physical phone hardware. This release retains the previously verified manual update and install-prompt behavior. Schedules, OCR readers, approved artwork and storage formats are unchanged.
+- Support card immediately precedes tutorial/install actions; the footer follows those actions.
+- Footer is stacked as logo and FoxiOra, Latin v12.24, and the designer/developer credit with the exact name Mohammad Mahdi Taghavi.
+- Telegram label, destination and Latin @i_2MT are retained.
+- Clicking an expanded section colors the title with the theme's readable accent and applies a subtle tinted background.
+- Theme selection still saves and keeps the section expanded.
+- Offline reload retains preferences and the new order, with no browser JavaScript errors.
 
-The changes-only ZIP is verified against v12.22: every changed repository file is included, unchanged assets/vendor files are omitted, and per-file old/new hashes are listed in PATCH-MANIFEST.json. No repository files need deleting.
+Light/dark Settings screenshots were inspected locally and are not included in the patch. Browser checks use Chromium mobile viewports, not physical phones. No new OCR, calendar, import or schedule-storage behavior is introduced.
+
+The changes-only patch is verified against v12.23 and contains every changed repository file. Unchanged artwork, fonts, models and vendor files are omitted. No deletions are required.
