@@ -28,6 +28,16 @@ function issues(){const out=[],active=[];let latest=null;for(const g of segs()){
  if(S.cross)for(const a of active)if(a.wp!==g.wp)out.push({t:'o',a,b:g,min:(Math.min(a.e,g.e)-g.s)/6e4});
  if(latest&&g.s>=latest.e&&(g.s-latest.e)/6e4<S.gap&&latest.sh!==g.sh)out.push({t:'g',a:latest,b:g,min:(g.s-latest.e)/6e4});
  if(!latest||g.e>latest.e)latest=g;active.push(g)}return out}
+// Real saved obligations are checked regardless of alert or calendar-display preferences.
+function personalScheduleConflicts(proposed,{workplace='',date='',excludeShift='',rest=true}={}){
+ const others=S.shifts.filter(h=>h.id!==excludeShift&&!(h.wp===workplace&&h.date===date)).flatMap(h=>h.segs.map(g=>({...g,wp:h.wp,name:wp(h.wp).name,kind:'work'}))),out=[];
+ for(const g of [...others,...S.events.map(e=>({...e,name:e.title||T2('Personal plan','برنامهٔ شخصی'),kind:'event'}))])if(proposed.some(p=>g.s<p.e&&p.s<g.e))out.push(g);
+ if(rest&&proposed.length){const start=Math.min(...proposed.map(p=>p.s)),end=Math.max(...proposed.map(p=>p.e));for(const g of others)if(!out.includes(g)&&((g.e<=start&&start-g.e<S.gap*6e4)||(g.s>=end&&g.s-end<S.gap*6e4)))out.push({...g,kind:'rest'})}
+ return out;
+}
+function scheduleConflictText(c){return (c.kind==='rest'?T2('Short break near ','استراحت کوتاه در کنار '):T2('Overlaps with ','تداخل با '))+(c.name||T2('another shift','شیفت دیگر'))+' · '+dateText(c.s)+' '+hm(c.s)+' – '+hm(c.e)}
+function renderShiftConflicts(){const node=$('#shift-conflicts'),field=$('#fw');if(!node||!field)return;const w=wp(field.value),date=dGet('fd'),codes=parse(w,nrm($('#fc').value.trim()));if(!date||!codes){node.innerHTML='';return}const conflicts=personalScheduleConflicts(makeSegs(date,codes),{workplace:w.id,date,excludeShift:editingShift});node.innerHTML=conflicts.length?`<b>${T2('Check these conflicts','این تداخل‌ها را بررسی کن')}</b>${conflicts.map(c=>`<p>${esc(scheduleConflictText(c))}</p>`).join('')}`:'';node.hidden=!conflicts.length;isolateMixed(node)}
+
 // The Today card follows a continuous combined duty until its final end time.
 function displaySegs(){return S.shifts.flatMap(h=>{const sorted=h.segs.map(g=>({...g,wp:h.wp,sh:h.id})).sort((a,b)=>a.s-b.s),out=[];for(const g of sorted){const last=out.at(-1);if(last&&g.s<=last.e){last.e=Math.max(last.e,g.e);last.code=canonicalShift(wp(h.wp),h.text);last.aggregate=true}else out.push({...g})}return out}).sort((a,b)=>a.s-b.s)}
 const wp=id=>S.wps.find(w=>w.id===id)||{name:'?',color:'#888'};

@@ -72,7 +72,7 @@ test('all main views render for Persian/English and full month boundaries',async
  run("S.lang='fa';S.cal='j';cm=fromJ(1405,7,1);tab='agenda';vm='month';render()");
  assert.equal(document.querySelectorAll('.cell').length,30);
  assert.equal(document.querySelectorAll('.holiday').length>3,true);
- assert.ok(document.querySelector('.free-window bdi[dir=ltr]'));
+ assert.ok(document.querySelector('.calendar-trip'));assert.equal(document.querySelector('#free-minimum'),null);
  run("cm=fromJ(1404,12,1);mv(1)");assert.equal(run('jp(cm).m'),1);assert.equal(run('jp(cm).y'),1405);
  run("S.cal='g';cm=new Date(2026,1,1);render()");assert.equal(document.querySelectorAll('.cell').length,28);
 });

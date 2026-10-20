@@ -54,3 +54,15 @@ PDF JavaScript evaluation and XFA are disabled. No file parser uses a remote CDN
 ## Settings and Calendar (v12.23)
 
 Theme buttons have a fixed physical order from the left: Fox, Hedo, Forest, Siren. The support card displays «ارتباط با سازنده و پشتیبانی» and the exact Latin Telegram handle @i_2MT. Calendar offers Month and Roster, with a separate compact trip-planning action below them. Week/List are no longer exposed in Calendar; old transient modes settle on Month. Shift editing and monthly hours remain below the grid.
+
+## Unified free time and trips (v12.25)
+
+Today → وقت آزاد و سفر and Calendar → وقت آزاد و سفر open one planner. Choose a duration in hours or 24-hour days and the starting date/time. Find free time first, then optionally find more time through a shift change on the same page. Changing the duration unit preserves the entered date/time. A selected free period can be named and saved as a personal plan; it can be undone normally.
+
+Confirmed work at every saved workplace and saved personal events block the result, regardless of display/overlap-alert preferences or a workplace's inclusion switch. Active-workplace missing/expired rosters and reviewed dates prevent unverified availability. The explicit workplace inclusion option continues to control whether missing data at that workplace blocks planning. It does not erase known duties.
+
+A suggested reciprocal exchange is checked with the incoming return duty included. Other-job overlaps, personal events, overnight recovery and short rest prevent approval. Missing other-job roster dates remain pending and link to that workplace/date for review. The results explain blocked changes using the affected plan or workplace name and time. The check is repeated when saving, so a stale preview cannot overwrite a newly recorded conflict. Manual shift entry warns and asks for confirmation rather than preventing users from recording a real assigned schedule.
+
+Comparisons for colleagues use the roster recorded under that colleague and workplace. Names are not used to silently link colleagues across different employers. All checks depend on recorded schedules and events; unrecorded obligations cannot be detected.
+
+The closed Settings overview fits the tested 320×480 and 320×568 portrait screens at normal text size, with support, tutorial/install and developer credit visible. Expanded groups and 200% text may scroll naturally; controls are not clipped to force a fit.
