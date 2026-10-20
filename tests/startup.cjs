@@ -1,0 +1,14 @@
+const {test}=require('node:test'),assert=require('node:assert/strict'),vm=require('node:vm'),fs=require('node:fs'),path=require('node:path');
+function launch(){
+ const frames=[],listeners=new Set(),writes=[],status={textContent:''};
+ const screen={isConnected:true,style:{setProperty:(key,value)=>writes.push(value)}};
+ const document={visibilityState:'visible',addEventListener:(_,fn)=>listeners.add(fn),removeEventListener:(_,fn)=>listeners.delete(fn)};
+ const ctx=vm.createContext({document,requestAnimationFrame:fn=>frames.push(fn),$:id=>id==='#loading-status'?status:screen,Promise});
+ const source=fs.readFileSync(path.join(__dirname,'../src/70-startup.js'),'utf8');vm.runInContext(source.slice(0,source.indexOf('(async()=>{try{loadingProgress(12,')),ctx);
+ return {ctx,document,screen,writes,status,listeners,run:code=>vm.runInContext(code,ctx),frame:t=>{const fn=frames.shift();assert.ok(fn);fn(t)},visibility:value=>{document.visibilityState=value;for(const fn of listeners)fn()}};
+}
+test('restoration updates status without filling an unseen launch logo',()=>{const a=launch();a.run("loadingProgress(12,'Opening');loadingProgress(70,'Ready soon')");assert.equal(a.status.textContent,'Ready soon');assert.deepEqual(a.writes,[])});
+test('launch paints two empty frames and fills fully over visible time',async()=>{const a=launch();a.ctx.screen=a.screen;const pending=a.run("loadingVisibleFrames(screen,1200,p=>screen.style.setProperty('--loading-progress',p*100+'%'))");a.frame(100);a.frame(116);assert.deepEqual(a.writes,['0%','0%']);a.frame(416);assert.equal(a.writes.at(-1),'25%');a.frame(716);assert.equal(a.writes.at(-1),'50%');a.frame(1016);a.frame(1316);await pending;assert.equal(a.writes.at(-1),'100%');assert.equal(a.listeners.size,0)});
+test('background launch and tab switching cannot consume the visible fill',async()=>{const a=launch();a.ctx.screen=a.screen;a.visibility('hidden');const pending=a.run("loadingVisibleFrames(screen,1200,p=>screen.style.setProperty('--loading-progress',p*100+'%'))");a.frame(100);a.frame(1000);assert.deepEqual(a.writes,[]);a.visibility('visible');a.frame(1016);a.frame(1032);a.frame(1332);assert.equal(a.writes.at(-1),'25%');a.visibility('hidden');a.frame(2332);assert.equal(a.writes.at(-1),'25%');a.visibility('visible');a.frame(3332);a.frame(3348);a.frame(4248);await pending;assert.equal(a.writes.at(-1),'100%');assert.equal(a.listeners.size,0)});
+test('removing the launch screen stops its frame loop and visibility listener',async()=>{const a=launch();a.ctx.screen=a.screen;const pending=a.run('loadingVisibleFrames(screen,1200)');a.screen.isConnected=false;a.frame(100);await pending;assert.equal(a.listeners.size,0)});
+test('complete generated startup bundle parses, including the boot and retry branch',()=>{new vm.Script(fs.readFileSync(path.join(__dirname,'../app.js'),'utf8'))});

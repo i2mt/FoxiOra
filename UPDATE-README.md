@@ -1,13 +1,11 @@
-# FoxiOra v12.25 — changes-only update from v12.24
+# FoxiOra v12.26 — changes-only update from v12.25
 
-Free time and trips now share one planner, with duration in hours or 24-hour days, a starting date/time, confirmed free periods and optional shift-change proposals. Calendar and Today open this same planner; the separate Calendar free-time calculator is removed. Confirmed free periods appear first. Search for shift changes on that page when needed.
+The launch logo now stays empty while the saved app and artwork become ready. Its clockwise color fill starts after two visible animation frames, runs for approximately 1.2 seconds, then briefly holds before revealing the app. Hidden-tab time does not consume the animation. Reduced-motion mode shows the complete mark without the sweep. Missing artwork has a bounded fallback, and startup errors retain the retry action.
 
-All saved duties, including other workplaces and overnight segments, and personal events block availability. Missing/reviewed active-workplace dates are not treated as free. Existing workplace exclusions continue to affect missing-data requirements, but saved work at excluded workplaces still blocks time. A proposed exchange includes its return duty, other jobs, personal plans and required rest. Conflicting options explain the reason; unknown other-workplace data stays pending. Saving an exchange or a planned free period rechecks current data.
+Settings uses one full-width button per row at every viewport size, including landscape and desktop. Tutorial, install and available-update actions also have their own rows. Menu spacing and text are more comfortable. Short screens scroll naturally. The support row, footer order, title highlighting and approved artwork remain.
 
-Manual shift changes show overlap/rest warnings and ask before saving a conflict, so users can still record an actual assigned schedule. Names, dates and times identify the affected workplace or personal plan. Colleague checks use their saved roster; the app does not infer that similarly named people at different workplaces are the same person.
+Apply the accompanying patch to v12.25. Only files inside `repo-files` belong in the repository. Copy those contents into the repository root and preserve their `src` and `tests` folders. Do not upload the wrapper directory or the patch manifest. No repository files need deletion. Build outputs are included; no build step is needed for manual hosting.
 
-The closed Settings overview also fits small screens: a two-column menu, consistent card spacing, single-row support label and Telegram ID, compact actions and the complete brand/version/designer footer. Wide, short screens use three columns. Expanded controls and enlarged accessibility text keep natural scrolling. Opening a group highlights its title and background.
+Existing installations keep the user-controlled update prompt. The app does not automatically restart when this version becomes available.
 
-## Apply
-
-Apply the changes-only ZIP over v12.24. Upload the contents of repo-files into the repository, preserving paths. Bundles are already built; no artwork, fonts, OCR models or vendor files need reuploading. Nothing needs deleting. Wait for deployment, then accept FoxiOra's update notice when ready and check Latin v12.25 in Settings. This patch has not been deployed.
+Validation details are in QA-REPORT.md. Not deployed by this package.

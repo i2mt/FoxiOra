@@ -18,3 +18,7 @@
 /* Large launch mark; scanner marks keep their compact size. */
 .loading-screen .loading-content{max-width:360px}.loading-screen .loading-fox{width:clamp(220px,68vw,300px);height:clamp(220px,68vw,300px);max-width:100%;max-height:300px}.loading-screen .loading-content>small{direction:ltr;unicode-bidi:isolate}
 @media(max-height:650px){.loading-screen .loading-fox{width:min(44vh,220px);height:min(44vh,220px)}.loading-screen .loading-content footer{margin-top:14px}.loading-screen .loading-content>p{margin-bottom:12px}}
+
+/* Launch progress follows visible frames; other fox marks retain their transitions. */
+#loading-screen .loading-fox,#loading-screen .loading-line::after{transition:none}
+@media(prefers-reduced-motion:reduce){#loading-screen{transition:none}}

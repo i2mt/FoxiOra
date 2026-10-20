@@ -1,12 +1,12 @@
 {
   "name": "FoxiOra",
-  "version": "12.25.0",
+  "version": "12.26.0",
   "private": true,
   "description": "Local-first roster scanner and Persian shift calendar",
   "scripts": {
     "build": "python3 build.py",
     "check:build": "python3 build.py --check",
-    "test": "TZ=Asia/Tehran node --test --test-concurrency=1 tests/regression.cjs tests/exchanges.cjs tests/undo-calendar.cjs tests/preferences.cjs tests/review.cjs tests/polish.cjs tests/scan-learning.cjs tests/ocr-specialist.cjs tests/navigation.cjs tests/presence.cjs tests/monthly-hours.cjs tests/intro-import.cjs tests/refinements.cjs tests/availability.cjs"
+    "test": "TZ=Asia/Tehran node --test --test-concurrency=1 tests/regression.cjs tests/exchanges.cjs tests/undo-calendar.cjs tests/preferences.cjs tests/review.cjs tests/polish.cjs tests/scan-learning.cjs tests/ocr-specialist.cjs tests/navigation.cjs tests/presence.cjs tests/monthly-hours.cjs tests/intro-import.cjs tests/refinements.cjs tests/availability.cjs tests/startup.cjs"
   },
   "devDependencies": {
     "@napi-rs/canvas": "1.0.10",
