@@ -1,6 +1,6 @@
 {
   "name": "FoxiOra",
-  "version": "12.26.0",
+  "version": "12.27.0",
   "private": true,
   "description": "Local-first roster scanner and Persian shift calendar",
   "scripts": {

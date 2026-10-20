@@ -4,3 +4,30 @@
 @media(max-height:650px){#intro-card{max-height:48dvh;padding:10px 14px;bottom:calc(62px + env(safe-area-inset-bottom))}#intro-card p{font-size:.75rem;margin:5px 0}.intro-progress{margin:8px 0}#intro-card .p{padding:8px 12px}#intro-card.intro-welcome{max-height:calc(100dvh - 32px);padding:10px 16px}.intro-fox{width:min(35vh,180px);height:min(35vh,180px)}.intro-credit{margin:8px 0}.intro-welcome .intro-wordmark{font-size:1.5rem}}
 @media(prefers-reduced-motion:reduce){#intro-veil,#intro-card,#intro-card.intro-welcome,.intro-enter,.intro-fox{animation:none}.intro-progress i{transition:none}.intro-fox{--loading-progress:100%!important}}
 .file-import label{display:block;margin-block:12px}.file-import>small{display:block;text-align:center}.file-import select,.file-import input:not([type=file]){width:100%}.file-preview{overflow:auto;margin-block:14px;border:1px solid var(--ln);border-radius:12px}.file-preview table{border-collapse:collapse;width:100%;font-size:12px}.file-preview th,.file-preview td{padding:8px;border:1px solid var(--ln);white-space:nowrap;text-align:center}.file-preview th{background:var(--bg)}.file-month{padding:12px;border:1px solid var(--ac);border-radius:12px}.install-steps{padding-inline-start:24px}.install-steps li{padding:7px 0}.file-import [disabled],.file-import .disabled{opacity:.5;pointer-events:none}
+
+/* The live view and guide have separate viewports, including on an iPhone SE. */
+.intro-active:not(.intro-welcoming){overflow:hidden;padding-bottom:0;height:100dvh}
+.intro-active:not(.intro-welcoming) nav{visibility:hidden}
+.intro-active:not(.intro-welcoming) #v{position:fixed;inset-inline:0;top:var(--intro-view-top,68px);bottom:var(--intro-view-bottom,260px);width:100%;max-width:560px;overflow:auto;overscroll-behavior:contain;padding-block:8px 24px;scroll-padding-block:12px;animation:intro-pane-in .25s ease}
+.intro-active:not(.intro-welcoming) #hd{opacity:1}
+.intro-active:not(.intro-welcoming) #intro-veil{display:none}
+.intro-active:not(.intro-welcoming) .intro-spotlight{z-index:1;outline:2px solid var(--ac);outline-offset:2px;box-shadow:none;border-radius:12px;scroll-margin-block:12px}
+#intro-card:not(.intro-welcome){display:grid;grid-template-rows:auto minmax(0,1fr) auto auto;gap:6px;inset-inline:10px;bottom:var(--intro-dock-bottom,8px);max-height:var(--intro-dock-max,42dvh);padding:10px 12px;animation:intro-pane-in .2s ease;border:1px solid #405266;border-radius:18px;background:#182b3e;color:#f7fafc;box-shadow:0 8px 32px #0b172c30}
+#intro-card:not(.intro-welcome) .intro-copy{overflow:auto;min-height:0;overscroll-behavior:contain}
+#intro-card:not(.intro-welcome) .intro-top{min-height:32px;gap:6px}
+#intro-card:not(.intro-welcome) .intro-location{font-size:.75rem;line-height:1.5;background:#ffffff12;color:#dce8f4;border-color:#ffffff25;padding:3px 8px}
+#intro-card:not(.intro-welcome) h2{font-size:1rem;line-height:1.5;margin:0 0 4px;font-weight:650}
+#intro-card:not(.intro-welcome) p{font-size:.8125rem;line-height:1.65;color:#e2eaf1;margin:0}
+#intro-card:not(.intro-welcome) .intro-top .text-button{color:#e2eaf1;font-size:.8125rem;min-height:32px;padding:4px 8px}
+#intro-card:not(.intro-welcome) .intro-progress{margin:2px 0;height:3px}
+#intro-card:not(.intro-welcome) .intro-progress i{height:3px;background:#ffffff25}
+#intro-card:not(.intro-welcome) .intro-progress i.done{background:#b7d6ef}
+#intro-card:not(.intro-welcome) .intro-buttons .p{margin:0;min-height:44px;padding:8px 12px;font-size:.875rem;line-height:1.5;background:#f5f8fc;color:#182b3e;border:1px solid #f5f8fc}
+#intro-card:not(.intro-welcome) .intro-buttons .p.s{background:transparent;color:#f5f8fc;border-color:#c2d5e64d}
+@keyframes intro-pane-in{from{opacity:.5}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){.intro-active:not(.intro-welcoming) #v{animation:none}}
+#intro-card:not(.intro-welcome) button:focus-visible{outline:2px solid #b7d6ef;outline-offset:2px}
+@media(min-width:600px) and (max-height:440px){
+ .intro-active:not(.intro-welcoming) #v{inset-inline-start:0;inset-inline-end:280px;width:auto;max-width:none;margin:0;bottom:8px}
+ #intro-card:not(.intro-welcome){inset-inline-start:auto;inset-inline-end:10px;top:var(--intro-view-top,68px);bottom:8px;width:260px;max-width:260px;max-height:none;margin:0}
+}

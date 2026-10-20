@@ -1,9 +1,16 @@
-# FoxiOra v12.26 — verification
+# FoxiOra v12.27 — verification
 
-Focused automated checks: 40 passed (34 preferences/tutorial/install/update checks, one service-worker cache activation check, and five startup checks). Startup tests cover status updates before paint, two empty frames, complete visible-time filling, background/resume timing, cleanup after removal, and parsing the entire generated bundle. App and worker syntax checks and generated-bundle consistency passed.
+75 distinct focused automated checks passed across preferences, tutorial/import, refinements, availability, startup and service-worker activation. They include sample-data isolation, preserved preferences and draft handling, returning to Today after completion, closing sample settings when skipping, and opening setup for an empty first-time account. A final 19-check refinement/startup run and worker activation check passed. Generated bundles match source; app and service-worker syntax checks pass.
 
-Chromium checks cover fast light/dark startup, delayed artwork, delayed saved-state restoration, initially hidden startup, hiding during the fill, reduced motion, failed artwork and storage failure/retry. Visibility transitions are simulated through the document visibility API. The normal sweep contains empty, early, middle and complete frames and lasts at least 1.1 seconds between its first colored frame and completion. Reduced-motion mode has no partial-fill frames. An offline reload from the installed service-worker cache also opens successfully without JavaScript errors.
+Chromium mobile checks:
 
-Settings passed 20 viewport/language/theme cases: 320×480, 360×640, 390×844, 600×400 and 1024×768, each in Persian/English and light/dark. Every menu, support, tutorial, install and available-update action occupies its own row at full width. No horizontal page overflow. Appearance opens by clicking its summary. The Persian light layout was visually inspected. Short screens intentionally scroll rather than compressing actions into columns.
+- 24 planner layouts: 320×480, 375×548, 375×667, 390×844, 667×320 and 1024×768, with Persian/English and Jalali/Gregorian. No horizontal overflow; every input and selector stays inside the card, keeps at least 44 px height and 16 px text.
+- 16 expanded-settings layouts across narrow portrait and landscape, both languages and light/dark. Action text is smaller than group titles; selectors fit their cards.
+- All six live tutorial steps across five viewport sizes, two languages and two themes. 120 initial step checks plus nine swap/planner/settings interaction checks passed. Guide and content rectangles do not overlap; highlighted controls are visible within the app pane; guide navigation stays on screen.
+- Additional SE-sized checks covered calendar selection, rotation while a tutorial is active, theme/language changes, 200% text and working controls after rerender. The focused extension passed 42 step checks, eight planner layouts and four settings layouts.
+- Support title/Telegram row passed 16 width/language/theme cases after its final styling change.
+- A sample swap was previewed and completed by tapping the actual controls. Planner time entry survived searching. Completion returned to Today and reopening Settings showed no expanded sample groups. No JavaScript errors.
 
-The patch overlay is checked byte-for-byte against the v12.26 release; base and replacement SHA-256 values are included in PATCH-MANIFEST.json. No vendor/artwork changes or deletions. Chromium coverage is local; physical iOS/Android devices were not tested in this update.
+The SE-sized 375×548 guide, normal planner and expanded Settings were visually inspected. The 375×667 screen size was also checked. These are Chromium viewport simulations; physical iPhone/Safari rendering and the iOS keyboard were not directly tested.
+
+Changes-only archive integrity and a virtual overlay onto v12.26 are checked against every resulting repository file. Per-file base/replacement SHA-256 values are included in the patch manifest. No artwork, vendor assets or dependencies changed.
