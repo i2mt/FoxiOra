@@ -256,7 +256,7 @@ test('D cover includes an E colleague as DE despite the approved handover overla
 });
 test('combined cover compares canonical aliases and accepts only defined working combinations',async()=>{
  const {run,runAsync}=app();run("S.wps[0].codes.find(c=>c.code==='D').aliases=['صبح'];S.wps[0].codes.find(c=>c.code==='E').aliases=['عصر']");
- assert.equal(run("combinedCode(S.wps[0],'عصر','صبح')"),'DE');assert.equal(run("combinedCode(S.wps[0],'N','D')"),'');assert.equal(run("combinedCode(S.wps[0],'-','D')"),'');
+ assert.equal(run("combinedCode(S.wps[0],'عصر','صبح')"),'DE');assert.equal(run("combinedCode(S.wps[0],'N','D')"),'DN');assert.equal(run("combinedCode(S.wps[0],'-','D')"),'');
 });
 test('legacy off aliases normalize together without changing saved shift times or unknown dates',async()=>{
  const{run,runAsync}=app();run("S.shifts=[{wp:'w1',date:'2026-10-06',text:'OFF',segs:[]},{wp:'w1',date:'2026-10-07',text:'*',segs:[]},{wp:'w1',date:'2026-10-08',text:'D',segs:[{s:123,e:456,code:'D'}]}];S.mates=[{wp:'w1',cells:{'2026-10-06':'off','2026-10-07':'*'},uns:[]}];normalizeSavedOff()");

@@ -23,7 +23,7 @@ function colleagueLimit(w,m,text,date,segs=makeSegs(date,parse(w,text)||[])){
  if(Array.isArray(rules.weekdays)&&!rules.weekdays.includes(new Date(date+'T00:00').getDay()))return T2('This weekday is outside their availability.','این روز هفته در زمان‌های قابل‌قبول این همکار نیست.');
  if(rules.excluded)return T2('Excluded from shift suggestions.','از پیشنهادهای تعویض کنار گذاشته شده است.');
  if(Array.isArray(rules.allowed)&&!rules.allowed.map(t=>canonicalShift(w,t)).includes(code))return T2('This shift is outside their accepted shifts.','این شیفت در انتخاب‌های این همکار نیست.');
- if(rules.noCombined&&(parts.filter(c=>c.type==='work').length>1||(w.combos??DEFAULT_COMBOS).includes(code)))return T2('Combined duties are disabled for this colleague.','شیفت ترکیبی برای این همکار انتخاب نشده است.');
+ if(rules.noCombined&&(parts.filter(c=>c.type==='work').length>1||allowedCombos(w).includes(code)))return T2('Combined duties are disabled for this colleague.','شیفت ترکیبی برای این همکار انتخاب نشده است.');
  if(Number(rules.maxHours)>0&&dutyHours(segs)>Number(rules.maxHours)+1e-7)return T2(`Exceeds their ${rules.maxHours}-hour limit.`,`از سقف ${rules.maxHours} ساعت این همکار بیشتر است.`);
  if(w.autoPatterns===true&&!rules.ignorePattern&&!Array.isArray(rules.allowed)){const pattern=colleaguePattern(w,m,date);if(pattern&&!pattern.codes.includes(code))return T2('Outside the observed roster pattern.','این شیفت در برنامهٔ قبلی این همکار نیست.');}
  return '';
@@ -64,7 +64,7 @@ function openColleagues(id){tc.peopleSearch='';tc.v='cmp';tab='team';render();if
 function facts(w,m,h){const ss=mateSegs(w,m),s0=Math.min(...h.segs.map(g=>g.s)),e0=Math.max(...h.segs.map(g=>g.e)),p=[...ss].reverse().find(g=>g.e<=s0),n=ss.find(g=>g.s>=e0);return{p:p&&{c:p.code,g:(s0-p.e)/6e4},n:n&&{c:n.code,g:(n.s-e0)/6e4}}}
 const factTxt=f=>[f.p&&`${T2('before','قبلش')}: ${codeHTML(f.p.c)} <span class="${f.p.g<S.gap?'tight':''}">(${dur(f.p.g)})</span>`,f.n&&`${T2('after','بعدش')}: ${codeHTML(f.n.c)} <span class="${f.n.g<S.gap?'tight':''}">(${dur(f.n.g)})</span>`].filter(Boolean).join(' · ');
 // For each shift I want to hand over: colleagues who are off that day, or whose own shift + mine is an allowed combination.
-function combinedCode(w,a,b){const ca=canonicalShift(w,a),cb=canonicalShift(w,b);return (w.combos??DEFAULT_COMBOS).find(c=>{const p=parse(w,c);return p?.every(x=>x.type==='work')&&(canonicalShift(w,c)===ca+cb||canonicalShift(w,c)===cb+ca)})||''}
+function combinedCode(w,a,b){const ca=canonicalShift(w,a),cb=canonicalShift(w,b);return allowedCombos(w).find(c=>{const p=parse(w,c);return p?.every(x=>x.type==='work')&&(canonicalShift(w,c)===ca+cb||canonicalShift(w,c)===cb+ca)})||''}
 // Local date arithmetic also handles month/year boundaries and timezone changes.
 const rosterDate=(date,offset)=>{const d=new Date(date+'T00:00');return iso(new Date(d.getFullYear(),d.getMonth(),d.getDate()+offset))};
 function personalRoster(w){const cells={},saved={},uns=[];for(const h of S.shifts.filter(h=>h.wp===w.id)){if(cells[h.date]!==undefined)uns.push(h.date);cells[h.date]=h.text;saved[h.date]=h.segs;if(h.review)uns.push(h.date)}return{cells,saved,uns,self:true}}
