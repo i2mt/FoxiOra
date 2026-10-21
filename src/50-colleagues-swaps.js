@@ -198,11 +198,10 @@ V.team=()=>{if(!S.wps.length)return`<div class="empty"><p class="mu">${T2('Add a
 // Reads every other row of the last scanned sheet and stores them as colleagues (device only).
 const cleanName=s=>(s||'').replace(/[\u200c\u200e\u200f|\[\]_]/g,' ').replace(/\s+/g,' ').trim();
 async function readAll(){const w=S.wps.find(x=>x.id===sc.wp);if(!w||!sc.pages)return;const unchecked=sc.pages.findIndex(p=>p.guess);if(unchecked>=0){sc.continueReadAll=true;tab='scan';openDateCheck(unchecked);return}const change=beginChange('Colleague roster','برنامهٔ همکاران',['mates']);tc.busy=true;tc.cancel=false;tc.v='list';tab='team';render();
-  try{if(!sc.wk){const B=BASE();await loadScript(B+'tesseract.min.js');sc.wk=await Tesseract.createWorker('eng',1,{workerPath:B+'worker.min.js',corePath:B,langPath:B+'lang',gzip:true})}
-    const wk=sc.wk,J=S.cal==='j',b0=J?fromJ(sc.y,sc.m,1):new Date(sc.y,sc.m-1,1),rows=sc.rows.filter((r,i)=>i!==sc.ri);
+  try{const wk=await scanWorker('eng'),J=S.cal==='j',b0=J?fromJ(sc.y,sc.m,1):new Date(sc.y,sc.m-1,1),rows=sc.rows.filter((r,i)=>i!==sc.ri);
     await wk.setParameters({tessedit_pageseg_mode:'7',tessedit_char_whitelist:codeTokens(w)});
     for(let q=0;q<rows.length&&!tc.cancel;q++){const r=rows[q];usePage(r.pi);const V=sc.vl,cells={},uns=[],scan={};P(T2('Reading colleague ','در حال خواندن برنامهٔ همکار ')+(q+1)+'/'+rows.length,q/rows.length);
-      for(let i=0;i<V.length-1;i++){const day=sc.dayAt(i);if(day<1||day>31||i===sc.nameCol)continue;const d=new Date(b0.getFullYear(),b0.getMonth(),b0.getDate()+day-1);if(!(J?jp(d).m===sc.m:d.getMonth()===sc.m-1))continue;
+      for(let i=0;i<V.length-1;i++){const day=sc.dayAt(i);if(day<1||day>31||scanNameOverlap(sc,i))continue;const d=new Date(b0.getFullYear(),b0.getMonth(),b0.getDate()+day-1);if(!(J?jp(d).m===sc.m:d.getMonth()===sc.m-1))continue;
         const result=await recognizeShift(w,wk,...cellBounds(V[i],r.y0,V[i+1],r.y1)),t=result.text;
         if(sc.guess||result.c<80||result.uncertain||!t||!parse(w,t))uns.push(iso(d));
         scan[iso(d)]=scanEvidence(result);if(t&&parse(w,t))cells[iso(d)]=t;}

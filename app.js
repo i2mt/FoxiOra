@@ -2,7 +2,7 @@
    Times are stored as epoch-ms segments, so old shifts keep their real times if a code is later edited. */
 const $=s=>document.querySelector(s), DAY=864e5;
 const DEF=[['N','Night','19:30-08:00'],['D','Morning','07:30-14:30'],['E','Evening','14:00-20:00'],['n','Short night','20:00-24:00'],['M','Leave','leave'],['S','Sick leave','leave'],['OFF','Day off','off'],['*','Day off','off'],['-','Day off','off']];
-const VER='v12.27';
+const VER='v12.28';
 const DEFAULT_COMBOS=['DE','EN','En'];
 const DS=()=>({wps:[],shifts:[],events:[],mates:[],gap:120,cal:'j',theme:'auto',lang:'fa',ver:3,myname:'',h24:true,fdow:6,cross:true,same:false,fh:2,weekend:[5],holidays:true,learnOCR:true,themePlaces:true,rosterDays:{},rosterPeriods:[],ocrMemory:{version:1,glyphs:[],names:[]}});
 let S=DS(),tab='today',cm=new Date(),sel='',vm='month',calendarWorkplace='',daySelected=false;
@@ -382,7 +382,7 @@ function gridScan(d,w,h,lineThreshold=.3){
  const L=Math.round(Math.min(w,h)*.03),Hy=prof(H2,W2,(i,j)=>Bm[i*W2+j],L),Vx=prof(W2,H2,(i,j)=>Bm[j*W2+i],L);
  const peaks=(P,fr)=>{const S=P.map((v,i)=>(P[i-1]||0)+v+(P[i+1]||0));let mx=0;for(const v of S)if(v>mx)mx=v;const out=[];
   for(let i=6;i<S.length-6;i++){if(S[i]<mx*fr)continue;let ok=true;for(let k=-6;k<=6;k++)if(S[i+k]>S[i]||(S[i+k]===S[i]&&k<0))ok=false;if(ok)out.push(i)}return out};
- return{th:bt,ox,oy,W2,H2,hl:peaks(Hy,lineThreshold),vl:peaks(Vx,lineThreshold),vl2:peaks(Vx,Math.min(.2,lineThreshold)),n};
+ return{th:bt,ox,oy,W2,H2,hl:peaks(Hy,lineThreshold),hl2:peaks(Hy,Math.min(.12,lineThreshold)),vl:peaks(Vx,lineThreshold),vl2:peaks(Vx,Math.min(.2,lineThreshold)),n};
 }
 
 const fillGaps=(a,sk)=>{const d0=a.slice(1).map((v,i)=>v-a[i]),df=[...d0].sort((x,y)=>x-y),m=df[df.length>>1],o=[a[0]],reg=x=>x===undefined||Math.abs(x-m)<m*.25;for(let i=1;i<a.length;i++){const g=a[i]-o.at(-1),k=Math.round(g/m);if(g<m*.4)continue;if(k>=2&&k<=4&&Math.abs(g/k-m)<m*.12&&!(sk&&i===1)&&reg(d0[i-2])&&reg(d0[i]))for(let j=1;j<k;j++)o.push(o.at(-1)+g/k);o.push(a[i])}return o};
@@ -446,13 +446,15 @@ function legacyGlyph(x0,y0,x1,y1,hg=80,source=sc.cv){const w=x1-x0,h=y1-y0,mx=Ma
   const p=Math.round(bh*.35)+2,sm=document.createElement('canvas');sm.width=bw+2*p;sm.height=bh+2*p;const sx=sm.getContext('2d');sx.fillStyle='#fff';sx.fillRect(0,0,sm.width,sm.height);
   const im=sx.getImageData(0,0,sm.width,sm.height);for(let y=0;y<bh;y++)for(let x=0;x<bw;x++)if(m[(c+y)*W+a+x]){const q=((y+p)*sm.width+x+p)*4;im.data[q]=im.data[q+1]=im.data[q+2]=0}sx.putImageData(im,0,0);
   const k=hg/sm.height,o=document.createElement('canvas');o.width=Math.round(sm.width*k)+40;o.height=Math.round(hg)+40;const ox=o.getContext('2d');ox.fillStyle='#fff';ox.fillRect(0,0,o.width,o.height);ox.drawImage(sm,20,20,Math.round(sm.width*k),Math.round(hg));return{canvas:o,nc:keep.size}}
-const killWk=async()=>{for(const key of ['wk','fasWk','expertWk'])if(sc[key]){const k=sc[key];sc[key]=null;try{await k.terminate()}catch{}}};
+const killWk=async()=>{for(const key of ['wk','fasWk','expertWk'])if(sc[key]){const k=sc[key];sc[key]=null;try{await k.terminate()}catch{}}sc.wkLang=null};
 const scanError=()=>sc.msg?`<div class="c scan-error" role="alert"><b>${T2('Let’s try that row again','این ردیف را دوباره امتحان کنیم')}</b><p>${T2('Your photo is still here. Choose your row again, or go back to change the photo.','عکستان هنوز اینجاست. ردیف خودتان را دوباره انتخاب کنید، یا برای تغییر عکس برگردید.')}</p><details><summary>${T2('Error details','جزئیات خطا')}</summary><p dir="auto">${esc(sc.msg)}</p></details></div>`:'';
 V.scan=()=>{if(!S.wps.length)return V.setup();
   if(sc.busy)return`<div class="steps"><span class="on"></span><span class="on"></span><span></span></div><section class="c scan-loading"><div class="scan-progress-head">${foxFill('scan-fox',sc.progress||0)}<div><b>${T2('Reading your schedule','در حال خواندن برنامهٔ شما')}</b></div></div><img class="pv" src="${imageSrc(sc.img)}" alt="${T2('Your roster photo','عکس برنامهٔ شما')}"><div id="pbar" class="pbar" role="progressbar" aria-label="${T2('Reading progress','پیشرفت خواندن')}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${sc.progress||0}"><i style="width:${sc.progress||0}%"></i></div><div id="prog" class="mu">${esc(sc.status||T2('Preparing your photo…','عکستان را آماده می‌کنیم…'))}</div></section>`;
   if(sc.align)return alignmentV();
   if(sc.dateCheck)return dateCheckV();
-  if(sc.pick)return`${isSettingUp()?setupSteps(2):''}${scanError()}<div class=scan-tools><button class="text-button" onclick="startAlignment(0)">${T2('Straighten / rotate photo','صاف کردن / چرخاندن عکس')}</button></div><h1>${T2('Which row is yours?','کدام ردیف برای شماست؟')}</h1>`+sc.rows.map((r,i)=>`<div class="c cr ${r.score>=.5?'':'w'}" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();chooseRow(${i})}" style="padding:8px" onclick="chooseRow(${i})"><img src="${imageSrc(r.img)}" style="height:52px;max-width:100%"><span class="mu">${esc(r.nm||T2('Unreadable name','نام ناخوانا'))}${r.remembered?' · '+T2('Remembered','یادآوری‌شده'):r.suggested?' · '+T2('Staff list suggestion','پیشنهاد از فهرست همکاران'):''}${sc.pages.length>1?' · '+T2('Page','صفحه')+' '+r.page:''}</span></div>`).join('')+`<button class="p" onclick="importColleaguePages()">${T2('My row is not here · add colleagues','ردیف من اینجا نیست · افزودن همکاران')}</button><div class="row" style="gap:6px"><button class="p s" onclick="sc.pick=false;killWk();render()">Back</button><label class="p s"><input type=file accept="image/*" multiple hidden onchange="scanFile(this.files,true);this.value=''">Add another page</label></div>`;
+  if(sc.columnPick)return nameColumnV();
+  if(sc.photoRowPick)return photoRowV();
+  if(sc.pick)return rowPickerV();
   if(sc.cells)return reviewV();
   const setup=isSettingUp(),J=S.cal==='j',n=jp(Date.now()),y=sc.y||(J?n.y:new Date().getFullYear()),m=sc.m||(J?n.m:new Date().getMonth()+1);
   sc.wp=sc.wp||S.wps[0].id;sc.name=sc.name||S.myname||'';
@@ -467,40 +469,30 @@ const gridOf=(cv,threshold=.3)=>gridScan(cv.getContext('2d').getImageData(0,0,cv
 function setLayout(cv,G){const c=Math.cos(G.th),s=Math.sin(G.th),n=document.createElement('canvas');n.width=G.W2;n.height=G.H2;const x=n.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,n.width,n.height);x.setTransform(c,-s,s,c,G.ox,G.oy);x.drawImage(cv,0,0);sc.cv=n;
   const sm=document.createElement('canvas');sm.width=1200;sm.height=1200*n.height/n.width;sm.getContext('2d').drawImage(n,0,0,sm.width,sm.height);sc.img=sm.toDataURL('image/jpeg',.7);
   sc.dbg=cv.width+'×'+cv.height+' '+(G.th*57.3).toFixed(1)+'° H'+G.hl.length+' V'+G.vl.length;
-  if(G.hl.length<5||G.vl.length<8)throw Error('Table lines not found. Retake the photo flat and fully in view.');
-  sc.rawV=removeSplitLines(G.vl);sc.hl=fillGaps(G.hl,1);sc.vl=extLines(fillGaps(sc.rawV),removeSplitLines(G.vl2))}
+  if(Math.max(G.hl.length,G.hl2?.length||0)<5||G.vl.length<8)throw Error('Table lines not found. Retake the photo flat and fully in view.');
+  sc.rawV=removeSplitLines(G.vl);sc.hl=recoverRowLines(G.hl,G.hl2);sc.vl=extLines(fillGaps(sc.rawV),removeSplitLines(G.vl2))}
 const tick=()=>new Promise(r=>setTimeout(r,30));
-const usePage=pi=>{const p=sc.pages[pi];Object.assign(sc,{cv:p.cv,hl:p.hl,vl:p.vl,dayAt:p.dayAt,nameCol:p.nameCol,dr:p.dr,guess:p.guess,dbg:p.dbg})};
+const usePage=pi=>{const p=sc.pages[pi];Object.assign(sc,{cv:p.cv,hl:p.hl,vl:p.vl,dayAt:p.dayAt,nameCol:p.nameCol,dr:p.dr,guess:p.guess,dbg:p.dbg,rawV:p.rawV,nameBounds:p.nameBounds,headerRow:p.headerRow,headerValues:p.headerValues,dayOffset:p.dayOffset,nameLayoutUncertain:p.nameLayoutUncertain,nameLanguage:p.nameLanguage})};
 async function readPage(f){let img;if(f.getContext)img=f;else try{img=await createImageBitmap(f,{imageOrientation:'from-image'})}catch(e){img=await createImageBitmap(f)}
-  const k=Math.min(1,2400/Math.max(img.width,img.height));let cv=document.createElement('canvas');cv.width=Math.round(img.width*k);cv.height=Math.round(img.height*k);cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);
+  const k=Math.min(1,2400/Math.max(img.width,img.height));let cv=document.createElement('canvas');cv.width=Math.round(img.width*k);cv.height=Math.round(img.height*k);cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);if(!f.getContext)img.close?.();
   const source=cv;sc.img=cv.toDataURL('image/jpeg',.5);const pv=$('.pv');if(pv)pv.src=sc.img;P('Preparing image…',.05);await tick();enhance(cv);
-  if(!sc.wk){const B=BASE();await loadScript(B+'tesseract.min.js');P('Reading the table…',.2);sc.wk=await Tesseract.createWorker('eng',1,{workerPath:B+'worker.min.js',corePath:B,langPath:B+'lang',gzip:true});await sc.wk.setParameters({tessedit_pageseg_mode:'7'})}
+  P('Reading the table…',.2);await scanWorker('eng');
   // A ward may have more rows than dates: row count is not an orientation cue.
   let best=null;const preferred=cv.height>cv.width?90:0;
-  for(const angle of (f.getContext?[0]:[0,90,180,270])){const rotated=angle?turn(cv,angle):cv,G=gridOf(rotated,f.getContext ? .18 : .3);if(G.hl.length<5||G.vl.length<8)continue;setLayout(rotated,G);await structure(false);const candidate={cv:rotated,G,score:sc.headerVotes||0};if(!best||(best.score<4&&(angle===preferred||candidate.score>=4)))best=candidate;if(!sc.guess)break}
+  for(const angle of (f.getContext?[0]:[0,90,180,270])){const rotated=angle?turn(cv,angle):cv,G=gridOf(rotated,f.getContext ? .18 : .3);if(Math.max(G.hl.length,G.hl2?.length||0)<5||G.vl.length<8)continue;setLayout(rotated,G);await structure(false);const candidate={cv:rotated,G,score:sc.headerVotes||0,header:{headerVotes:sc.headerVotes,headerRow:sc.headerRow,headerValues:sc.headerValues,guess:sc.guess,dr:sc.dr,dayOffset:sc.dayOffset}};if(!best||!sc.guess&&best.header.guess||sc.guess===best.header.guess&&(candidate.score>best.score||candidate.score===best.score&&angle===preferred))best=candidate;if(!sc.guess)break}
   if(!best)throw Error('Table lines not found. Retake the photo flat and fully in view.');
-  setLayout(best.cv,best.G);await structure();
-  sc.pages.push({source,cv:sc.cv,img:sc.img,hl:sc.hl,vl:sc.vl,dayAt:sc.dayAt,nameCol:sc.nameCol,dr:sc.dr,guess:sc.guess,dbg:sc.dbg,rows:sc.rows});}
-async function scanFile(files,add){files=[...(files||[])];if(!files.length)return;if($('#sw'))readForm();sc.msg='';sc.status='';sc.progress=0;sc.fallbackError='';sc.expertError='';sc.cells=null;sc.pick=false;if(!add||!sc.pages){sc.pages=[];sc.ri=-1;sc.img='';await killWk()}
+  setLayout(best.cv,best.G);await structure(true,best.header);
+  sc.pages.push({source,cv:sc.cv,img:sc.img,hl:sc.hl,vl:sc.vl,dayAt:sc.dayAt,nameCol:sc.nameCol,dr:sc.dr,guess:sc.guess,dbg:sc.dbg,rows:sc.rows,rawV:sc.rawV,nameBounds:sc.nameBounds,headerRow:sc.headerRow,headerValues:sc.headerValues,dayOffset:sc.dayOffset,nameLayoutUncertain:sc.nameLayoutUncertain,nameLanguage:sc.nameLanguage});}
+async function scanFile(files,add){files=[...(files||[])];if(!files.length)return;if($('#sw'))readForm();sc.msg='';sc.status='';sc.progress=0;sc.fallbackError='';sc.expertError='';sc.nameWarning='';sc.columnPick=null;sc.photoRowPick=null;sc.cells=null;sc.pick=false;if(!add||!sc.pages){sc.pages=[];sc.ri=-1;sc.img='';await killWk()}
   try{sc.busy=true;render();for(const f of files)await readPage(f);
     sc.rows=sc.pages.flatMap((p,pi)=>p.rows.map(r=>({...r,pi,page:pi+1})));await pickAuto()}catch(e){sc.busy=false;sc.msg='Scan failed: '+e.message+(sc.dbg?' ['+sc.dbg+']':'');await killWk();render()}}
-// Header OCR gives each column its day number (and the direction); the name column sits at the day-1 end.
-async function structure(readNames=true){const H=sc.hl,V=sc.vl,wk=sc.wk,vals=[];await wk.setParameters({tessedit_char_whitelist:'0123456789'});
-  for(let i=0;i<V.length-1;i++){P('Reading dates…',.25+.2*i/V.length);const gl=glyph(...cellBounds(V[i],H[0],V[i+1],H[1]),70),r=gl.canvas?await wk.recognize(gl.canvas):{data:{text:''}},v=+nrm(r.data.text.replace(/\D/g,''));vals.push(v>=1&&v<=31?v:0)}
-  const votes={};vals.forEach((v,i)=>{if(v)for(const d of [1,-1]){const k=d+':'+(v-d*i);votes[k]=(votes[k]||0)+1}});
-  const [k,n]=Object.entries(votes).sort((a,b)=>b[1]-a[1])[0]||['',0];let dr,a0;sc.headerVotes=n;sc.guess=n<4;if(sc.guess){dr=-1;a0=V.length-5}else[dr,a0]=k.split(':').map(Number);sc.dr=dr;sc.dayAt=i=>a0+dr*i;
-  const raw=sc.rawV||V,edges=Array.from({length:raw.length-1},(_,i)=>i).filter(i=>dr<0?i>=(raw.length-1)*.8:i<(raw.length-1)*.2),ni=edges.sort((a,b)=>(raw[b+1]-raw[b])-(raw[a+1]-raw[a]))[0]??(dr<0?raw.length-2:0);sc.nameBounds=[raw[ni],raw[ni+1]];sc.nameCol=V.slice(0,-1).findIndex((x,i)=>x<=(raw[ni]+raw[ni+1])/2&&V[i+1]>=(raw[ni]+raw[ni+1])/2);if(!readNames)return;const hs=H.slice(1).map((v,i)=>v-H[i+1-1]).slice(1),rows=[];const med=[...hs].sort((a,b)=>a-b)[hs.length>>1];
-  for(let j=1;j<H.length-1;j++){const h=H[j+1]-H[j];if(h>med*.6&&h<med*1.5)rows.push([H[j],H[j+1]])}
-  const wn=await Tesseract.createWorker('fas',1,{workerPath:BASE()+'worker.min.js',corePath:BASE(),langPath:BASE()+'lang',gzip:true});await wn.setParameters({tessedit_pageseg_mode:'7'});sc.rows=[];const toks=sc.name.split(/\s+/).map(nn).filter(Boolean);
-  try{for(let j=0;j<rows.length;j++){P('Reading names…',.45+.3*j/rows.length);const[y0,y1]=rows[j],cr=cropC(...cellBounds(sc.nameBounds[0],y0,sc.nameBounds[1],y1),0,110);let r=await wn.recognize(cr);
-    if(r.data.confidence<65){const second=await wn.recognize(cropC(...cellBounds(sc.nameBounds[0],y0,sc.nameBounds[1],y1),1,110));if(second.data.confidence>r.data.confidence)r=second}
-    const feature=visualFeature(cr,'names'),raw=cleanName(r.data.text),memory=recallExample('names',sc.wp,feature,raw),staff=!memory&&staffNameSuggestion(wp(sc.wp),raw),name=memory?memory.label:staff?staff.label:raw,ws=name.split(/\s+/).map(nn).filter(Boolean);
-    const score=toks.filter(t=>ws.some(w=>w===t||(t.length>3&&lev(w,t)<=(t.length>5?2:1)))).length/(toks.length||1);sc.rows.push({y0,y1,score,nm:name,rawName:raw,nameFeature:feature,remembered:!!memory,suggested:!!staff,img:cr.toDataURL('image/jpeg',.8)})}}finally{await wn.terminate()}}
-function pickAuto(){if(sc.colleaguesOnly){sc.busy=false;return importColleaguePages()}const sr=sc.rows.map(r=>r.score),b=sr.indexOf(Math.max(...sr)),o=[...sr].sort((x,y)=>y-x);if(sr[b]>=.6&&(o[1]===undefined||o[1]<sr[b]-.2))return readCells(b);sc.busy=false;sc.pick=true;render()}
+// Date sequences locate the header; independent name samples validate the column.
+async function structure(readNames=true,header=null){if(header){Object.assign(sc,header);const offset=sc.dayOffset,direction=sc.dr;sc.dayAt=i=>offset+direction*i}else await locateDateHeader();if(!readNames)return;sc.nameSamples=null;await locateNameColumn();await readNameRows()}
+function pickAuto(){const unsure=sc.pages?.findIndex(p=>p.nameLayoutUncertain);if(unsure>=0){sc.busy=false;return openNameColumn(unsure)}if(sc.colleaguesOnly){sc.busy=false;return importColleaguePages()}const sr=sc.rows.map(r=>r.score),b=sr.indexOf(Math.max(...sr)),o=[...sr].sort((x,y)=>y-x);if(sr[b]>=.6&&(o[1]===undefined||o[1]<sr[b]-.2))return readCells(b);sc.busy=false;sc.pick=true;render()}
 async function chooseRow(i){if(sc.busy||!sc.rows[i])return;sc.msg='';if(!sc.name){sc.name=sc.rows[i].nm||'';S.myname=sc.name;saveQuietly()}sc.pick=false;sc.busy=true;render();await readCells(i)}
-async function readCells(ri){try{const r=sc.rows[ri];if(!r||!sc.pages?.[r.pi])throw Error('Selected row is no longer available.');usePage(r.pi);sc.ri=ri;const w=S.wps.find(x=>x.id===sc.wp);if(!w)throw Error('Workplace is no longer available.');if(!Number.isInteger(sc.y)||!Number.isInteger(sc.m)||sc.m<1||sc.m>12)throw Error('Check the roster month and year.');if(!sc.wk){const B=BASE();await loadScript(B+'tesseract.min.js');sc.wk=await Tesseract.createWorker('eng',1,{workerPath:B+'worker.min.js',corePath:B,langPath:B+'lang',gzip:true})}const wk=sc.wk,V=sc.vl,J=S.cal==='j',b0=J?fromJ(sc.y,sc.m,1):new Date(sc.y,sc.m-1,1),list=[];
+async function readCells(ri){try{const r=sc.rows[ri];if(!r||!sc.pages?.[r.pi])throw Error('Selected row is no longer available.');usePage(r.pi);sc.ri=ri;const w=S.wps.find(x=>x.id===sc.wp);if(!w)throw Error('Workplace is no longer available.');if(!Number.isInteger(sc.y)||!Number.isInteger(sc.m)||sc.m<1||sc.m>12)throw Error('Check the roster month and year.');const wk=await scanWorker('eng'),V=sc.vl,J=S.cal==='j',b0=J?fromJ(sc.y,sc.m,1):new Date(sc.y,sc.m-1,1),list=[];
   await wk.setParameters({tessedit_char_whitelist:codeTokens(w)});
-  for(let i=0;i<V.length-1;i++){const day=sc.dayAt(i);if(day<1||day>31||i===sc.nameCol)continue;const d=new Date(b0.getFullYear(),b0.getMonth(),b0.getDate()+day-1);if(!(J?jp(d).m===sc.m:d.getMonth()===sc.m-1))continue;list.push({i,day,date:iso(d)})}
+  for(let i=0;i<V.length-1;i++){const day=sc.dayAt(i);if(day<1||day>31||scanNameOverlap(sc,i))continue;const d=new Date(b0.getFullYear(),b0.getMonth(),b0.getDate()+day-1);if(!(J?jp(d).m===sc.m:d.getMonth()===sc.m-1))continue;list.push({i,day,date:iso(d)})}
   list.sort((a,b)=>a.day-b.day);sc.cells=[];sc.reviewAll=false;sc.reviewPage=0;sc.reviewIndex=0;
   for(let q=0;q<list.length;q++){const{i,day,date}=list[q];P('Reading cells '+(q+1)+'/'+list.length,.75+.25*q/list.length);const [x0,y0,x1,y1]=cellBounds(V[i],r.y0,V[i+1],r.y1);
     const result=await recognizeShift(w,wk,x0,y0,x1,y1);
@@ -523,6 +515,140 @@ async function doImport(all){const w=S.wps.find(x=>x.id===sc.wp),L=sc.cells.filt
     S.shifts.push({id:'s'+Date.now()+n,wp:w.id,date:c.date,text:c.text,review:sc.guess||cState(w,c)==='low',label:cs.map(x=>x.label).join(' + '),segs:makeSegs(c.date,cs),scan:cState(w,c)==='low'?scanEvidence(c):undefined})});
   sc.cells.filter(c=>!c.text).forEach((c,n)=>{S.shifts=S.shifts.filter(h=>!(h.wp===w.id&&h.date===c.date));S.shifts.push({id:'scan-unknown-'+Date.now()+'-'+n,wp:w.id,date:c.date,text:'',label:'',segs:[],review:true,scan:scanEvidence(c)})});finishSetup(w.id);normalizeSavedOff();if(!await commitChange(change))return;sc.cells=null;if(all)readAll();else{killWk();go('agenda')}}
 
+/* Layout evidence is kept separate from OCR confidence. A missing label never removes a row. */
+async function scanWorker(language='eng'){
+ if(sc.wk&&(sc.wkLang||'eng')!==language){
+  if(sc.wk.reinitialize){try{await sc.wk.reinitialize(language,1)}catch(error){await killWk();throw error}}
+  else{await sc.wk.terminate();sc.wk=null}
+ }
+ if(!sc.wk){const base=BASE();await loadScript(base+'tesseract.min.js');sc.wk=await Tesseract.createWorker(language,1,{workerPath:base+'worker.min.js',corePath:base,langPath:base+'lang',gzip:true})}
+ sc.wkLang=language;await sc.wk.setParameters({tessedit_pageseg_mode:'7',tessedit_char_whitelist:''});return sc.wk
+}
+function scanMedian(values){const a=values.filter(v=>Number.isFinite(v)&&v>0).sort((a,b)=>a-b);return a[a.length>>1]||0}
+function recoverRowLines(strong,weak=[]){
+ const lines=[...strong].sort((a,b)=>a-b),step=scanMedian(lines.slice(1).map((v,i)=>v-lines[i]));if(!step)return lines;
+ // Only observed weaker lines close to the established row spacing are added.
+ for(const y of weak){if(lines.some(v=>Math.abs(v-y)<step*.28))continue;const anchor=strong.reduce((a,b)=>Math.abs(b-y)<Math.abs(a-y)?b:a,strong[0]),distance=Math.abs(y-anchor),count=Math.round(distance/step);if(count>=1&&Math.abs(distance-count*step)<step*.22)lines.push(y)}
+ return lines.sort((a,b)=>a-b)
+}
+function fitDateSequence(values){
+ const votes=new Map();values.forEach((v,i)=>{if(v>=1&&v<=31)for(const direction of [1,-1]){const offset=v-direction*i,key=direction+':'+offset;if(!votes.has(key))votes.set(key,{direction,offset,matches:[]});votes.get(key).matches.push(i)}});
+ return [...votes.values()].map(v=>({...v,count:v.matches.length,span:v.matches.at(-1)-v.matches[0]})).sort((a,b)=>b.count-a.count||b.span-a.span)[0]||{direction:-1,offset:0,count:0,span:0,matches:[]}
+}
+async function locateDateHeader(){
+ const H=sc.hl,V=sc.vl,wk=await scanWorker('eng'),count=V.length-1;
+ await wk.setParameters({tessedit_char_whitelist:'0123456789',tessedit_pageseg_mode:'7'});
+ const probes=[...new Set(Array.from({length:Math.min(9,count)},(_,i)=>Math.round(i*(count-1)/Math.max(1,Math.min(9,count)-1))))];let best=null;
+ for(let row=0;row<Math.min(4,H.length-1);row++){
+  const values=Array(count).fill(0),read=async i=>{const gl=glyph(...cellBounds(V[i],H[row],V[i+1],H[row+1]),70);if(!gl.canvas)return;const result=await wk.recognize(gl.canvas),text=nrm(result.data.text||'').trim();const v=/^\d{1,2}$/.test(text)?+text:0;values[i]=v>=1&&v<=31?v:0};
+  for(const i of probes)await read(i);
+  let fit=fitDateSequence(values);if(!best||fit.count>best.fit.count||fit.count===best.fit.count&&fit.span>best.fit.span)best={row,values,fit,read};
+  if(fit.count>=4&&fit.span>=6){for(let i=0;i<count;i++)if(!probes.includes(i))await read(i);fit=fitDateSequence(values);best={row,values,fit};if(fit.count>=4&&fit.span>=6)break}
+ }
+ const fit=best.fit;sc.headerVotes=fit.count;sc.headerRow=fit.count>=3?best.row:-1;sc.headerValues=best.values;sc.guess=fit.count<4||fit.span<6;sc.dr=sc.guess?-1:fit.direction;sc.dayOffset=sc.guess?V.length-5:fit.offset;
+ const offset=sc.dayOffset,direction=sc.dr;sc.dayAt=i=>offset+direction*i
+}
+function nameColumnCandidates(){
+ const raw=sc.rawV||sc.vl,V=sc.vl,dayCount=scanDateCount();
+ const days=V.slice(0,-1).flatMap((v,i)=>!sc.guess&&sc.dayAt(i)>=1&&sc.dayAt(i)<=dayCount?[i]:[]),lo=Math.min(...days),hi=Math.max(...days);
+ const widths=raw.slice(1).map((v,i)=>v-raw[i]),typical=scanMedian(widths),out=[];
+ for(let i=0;i<widths.length;i++){
+  let x0=raw[i],x1=raw[i+1];
+  if(days.length>=4){if(x0<V[lo]&&x1>V[lo])x1=V[lo];else if(x0<V[hi+1]&&x1>V[hi+1])x0=V[hi+1];else if(x0>=V[lo]&&x1<=V[hi+1])continue}
+  if(x1-x0<Math.max(10,typical*.6))continue;
+  const mid=(x0+x1)/2,index=V.slice(0,-1).findIndex((v,j)=>v<=mid&&V[j+1]>=mid),outside=days.length>=4&&(x1<=V[lo]+2||x0>=V[hi+1]-2),edge=i<Math.max(3,widths.length*.22)||i>=widths.length-Math.max(3,widths.length*.22);
+  if(!edge&&!outside)continue;
+  out.push({bounds:[x0,x1],index,width:x1-x0,score:Math.min(4,(x1-x0)/Math.max(1,typical))+(outside?3:0),outside})
+ }
+ return out.sort((a,b)=>b.score-a.score).slice(0,4)
+}
+function usableName(value,w=wp(sc.wp)){
+ const text=cleanName(value).replace(/^[\d۰-۹٠-٩\s.،:؛()\-]+/,'').trim(),key=nn(text);
+ if(!key||/^(نام|نامخانوادگی|نامونامخانوادگی|ردیف|جمع|مجموع|امضا|توضیحات|name|names|total|signature)$/i.test(key))return '';
+ const letters=text.match(/[A-Za-z\u0621-\u063a\u0641-\u064a\u067e\u0686\u0698\u06a9\u06af\u06cc]/g)||[];
+ if(letters.length<2||/\d/.test(nrm(text)))return '';
+ const codes=new Set(['d','e','n','m','s','dn','de','en','off',...(w?.codes||[]).map(c=>nn(c.code))]);
+ if(text.split(/\s+/).every(t=>codes.has(nn(t))||!/[A-Za-z\u0600-\u06ff]/.test(t)))return '';
+ return text
+}
+function scanDateCount(){return sc.y>0&&sc.m>=1&&sc.m<=12?scanMonthLength():31}
+function rowHasInk(x0,y0,x1,y1){
+ if(!sc.cv||x1<=x0||y1<=y0)return false;
+ const x=Math.max(0,Math.round(x0+(x1-x0)*.2)),y=Math.max(0,Math.round(y0+(y1-y0)*.22)),w=Math.max(1,Math.floor((x1-x0)*.6)),h=Math.max(1,Math.floor((y1-y0)*.56));
+ if(x+w>sc.cv.width||y+h>sc.cv.height)return false;
+ const pixels=sc.cv.getContext('2d').getImageData(x,y,w,h).data;let lo=255,hi=0;
+ for(let i=0;i<pixels.length;i+=4){lo=Math.min(lo,pixels[i]);hi=Math.max(hi,pixels[i])}if(hi-lo<30)return false;
+ let dark=0;for(let i=0;i<pixels.length;i+=4)if(pixels[i]<(lo+hi)/2)dark++;
+ return dark>=Math.max(3,w*h*.005)
+}
+function occupiedRosterRow(y0,y1){
+ if(!sc.nameBounds||!rowHasInk(sc.nameBounds[0],y0,sc.nameBounds[1],y1))return false;
+ const cols=sc.vl.slice(0,-1).flatMap((_,i)=>!scanNameOverlap(sc,i)&&sc.dayAt(i)>=1&&sc.dayAt(i)<=31?[i]:[]);
+ const samples=[...new Set([cols[Math.floor(cols.length*.2)],cols[Math.floor(cols.length*.5)],cols[Math.floor(cols.length*.8)]])].filter(i=>i!==undefined);
+ return samples.filter(i=>rowHasInk(sc.vl[i],y0,sc.vl[i+1],y1)).length>=Math.min(2,samples.length)&&samples.length>0
+}
+function scanBodyBands(){
+ const H=sc.hl,start=Math.max(0,(sc.headerRow??0)+1),step=scanMedian(H.slice(start+1).map((y,i)=>y-H[start+i])),bands=[];
+ for(let i=start;i<H.length-1;i++){
+  const y0=H[i],y1=H[i+1],height=y1-y0,count=Math.round(height/step);
+  if(height<Math.max(3,step*.28))continue;
+  const pieces=Array.from({length:Math.min(6,Math.max(1,count))},(_,j)=>[y0+height*j/count,y0+height*(j+1)/count]);
+  // Recover an erased separator only when names AND shift cells support each row.
+  if(count>=2&&count<=6&&Math.abs(height/count-step)<step*.2&&pieces.every(([a,b])=>occupiedRosterRow(a,b)))bands.push(...pieces);else bands.push([y0,y1])
+ }
+ // Faint lower borders must not cut the roster in half. Extend only over actual row content.
+ if(step&&sc.nameBounds&&sc.cv){let misses=0;for(let y=H.at(-1);y+step<=sc.cv.height&&misses<2;y+=step){if(occupiedRosterRow(y,y+step)){bands.push([y,y+step]);misses=0}else misses++}}
+ return bands
+}
+function setNameBounds(bounds){
+ sc.nameBounds=[...bounds];const mid=(bounds[0]+bounds[1])/2;sc.nameCol=sc.vl.slice(0,-1).findIndex((v,i)=>v<=mid&&sc.vl[i+1]>=mid)
+}
+function scanNameOverlap(page,index){
+ const bounds=page.nameBounds;if(!bounds)return index===page.nameCol;
+ return page.vl[index]<bounds[1]-1&&page.vl[index+1]>bounds[0]+1
+}
+function scanNameCrop(bounds,y0,y1,binary=0){return cropC(...cellBounds(bounds[0],y0,bounds[1],y1),binary,110)}
+async function locateNameColumn(){
+ sc.nameBounds=null;const candidates=nameColumnCandidates(),bands=scanBodyBands();if(!candidates.length){const raw=sc.rawV||sc.vl;candidates.push({bounds:raw.slice(-2),index:raw.length-2,score:0})}
+ // Geometry proposes columns; text sampled at the top, middle and bottom validates them.
+ const sample=[...new Set([0,Math.floor(bands.length/2),bands.length-1])].filter(i=>bands[i]);let worker;
+ try{worker=await scanWorker('fas+eng')}catch(e){sc.nameWarning='ocr';sc.nameLayoutUncertain=true;setNameBounds(candidates[0].bounds);return}
+ for(const candidate of candidates){candidate.samples=new Map();candidate.names=0;
+  for(const i of sample){try{const result=await worker.recognize(scanNameCrop(candidate.bounds,...bands[i]));const text=usableName(result.data.text);candidate.samples.set(i,result);if(text)candidate.names++}catch{sc.nameWarning='ocr';break}}
+  candidate.total=candidate.score+candidate.names*5;
+ }
+ candidates.sort((a,b)=>(b.total??b.score)-(a.total??a.score));const best=candidates[0],other=candidates[1];setNameBounds(best.bounds);sc.nameSamples=null;const texts=[...(best.samples?.values()||[])].map(r=>usableName(r.data.text)).filter(Boolean);sc.nameLanguage=texts.some(t=>/[\u0621-\u06ff]/.test(t))?'fas':texts.length?'eng':'fas+eng';
+ sc.nameLayoutUncertain=best.names<Math.min(2,sample.length)||(other&&other.total>=best.total-2&&other.names>=best.names);sc.nameCandidates=candidates
+}
+function nameMatchScore(name){const tokens=(sc.name||'').split(/\s+/).map(nn).filter(Boolean),words=name.split(/\s+/).map(nn).filter(Boolean);return tokens.filter(t=>words.some(w=>w===t||t.length>3&&lev(w,t)<=(t.length>5?2:1))).length/(tokens.length||1)}
+async function readNameRows(){
+ const bands=scanBodyBands(),bounds=sc.nameBounds;
+ // Build every photo row first: a slow/failed OCR worker cannot truncate this list.
+ sc.rows=bands.map(([y0,y1],index)=>{const crop=scanNameCrop(bounds,y0,y1);return {y0,y1,index,score:0,nm:'',rawName:'',img:crop.toDataURL('image/jpeg',.85),nameFeature:visualFeature(crop,'names')}});
+ let worker;try{worker=await scanWorker(sc.nameLanguage||'fas+eng')}catch{sc.nameWarning='ocr';return}
+ for(let i=0;i<sc.rows.length;i++){
+  const row=sc.rows[i];P('Reading names…',.45+.3*i/sc.rows.length);
+  try{
+   let result=await worker.recognize(scanNameCrop(bounds,row.y0,row.y1)),raw=usableName(result.data.text);
+   if(!raw||result.data.confidence<65){const retry=await worker.recognize(scanNameCrop(bounds,row.y0,row.y1,1)),text=usableName(retry.data.text);if(text&&(!raw||retry.data.confidence>result.data.confidence)){result=retry;raw=text}}
+   const memory=recallExample('names',sc.wp,row.nameFeature,raw),staff=!memory&&raw&&staffNameSuggestion(wp(sc.wp),raw),name=usableName(memory?.label||staff?.label||raw);
+   Object.assign(row,{nm:name,rawName:raw,score:sc.nameLayoutUncertain?0:nameMatchScore(name),remembered:!!memory,suggested:!!staff,nameConfidence:result.data.confidence||0})
+  }catch{sc.nameWarning='ocr';await killWk();break}
+ }
+}
+function rebuildScanRows(){sc.rows=sc.pages.flatMap((p,pi)=>p.rows.map(r=>({...r,pi,page:pi+1})))}
+function rowPickerV(){
+ const pages=sc.pages||[];
+ return `${isSettingUp()?setupSteps(2):''}${scanError()}<div class="scan-tools"><button class="text-button" onclick="startAlignment(0)">${T2('Straighten / rotate','صاف کردن / چرخاندن')}</button></div><h1>${T2('Choose your row from the photo','ردیف خودت رو از عکس انتخاب کن')}</h1><div class="scan-row-list">`+sc.rows.map((r,i)=>`<button class="c scan-row-choice" onclick="chooseRow(${i})"><img src="${imageSrc(r.img)}" alt="${T2('Name from row ','نام در ردیف ')}${r.index+1}"><span><b>${bidi(usableName(r.nm)||T2('Row '+(r.index+1),'ردیف '+PDg(r.index+1)))}</b>${pages.length>1?`<small>${T2('Page ','صفحه ')}${r.page}</small>`:''}</span></button>`).join('')+`</div><div class="scan-page-tools">${pages.map((p,i)=>`<button class="text-button" onclick="openNameColumn(${i})">${T2('Fix names column','اصلاح ستون نام‌ها')}${pages.length>1?' · '+(i+1):''}</button><button class="text-button" onclick="openPhotoRow(${i})">${T2('Choose from the full photo','انتخاب از تمام عکس')}${pages.length>1?' · '+(i+1):''}</button>`).join('')}</div><div class="row"><button class="p s" onclick="sc.pick=false;killWk();render()">${T2('Back','بازگشت')}</button><label class="p s"><input type="file" accept="image/*" multiple hidden onchange="scanFile(this.files,true);this.value=''">${T2('Add another page','افزودن صفحه')}</label></div>`
+}
+function openNameColumn(pi){const page=sc.pages?.[pi];if(!page)return;sc.columnPick={pi,bounds:[...(page.nameBounds||page.vl.slice(-2))]};sc.pick=false;sc.cells=null;render()}
+function nameColumnV(){const pick=sc.columnPick,p=sc.pages[pick.pi],bounds=pick.bounds;return `<section class="c name-column-picker"><h2>${T2('Tap the names column','ستون نام‌ها رو بزن')}</h2><div class="name-column-photo" onclick="pickNameColumn(event)"><img src="${imageSrc(p.img||sc.img)}" alt="${T2('Roster: choose the names column','جدول برنامه: انتخاب ستون نام‌ها')}"><span style="left:${bounds[0]/p.cv.width*100}%;width:${(bounds[1]-bounds[0])/p.cv.width*100}%"></span></div><div class="dialog-actions"><button class="p" onclick="applyNameColumn()">${T2('Read this column','خواندن این ستون')}</button><button class="p s" onclick="sc.columnPick=null;sc.pick=true;render()">${T2('Back','بازگشت')}</button></div></section>`}
+function pickNameColumn(event){const pick=sc.columnPick,p=sc.pages[pick.pi],box=event.currentTarget.getBoundingClientRect(),x=(event.clientX-box.left)/box.width*p.cv.width,lines=p.rawV||p.vl;const i=lines.slice(0,-1).findIndex((v,i)=>v<=x&&lines[i+1]>=x);if(i<0)return;pick.bounds=[lines[i],lines[i+1]];render()}
+async function applyNameColumn(){const pick=sc.columnPick;if(!pick||sc.busy)return;const p=sc.pages[pick.pi];usePage(pick.pi);setNameBounds(pick.bounds);sc.nameSamples=null;sc.nameLanguage=null;sc.nameLayoutUncertain=false;sc.columnPick=null;sc.busy=true;sc.nameWarning='';render();try{await readNameRows();Object.assign(p,{nameBounds:sc.nameBounds,nameCol:sc.nameCol,nameLanguage:sc.nameLanguage,nameLayoutUncertain:false,rows:sc.rows});rebuildScanRows();sc.pick=true}catch(e){sc.msg=e.message;sc.pick=true}finally{sc.busy=false;render()}if(sc.colleaguesOnly&&!sc.msg)await pickAuto()}
+function openPhotoRow(pi){if(!sc.pages?.[pi])return;sc.columnPick=null;sc.photoRowPick={pi,bounds:null};sc.pick=false;sc.cells=null;render()}
+function photoRowV(){const pick=sc.photoRowPick,p=sc.pages[pick.pi],x=p.nameBounds||p.vl.slice(-2);return `<section class="c photo-row-picker"><h2>${T2('Tap your name in the photo','نام خودت رو در عکس بزن')}</h2><div class="photo-row-column" onclick="pickPhotoRow(event)"><img src="${scanPreview(p.cv,x[0],0,x[1],p.cv.height,1000)}" alt="${T2('Full names column','تمام ستون نام‌ها')}">${pick.bounds?`<span style="top:${pick.bounds[0]/p.cv.height*100}%;height:${(pick.bounds[1]-pick.bounds[0])/p.cv.height*100}%"></span>`:''}</div><div class="photo-row-actions"><button class="p" ${pick.bounds?'':'disabled'} onclick="confirmPhotoRow()">${T2('Read this row','خواندن همین ردیف')}</button><button class="p s" onclick="sc.photoRowPick=null;sc.pick=true;render()">${T2('Back','بازگشت')}</button></div></section>`}
+function pickPhotoRow(event){const pick=sc.photoRowPick,p=sc.pages[pick.pi],box=event.currentTarget.getBoundingClientRect(),y=(event.clientY-box.top)/box.height*p.cv.height,H=p.hl,step=scanMedian(H.slice(1).map((v,i)=>v-H[i])),i=H.slice(0,-1).findIndex((v,i)=>v<=y&&H[i+1]>=y);pick.bounds=i>=0&&H[i+1]-H[i]<step*1.5?[H[i],H[i+1]]:[Math.max(0,y-step/2),Math.min(p.cv.height,y+step/2)];render()}
+async function confirmPhotoRow(){const pick=sc.photoRowPick;if(!pick?.bounds||sc.busy)return;const p=sc.pages[pick.pi];usePage(pick.pi);const [y0,y1]=pick.bounds,crop=scanNameCrop(sc.nameBounds,y0,y1),old=p.rows.findIndex(r=>Math.min(r.y1,y1)-Math.max(r.y0,y0)>Math.min(r.y1-r.y0,y1-y0)*.6),row={y0,y1,nm:old>=0?p.rows[old].nm:'',score:0,img:crop.toDataURL('image/jpeg',.85),nameFeature:visualFeature(crop,'names'),manualRow:true};if(old>=0)p.rows[old]=row;else p.rows.push(row);p.rows.sort((a,b)=>a.y0-b.y0);p.rows.forEach((r,i)=>r.index=i);rebuildScanRows();const i=sc.rows.findIndex(r=>r.pi===pick.pi&&r.y0===y0&&r.manualRow);sc.photoRowPick=null;sc.pick=true;await chooseRow(i)}
 /* Review is separate from recognition: dates are checked once per page;
    uncertain symbols remain unknown until a person confirms them. */
 function scanEvidence(c){return{img:c.img||'',feature:c.feature||null,raw:c.raw||'',blank:!!c.blank}}
@@ -538,10 +664,10 @@ function reviewV(){const w=wp(sc.wp),st=sc.cells.map(c=>cState(w,c)),pending=st.
 function blankChoiceV(w){return `<label class="blank-choice">${T2('In this workplace, an empty cell means…','در برنامهٔ این محل کار، خانهٔ خالی یعنی…')}<select aria-label="${T2('Meaning of empty cells','معنی خانهٔ خالی')}" onchange="setBlankMeaning(this.value==='off')"><option value="unknown" ${!w.blankMeansOff?'selected':''}>${T2('Unknown · check it','نامشخص · نیاز به بررسی')}</option><option value="off" ${w.blankMeansOff?'selected':''}>off</option></select></label>`}
 async function setBlankMeaning(off){const w=wp(sc.wp);if(off&&!offCode(w))return alert(T2('Define an off symbol first.','ابتدا علامت off را تعریف کنید.'));const change=beginChange('Empty-cell meaning','معنی خانهٔ خالی',['wps']);w.blankMeansOff=!!off;if(!await commitChange(change))return;for(const c of sc.cells||[])if(c.blank&&!c.confirmed)Object.assign(c,off?{text:offCode(w),c:90,uncertain:false}:{text:'',c:0,uncertain:true});render()}
 function openDateCheck(pi){const p=sc.pages?.[pi];if(!p)return;sc.dateCheck={pi,col:Math.max(0,p.vl.slice(0,-1).findIndex((_,i)=>p.dayAt(i)===1)),dr:p.dr,count:scanMonthLength()};render()}
-function dateCheckV(){const d=sc.dateCheck,p=sc.pages[d.pi],H=p.hl,V=p.vl;return `<section class="c"><h2>${T2('Match the dates to the photo','تاریخ‌ها را با عکس تطبیق دهید')}</h2><p class="mu">${T2('Tap the column for day 1. The labels below show the dates that will be saved.','ستون روز ۱ را انتخاب کنید. شماره‌های زیر، تاریخ‌هایی هستند که ثبت می‌شوند.')}</p>${sc.pages.length>1?`<p>${T2('Page','صفحه')} ${d.pi+1}</p>`:''}<div class="date-check-fields"><label>${T2('Dates increase toward','روزها به کدام سمت جلو می‌روند؟')}<select onchange="sc.dateCheck.dr=+this.value;render()"><option value="-1" ${d.dr<0?'selected':''}>${T2('Left','چپ')}</option><option value="1" ${d.dr>0?'selected':''}>${T2('Right','راست')}</option></select></label><label>${T2('Number of days','تعداد روزها')}<input type="number" min="1" max="31" value="${d.count}" onchange="sc.dateCheck.count=Math.max(1,Math.min(31,+this.value||1));render()"></label></div><div class="date-columns" dir="ltr">${V.slice(0,-1).map((_,i)=>{const day=1+(i-d.col)*d.dr;return `<button class="date-column ${i===d.col?'selected':''}" aria-pressed="${i===d.col}" onclick="sc.dateCheck.col=${i};render()"><img src="${scanPreview(p.cv,V[i],Math.max(0,H[0]-(H[1]-H[0])*.7),V[i+1],H[1])}" alt="${T2('Date column','ستون تاریخ')} ${i+1}"><b>${day>=1&&day<=d.count?day:'—'}</b></button>`}).join('')}</div><p class="mu">${T2('If columns or rows are misplaced, straighten the photo first.','اگر ستون‌ها یا ردیف‌ها درست جدا نشده‌اند، اول عکس را صاف کنید.')}</p><div class="dialog-actions"><button class="p" onclick="applyDateCheck()">${T2('Dates match · continue','تاریخ‌ها درست‌اند · ادامه')}</button><button class="p s" onclick="sc.dateCheck=null;sc.continueReadAll=false;sc.pick=!!sc.rows?.length;render()">${T2('Cancel','لغو')}</button></div><button class="text-button" onclick="startAlignment(${d.pi})">${T2('Straighten photo','صاف کردن عکس')}</button></section>`}
-async function applyDateCheck(){const d=sc.dateCheck,p=sc.pages[d.pi],end=d.col+(d.count-1)*d.dr;if(end<0||end>=p.vl.length-1||[d.col,end].some(i=>i===p.nameCol)||p.nameCol>Math.min(d.col,end)&&p.nameCol<Math.max(d.col,end))return alert(T2('These dates reach outside the date columns. Check day 1 and the direction.','تاریخ‌ها از ستون‌های روزها خارج می‌شوند. ستون روز ۱ و جهت را بررسی کنید.'));const mapping=i=>{const day=1+(i-d.col)*d.dr;return day>=1&&day<=d.count?day:0},changed=p.vl.slice(0,-1).some((_,i)=>{const old=p.dayAt(i);return(old>=1&&old<=d.count?old:0)!==mapping(i)});p.dayAt=mapping;p.dr=d.dr;p.guess=false;p.datesConfirmed=true;sc.dateCheck=null;usePage(d.pi);if(sc.continueReadAll){sc.continueReadAll=false;return readAll()}if(sc.cells&&sc.rows[sc.ri]?.pi===d.pi&&changed){sc.busy=true;render();return readCells(sc.ri)}render()}
+function dateCheckV(){const d=sc.dateCheck,p=sc.pages[d.pi],H=p.hl,V=p.vl,header=Math.max(0,p.headerRow||0);return `<section class="c"><h2>${T2('Match the dates to the photo','تاریخ‌ها را با عکس تطبیق دهید')}</h2><p class="mu">${T2('Tap the column for day 1. The labels below show the dates that will be saved.','ستون روز ۱ را انتخاب کنید. شماره‌های زیر، تاریخ‌هایی هستند که ثبت می‌شوند.')}</p>${sc.pages.length>1?`<p>${T2('Page','صفحه')} ${d.pi+1}</p>`:''}<div class="date-check-fields"><label>${T2('Dates increase toward','روزها به کدام سمت جلو می‌روند؟')}<select onchange="sc.dateCheck.dr=+this.value;render()"><option value="-1" ${d.dr<0?'selected':''}>${T2('Left','چپ')}</option><option value="1" ${d.dr>0?'selected':''}>${T2('Right','راست')}</option></select></label><label>${T2('Number of days','تعداد روزها')}<input type="number" min="1" max="31" value="${d.count}" onchange="sc.dateCheck.count=Math.max(1,Math.min(31,+this.value||1));render()"></label></div><div class="date-columns" dir="ltr">${V.slice(0,-1).map((_,i)=>{const day=1+(i-d.col)*d.dr;return `<button class="date-column ${i===d.col?'selected':''}" aria-pressed="${i===d.col}" onclick="sc.dateCheck.col=${i};render()"><img src="${scanPreview(p.cv,V[i],Math.max(0,H[header]-(H[header+1]-H[header])*.3),V[i+1],H[header+1])}" alt="${T2('Date column','ستون تاریخ')} ${i+1}"><b>${day>=1&&day<=d.count?day:'—'}</b></button>`}).join('')}</div><p class="mu">${T2('If columns or rows are misplaced, straighten the photo first.','اگر ستون‌ها یا ردیف‌ها درست جدا نشده‌اند، اول عکس را صاف کنید.')}</p><div class="dialog-actions"><button class="p" onclick="applyDateCheck()">${T2('Dates match · continue','تاریخ‌ها درست‌اند · ادامه')}</button><button class="p s" onclick="sc.dateCheck=null;sc.continueReadAll=false;sc.pick=!!sc.rows?.length;render()">${T2('Cancel','لغو')}</button></div><button class="text-button" onclick="startAlignment(${d.pi})">${T2('Straighten photo','صاف کردن عکس')}</button></section>`}
+async function applyDateCheck(){const d=sc.dateCheck,p=sc.pages[d.pi],end=d.col+(d.count-1)*d.dr;if(end<0||end>=p.vl.length-1||Array.from({length:Math.abs(end-d.col)+1},(_,i)=>Math.min(d.col,end)+i).some(i=>scanNameOverlap(p,i)))return alert(T2('These dates reach outside the date columns. Check day 1 and the direction.','تاریخ‌ها از ستون‌های روزها خارج می‌شوند. ستون روز ۱ و جهت را بررسی کنید.'));const mapping=i=>{const day=1+(i-d.col)*d.dr;return day>=1&&day<=d.count?day:0},changed=p.vl.slice(0,-1).some((_,i)=>{const old=p.dayAt(i);return(old>=1&&old<=d.count?old:0)!==mapping(i)});p.dayAt=mapping;p.dr=d.dr;p.guess=false;p.datesConfirmed=true;sc.dateCheck=null;usePage(d.pi);if(sc.continueReadAll){sc.continueReadAll=false;return readAll()}if(sc.cells&&sc.rows[sc.ri]?.pi===d.pi&&changed){sc.busy=true;render();return readCells(sc.ri)}render()}
 // Manual perspective correction stays on the device; the original scan is retained.
-function startAlignment(pi){const p=sc.pages?.[pi];if(!p)return;sc.dateCheck=null;sc.align={pi,cv:p.source||p.cv,points:[]};render()}
+function startAlignment(pi){const p=sc.pages?.[pi];if(!p)return;sc.dateCheck=null;sc.columnPick=null;sc.photoRowPick=null;sc.align={pi,cv:p.source||p.cv,points:[]};render()}
 function alignmentV(){const a=sc.align,labels=[T2('top left','بالا چپ'),T2('top right','بالا راست'),T2('bottom right','پایین راست'),T2('bottom left','پایین چپ')];return `<section class="c"><h2>${T2('Straighten the table','جدول را صاف کنیم')}</h2><p>${a.points.length<4?T2('Tap the '+labels[a.points.length]+' corner of the full table (including names and dates).','گوشهٔ '+labels[a.points.length]+' جدول کامل را بزنید؛ نام‌ها و تاریخ‌ها هم داخل آن باشند.'):T2('All four corners selected.','هر چهار گوشه انتخاب شد.')}</p><div class="alignment-photo" onclick="alignmentPoint(event)"><img draggable="false" src="${a.cv.toDataURL('image/jpeg',.85)}" alt="${T2('Roster photo: select four table corners','عکس برنامه: چهار گوشهٔ جدول را انتخاب کنید')}">${a.points.map((p,i)=>`<span style="left:${p.x/a.cv.width*100}%;top:${p.y/a.cv.height*100}%">${i+1}</span>`).join('')}</div><div class="scan-tools"><button class="p s" onclick="sc.align.cv=turn(sc.align.cv,90);sc.align.points=[];render()">${T2('Rotate 90°','چرخش ۹۰°')}</button><button class="p s" ${a.points.length?'':'disabled'} onclick="sc.align.points.pop();render()">${T2('Undo point','برگرداندن نقطه')}</button></div><div class="dialog-actions"><button class="p" ${a.points.length===4?'':'disabled'} onclick="applyAlignment()">${T2('Straighten & read again','صاف کردن و خواندن دوباره')}</button><button class="p s" onclick="sc.align=null;render()">${T2('Cancel','لغو')}</button></div></section>`}
 function alignmentPoint(event){const a=sc.align;if(!a||a.points.length===4)return;const r=event.currentTarget.getBoundingClientRect();a.points.push({x:Math.max(0,Math.min(a.cv.width,(event.clientX-r.left)/r.width*a.cv.width)),y:Math.max(0,Math.min(a.cv.height,(event.clientY-r.top)/r.height*a.cv.height))});render()}
 function straightenTable(source,p){if(p.length!==4)throw Error('Select four corners.');const cross=(a,b,c)=>(b.x-a.x)*(c.y-b.y)-(b.y-a.y)*(c.x-b.x);if(p.some((a,i)=>cross(a,p[(i+1)%4],p[(i+2)%4])<=0))throw Error(T2('Select the corners in the shown order.','گوشه‌ها را به ترتیب گفته‌شده انتخاب کنید.'));const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),w=Math.round(Math.max(dist(p[0],p[1]),dist(p[3],p[2]))),h=Math.round(Math.max(dist(p[0],p[3]),dist(p[1],p[2])));if(w<80||h<80)throw Error(T2('Include the whole table.','تمام جدول را داخل کادر قرار دهید.'));const out=document.createElement('canvas');out.width=w+32;out.height=h+32;const ctx=out.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,out.width,out.height);const input=source.getContext('2d').getImageData(0,0,source.width,source.height),im=ctx.getImageData(16,16,w,h),[a,b,c,d]=p,dx1=b.x-c.x,dx2=d.x-c.x,dx3=a.x-b.x+c.x-d.x,dy1=b.y-c.y,dy2=d.y-c.y,dy3=a.y-b.y+c.y-d.y,det=dx1*dy2-dx2*dy1,g=(dx3*dy2-dx2*dy3)/det,k=(dx1*dy3-dx3*dy1)/det;
@@ -759,11 +885,10 @@ V.team=()=>{if(!S.wps.length)return`<div class="empty"><p class="mu">${T2('Add a
 // Reads every other row of the last scanned sheet and stores them as colleagues (device only).
 const cleanName=s=>(s||'').replace(/[\u200c\u200e\u200f|\[\]_]/g,' ').replace(/\s+/g,' ').trim();
 async function readAll(){const w=S.wps.find(x=>x.id===sc.wp);if(!w||!sc.pages)return;const unchecked=sc.pages.findIndex(p=>p.guess);if(unchecked>=0){sc.continueReadAll=true;tab='scan';openDateCheck(unchecked);return}const change=beginChange('Colleague roster','برنامهٔ همکاران',['mates']);tc.busy=true;tc.cancel=false;tc.v='list';tab='team';render();
-  try{if(!sc.wk){const B=BASE();await loadScript(B+'tesseract.min.js');sc.wk=await Tesseract.createWorker('eng',1,{workerPath:B+'worker.min.js',corePath:B,langPath:B+'lang',gzip:true})}
-    const wk=sc.wk,J=S.cal==='j',b0=J?fromJ(sc.y,sc.m,1):new Date(sc.y,sc.m-1,1),rows=sc.rows.filter((r,i)=>i!==sc.ri);
+  try{const wk=await scanWorker('eng'),J=S.cal==='j',b0=J?fromJ(sc.y,sc.m,1):new Date(sc.y,sc.m-1,1),rows=sc.rows.filter((r,i)=>i!==sc.ri);
     await wk.setParameters({tessedit_pageseg_mode:'7',tessedit_char_whitelist:codeTokens(w)});
     for(let q=0;q<rows.length&&!tc.cancel;q++){const r=rows[q];usePage(r.pi);const V=sc.vl,cells={},uns=[],scan={};P(T2('Reading colleague ','در حال خواندن برنامهٔ همکار ')+(q+1)+'/'+rows.length,q/rows.length);
-      for(let i=0;i<V.length-1;i++){const day=sc.dayAt(i);if(day<1||day>31||i===sc.nameCol)continue;const d=new Date(b0.getFullYear(),b0.getMonth(),b0.getDate()+day-1);if(!(J?jp(d).m===sc.m:d.getMonth()===sc.m-1))continue;
+      for(let i=0;i<V.length-1;i++){const day=sc.dayAt(i);if(day<1||day>31||scanNameOverlap(sc,i))continue;const d=new Date(b0.getFullYear(),b0.getMonth(),b0.getDate()+day-1);if(!(J?jp(d).m===sc.m:d.getMonth()===sc.m-1))continue;
         const result=await recognizeShift(w,wk,...cellBounds(V[i],r.y0,V[i+1],r.y1)),t=result.text;
         if(sc.guess||result.c<80||result.uncertain||!t||!parse(w,t))uns.push(iso(d));
         scan[iso(d)]=scanEvidence(result);if(t&&parse(w,t))cells[iso(d)]=t;}
@@ -1006,7 +1131,7 @@ let startupReady=false,noticeTimer=null,installOfferedThisSession=false;
 const updates={registration:null,worker:null,available:false,version:'',dismissed:false,approved:false,activeChanged:false,reloaded:false,lastChecked:0};
 const appInstalled=()=>!!(installedThisSession||navigator.standalone||window.matchMedia?.('(display-mode: standalone)').matches);
 function installOfferDue(now=Date.now()){const p=S.installReminder||{};return !appInstalled()&&!installOfferedThisSession&&p.choice!=='never'&&p.choice!=='installed'&&(!p.nextAt||now>=p.nextAt)}
-function hasUpdateDrafts(){return !!(inlineEditor||inlineDrafts.size||fi.book||fi.busy||sc.busy||sc.cells||sc.pick||sc.align||sc.dateCheck||tc.busy||changeSaving||undoBusy)}
+function hasUpdateDrafts(){return !!(inlineEditor||inlineDrafts.size||fi.book||fi.busy||sc.busy||sc.cells||sc.pick||sc.align||sc.dateCheck||sc.columnPick||sc.photoRowPick||tc.busy||changeSaving||undoBusy)}
 function noticeBlocked(){return !startupReady||tour.active||tour.finishing||!!$('#loading-screen')||$('#dlg').open||!!inlineEditor||fi.busy||sc.busy||tc.busy||changeSaving||undoBusy}
 function scheduleAppNotices(){clearTimeout(noticeTimer);if(!startupReady)return;noticeTimer=setTimeout(renderAppNotices,120)}
 function renderAppNotices(){if(noticeBlocked())return;if(updates.available&&!updates.dismissed){showAppUpdate();return}if(installOfferDue())showInstallOffer()}
@@ -1016,7 +1141,7 @@ async function dismissInstallOffer(choice='later'){if(!$('#install-offer'))retur
 function installFromOffer(){if(!$('#install-offer'))return;saveSettings({installReminder:{choice:'later',nextAt:Date.now()+7*DAY}});$('#dlg').close();if(installPrompt)promptInstall();else showInstallHelp()}
 function updateSettingsButton(){return updates.available?`<button class="p s update-settings" onclick="showAppUpdate()">${T2('Update app','به‌روزرسانی')}</button>`:''}
 function showAppUpdate(){if(!updates.available||tour.active||sc.busy||tc.busy||fi.busy||changeSaving||undoBusy)return;const draft=hasUpdateDrafts();installOfferedThisSession=true;dlg(`<section id="app-update" class="startup-prompt"><span class="fox-mark install-offer-logo" aria-hidden="true"></span><h2>${T2('A new FoxiOra is ready','نسخهٔ جدید FoxiOra آماده‌ست')}</h2>${updates.version?`<bdi class="version-badge update-version" data-latin dir="ltr">${esc(updates.version)}</bdi>`:''}<p>${draft?T2('Finish or close your open draft first. Your saved schedules stay on this device.','اول پیش‌نویس بازت رو تمام کن. برنامه‌های ثبت‌شده روی همین دستگاه می‌مونن.'):T2('Restart when you’re ready. Your saved schedules stay on this device.','هر وقت آماده بودی، نسخهٔ جدید رو باز کن. برنامه‌های ثبت‌شده روی همین دستگاه می‌مونن.')}</p><div class="dialog-actions"><button class="p" id="apply-update" onclick="applyAppUpdate()" ${draft?'disabled':''}>${T2('Open new version','باز کردن نسخهٔ جدید')}</button><button class="p s" onclick="${draft?'continueUpdateDraft()':'deferAppUpdate()'}">${draft?T2('Continue editing','ادامهٔ ویرایش'):T2('Later','بعداً')}</button></div><p id="update-status" class="startup-status" role="status"></p></section>`)}
-function continueUpdateDraft(){deferAppUpdate();if(inlineEditor){inlineEditor.node.scrollIntoView?.({block:'start'});inlineEditor.node.querySelector('summary')?.focus?.()}else if(inlineDrafts.size)resumeDraft();else if(fi.book)openFileImport(fi.wp,fi.colleaguesOnly);else if(sc.cells||sc.pick||sc.align||sc.dateCheck)go('scan')}
+function continueUpdateDraft(){deferAppUpdate();if(inlineEditor){inlineEditor.node.scrollIntoView?.({block:'start'});inlineEditor.node.querySelector('summary')?.focus?.()}else if(inlineDrafts.size)resumeDraft();else if(fi.book)openFileImport(fi.wp,fi.colleaguesOnly);else if(sc.cells||sc.pick||sc.align||sc.dateCheck||sc.columnPick||sc.photoRowPick)go('scan')}
 function deferAppUpdate(){updates.dismissed=true;if($('#app-update'))$('#dlg').close();if(tab==='set')render();scheduleAppNotices()}
 function offerAppUpdate(worker,version=''){updates.worker=worker||null;updates.available=true;if(/^v\d+(?:\.\d+){1,3}$/.test(version))updates.version=version;(worker||navigator.serviceWorker?.controller)?.postMessage?.({type:'FOXIORA_VERSION'});if(tab==='set')render();scheduleAppNotices()}
 async function applyAppUpdate(){if(!updates.available||updates.approved)return;if(hasUpdateDrafts()){const n=$('#update-status');if(n)n.textContent=T2('Finish or close your draft before restarting.','قبل از باز کردن نسخهٔ جدید، پیش‌نویست رو تمام کن.');return}updates.approved=true;const b=$('#apply-update');if(b){b.disabled=true;b.textContent=T2('Opening…','در حال باز کردن…')}try{const worker=updates.registration?.waiting||updates.worker;if(worker&&worker.state!=='redundant'){worker.postMessage({type:'FOXIORA_APPLY_UPDATE'})}else if(updates.activeChanged){reloadApprovedUpdate()}else{updates.approved=false;const n=$('#update-status');if(n)n.textContent=T2('Checking the update. Try again shortly.','داریم نسخهٔ جدید رو بررسی می‌کنیم؛ کمی بعد دوباره بزن.');if(b)b.disabled=false;updates.registration?.update().catch(()=>{})}}catch{updates.approved=false;if(b)b.disabled=false;const n=$('#update-status');if(n)n.textContent=T2('Could not open the update. Try again.','نسخهٔ جدید باز نشد؛ دوباره امتحان کن.')}}

@@ -1,11 +1,15 @@
-# FoxiOra v12.27 — changes-only update from v12.26
+# FoxiOra v12.28 — scanner reliability update from v12.27
 
-Planner date and time fields stack on narrow screens. Native date/time controls have explicit width limits and keep 16 px text. Duration and unit share a balanced row. The time input stays inside the planner card in both language directions.
+The scanner now locates a consistent date sequence across several possible header rows and independently validates candidate names columns with sampled name text. It no longer picks a column solely by which table edge it occupies. Shift codes, row numbers and table headings are rejected as OCR name suggestions. Ambiguous names columns open a visual column choice instead of automatically choosing a nurse.
 
-Settings titles use a consistent hierarchy above action text. Buttons use calmer text and padding while preserving 44 px tap targets. Settings remains one section per row. Theme and clock choices are smaller visually; input values remain readable. Support text and the Telegram ID share a row, with the title wrapping when necessary. Section headings and actions use a consistent scale.
+Weaker row borders are recovered when supported by the table spacing. Irregular row heights are retained. When a separator or the lower borders are absent, independent name/shift ink can recover otherwise missing rows. Every detected name-photo row is built before name recognition, so an OCR failure cannot truncate the available list.
 
-The tutorial now has a separate scrollable app viewport and a contrasting guide. The guide cannot cover the highlighted app area. Short landscape screens put them side by side. Guide copy scrolls independently when needed; Back and Next stay visible. Actual app controls handle interactions, without duplicate guide shortcuts. Each step reveals the control or result it describes. Window, header and guide resizing update the layout. Focus moves to the step heading rather than adding a competing accent ring to Next.
+Names are read with the script suggested by the sampled text, with a grayscale/binary retry. A single general OCR worker switches languages rather than maintaining separate English and Persian workers for layout and names. Header recognition is reused after orientation selection, and decoded source bitmaps are released after resizing. The existing trained shift-symbol recognizer and conservative uncertainty review remain.
 
-Completing a replay returns to Today and clears the tutorial's expanded settings. An empty first-time account proceeds to schedule setup. Skipping restores the previous page with the sample settings closed. Saved schedules, drafts and approved personalization choices are preserved. The approved artwork, visible launch fill and user-controlled update prompt remain.
+The row picker shows the photo alongside each label. If needed, users can correct the names column or choose their name directly from the full photo, including below the automatically detected rows. That fallback reads the selected row and does not divert the user into importing colleagues. Correcting an existing row does not duplicate it. Date confirmation previews the actual detected header, and date mappings remain separate between pages. Visual selection drafts block an approved-update restart until the user finishes or closes them.
 
-Apply after v12.26. Upload only the contents of `repo-files`, preserving subfolders. Generated app.js and style.css are included. No deletions or new dependencies. This package has not been deployed.
+No API key, paid OCR service or new dependency is used. Photos stay on the device. The scanner works offline after its existing initial scanner download. No new vendor/model assets are required by this patch.
+
+The controlled tests reproduce and fix missing rows and a title/header mix-up. Name OCR is still imperfect; the full photo remains available when a label cannot be read. The exact failing phone/photo combination has not yet been supplied for validation. See QA-REPORT.md for measured results and limits.
+
+Apply after v12.27. Copy only the contents of `repo-files` into the repository root, preserving subfolders. Generated app.js and style.css are included. No deletions. This package is prepared for manual upload and has not been deployed.
