@@ -163,7 +163,7 @@ test('cover flow stays visible without colleagues and supports several selected 
  run("S.shifts=['2099-10-04','2099-10-06'].map((date,i)=>({id:'h'+i,wp:'w1',date,text:'D',segs:makeSegs(date,parse(S.wps[0],'D'))}));openCover()");
  assert.equal(run('tab'),'team');assert.equal(run('tc.v'),'cover');
  assert.match(run('V.team()'),/toggleCoverDay/);assert.match(run('V.team()'),/افزودن برنامهٔ همکاران/);
- run("togD('h0');togD('h1');S.mates=[{id:'both',wp:'w1',name:'Both',cells:{'2099-10-04':'-','2099-10-06':'-'},uns:[]},{id:'one',wp:'w1',name:'One',cells:{'2099-10-04':'-'},uns:[]}];coverGo()");
+ run("tc.multiple=true;togD('h0');togD('h1');S.mates=[{id:'both',wp:'w1',name:'Both',cells:{'2099-10-04':'-','2099-10-06':'-'},uns:[]},{id:'one',wp:'w1',name:'One',cells:{'2099-10-04':'-'},uns:[]}];coverGo()");
  assert.equal(run('tc.res.rows.length'),2);assert.equal(run("tc.res.all.map(m=>m.id).join(',')"),'both');
  assert.equal(run('tc.res.rows[1].unk[0].m.id'),'one');
  run("tc.wp='other';S.wps.push({id:'other',codes:S.wps[0].codes});");assert.equal(run('coverCalc().rows.length'),0);
@@ -180,7 +180,7 @@ test('swap navigation has the requested label and always opens date selection',a
 test('three tabs retain setup routes, English palettes and entry choices',async()=>{
  const {run,runAsync,document}=app();run("S.shifts=[{id:'s1',segs:[],date:'2026-10-04'}];go('today');addSchedule()");
  assert.equal(document.querySelectorAll('nav button').length,3);
- assert.match(document.querySelector('#inline-editor').textContent,/ثبت دستی شیفت/);
+ assert.match(document.querySelector('.schedule-methods').textContent,/ثبت دستی شیفت/);
  run("closeDialog();go('set')");assert.equal(document.querySelectorAll('.settings-group').length,5);
  for(const name of ['Fox','Siren','Hedo','Forest'])assert.ok(document.querySelector('#v').textContent.includes(name));
  run("go('places');editWp('w1')");assert.equal(document.querySelectorAll('.code-editor').length,7);assert.ok(document.querySelector('#dlg details'));

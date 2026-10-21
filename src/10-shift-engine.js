@@ -12,7 +12,7 @@ function parse(wp,text){if(!wp?.codes||!text)return null;text=nrm(text).replace(
  let i=0,out=[];while(i<text.length){const matches=tokens.filter(x=>text.startsWith(x.token,i)),m=matches[0];if(!m)return null;
  if(matches.some(x=>x.token===m.token&&x.c.code!==m.c.code))return null;out.push(m.c);i+=m.token.length}return out.length?out:null}
 // Upgrade the former default list without widening deliberately customized swap rules.
-function allowedCombos(w){const choices=w.combos??DEFAULT_COMBOS;return [...new Set(choices.length===3&&['DE','EN','En'].every(c=>choices.includes(c))?[...choices,'DN']:choices)]}
+function allowedCombos(w){const choices=w.combos??DEFAULT_COMBOS;return [...new Set(w.combosVersion!==2&&choices.length===3&&['DE','EN','En'].every(c=>choices.includes(c))?[...choices,'DN']:choices)]}
 const canonicalShift=(w,t)=>{const c=parse(w,t);return c?c.every(x=>x.type==='off')?offCode(w):c.map(x=>x.code).join(''):t};
 const codeTokens=w=>[...new Set(w.codes.flatMap(c=>[c.code,...(c.aliases||[])]).join('')+'-م')].join('');
 const shiftKind=(w,t)=>{const c=parse(w,t);return !c?'unknown':c.every(x=>x.type==='off')?'off':c.every(x=>x.type==='leave')?'leave':c.some(x=>x.code==='N'||x.code==='n')?'night':c.length>1?'combined':c.some(x=>x.code==='E')?'evening':'day'};

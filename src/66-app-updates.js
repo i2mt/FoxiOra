@@ -3,8 +3,8 @@ let startupReady=false,noticeTimer=null,installOfferedThisSession=false;
 const updates={registration:null,worker:null,available:false,version:'',dismissed:false,approved:false,activeChanged:false,reloaded:false,lastChecked:0};
 const appInstalled=()=>!!(installedThisSession||navigator.standalone||window.matchMedia?.('(display-mode: standalone)').matches);
 function installOfferDue(now=Date.now()){const p=S.installReminder||{};return !appInstalled()&&!installOfferedThisSession&&p.choice!=='never'&&p.choice!=='installed'&&(!p.nextAt||now>=p.nextAt)}
-function hasUpdateDrafts(){return !!(inlineEditor||inlineDrafts.size||fi.book||fi.busy||sc.busy||sc.cells||sc.pick||sc.align||sc.dateCheck||sc.columnPick||sc.photoRowPick||tc.busy||changeSaving||undoBusy)}
-function noticeBlocked(){return !startupReady||tour.active||tour.finishing||!!$('#loading-screen')||$('#dlg').open||!!inlineEditor||fi.busy||sc.busy||tc.busy||changeSaving||undoBusy}
+function hasUpdateDrafts(){return !!(inlineEditor||inlineDrafts.size>0||fi.book||fi.busy||sc.busy||sc.cells||sc.pick||sc.align||sc.dateCheck||sc.columnPick||sc.photoRowPick||tc.busy||changeSaving||undoBusy)}
+function noticeBlocked(){return !startupReady||tour.active||tour.finishing||!!$('#loading-screen')||$('#dlg').open||!!inlineEditor||inlineDrafts.size>0||!!fi.book||!!sc.cells||sc.pick||sc.align||sc.dateCheck||sc.columnPick||sc.photoRowPick||fi.busy||sc.busy||tc.busy||changeSaving||undoBusy}
 function scheduleAppNotices(){clearTimeout(noticeTimer);if(!startupReady)return;noticeTimer=setTimeout(renderAppNotices,120)}
 function renderAppNotices(){if(noticeBlocked())return;if(updates.available&&!updates.dismissed){showAppUpdate();return}if(installOfferDue())showInstallOffer()}
 function startAppExperience(){startupReady=true;if(!maybeStartIntro())scheduleAppNotices()}

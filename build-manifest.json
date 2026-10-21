@@ -12,6 +12,7 @@
     "src/58-monthly-hours.js",
     "src/60-digital-roster.js",
     "src/62-file-import.js",
+    "src/64-guided-flows.js",
     "src/65-intro-install.js",
     "src/66-app-updates.js",
     "src/70-startup.js"
@@ -26,6 +27,7 @@
     "src/55-roster-presence.css",
     "src/58-monthly-hours.css",
     "src/80-brand-assets.css",
-    "src/85-intro-import.css"
+    "src/85-intro-import.css",
+    "src/90-refinements.css"
   ]
 }
