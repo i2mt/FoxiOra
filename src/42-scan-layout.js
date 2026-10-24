@@ -92,37 +92,22 @@ function scanNameOverlap(page,index){
 }
 function scanNameCrop(bounds,y0,y1,binary=0){return cropC(...cellBounds(bounds[0],y0,bounds[1],y1),binary,110)}
 async function locateNameColumn(){
- sc.nameBounds=null;const candidates=nameColumnCandidates(),bands=scanBodyBands();if(!candidates.length){const raw=nameColumnEdges(sc);candidates.push({bounds:raw.slice(-2),index:Math.max(0,sc.vl.length-2),score:0})}
- // Geometry proposes columns; text sampled at the top, middle and bottom validates them.
- const sample=[...new Set([0,Math.floor(bands.length/2),bands.length-1])].filter(i=>bands[i]);let worker;
- try{worker=await scanWorker('fas+eng')}catch(e){sc.nameWarning='ocr';sc.nameLayoutUncertain=true;setNameBounds(candidates[0].bounds);return}
- for(const candidate of candidates){candidate.samples=new Map();candidate.names=0;
-  for(const i of sample){try{const result=await worker.recognize(scanNameCrop(candidate.bounds,...bands[i]));const text=usableName(result.data.text);candidate.samples.set(i,result);if(text)candidate.names++}catch{sc.nameWarning='ocr';break}}
-  candidate.total=candidate.score+candidate.names*5;
- }
- candidates.sort((a,b)=>(b.total??b.score)-(a.total??a.score));const best=candidates[0],other=candidates[1];setNameBounds(best.bounds);sc.nameSamples=null;const texts=[...(best.samples?.values()||[])].map(r=>usableName(r.data.text)).filter(Boolean);sc.nameLanguage=texts.some(t=>/[\u0621-\u06ff]/.test(t))?'fas':texts.length?'eng':'fas+eng';
- sc.nameLayoutUncertain=best.names<Math.min(2,sample.length)||(other&&other.total>=best.total-2&&other.names>=best.names);sc.nameCandidates=candidates
+ sc.nameBounds=null;const candidates=nameColumnCandidates();if(!candidates.length){const raw=nameColumnEdges(sc);candidates.push({bounds:raw.slice(-2),index:Math.max(0,sc.vl.length-2),score:0})}
+ // Names stay as photos. Geometry can propose a column, never a person's name.
+ candidates.sort((a,b)=>b.score-a.score);const best=candidates[0],other=candidates[1];setNameBounds(best.bounds);sc.nameSamples=null;sc.nameLanguage=null;sc.nameCandidates=candidates;sc.nameLayoutUncertain=!!sc.guess||!!(other&&other.score>=best.score-2);sc.nameWarning='';
 }
 function nameMatchScore(name){const tokens=(sc.name||'').split(/\s+/).map(nn).filter(Boolean),words=name.split(/\s+/).map(nn).filter(Boolean);return tokens.filter(t=>words.some(w=>w===t||t.length>3&&lev(w,t)<=(t.length>5?2:1))).length/(tokens.length||1)}
 async function readNameRows(){
  const bands=scanBodyBands(),bounds=sc.nameBounds;
- // Build every photo row first: a slow/failed OCR worker cannot truncate this list.
+ // Keep every photographed row without relying on text recognition.
  sc.rows=bands.map(([y0,y1],index)=>{const crop=scanNameCrop(bounds,y0,y1);return {y0,y1,index,score:0,nm:'',rawName:'',img:crop.toDataURL('image/jpeg',.85),nameFeature:visualFeature(crop,'names')}});
- let worker;try{worker=await scanWorker(sc.nameLanguage||'fas+eng')}catch{sc.nameWarning='ocr';return}
- for(let i=0;i<sc.rows.length;i++){
-  const row=sc.rows[i];P('Reading names…',.45+.3*i/sc.rows.length);
-  try{
-   let result=await worker.recognize(scanNameCrop(bounds,row.y0,row.y1)),raw=usableName(result.data.text);
-   if(!raw||result.data.confidence<65){const retry=await worker.recognize(scanNameCrop(bounds,row.y0,row.y1,1)),text=usableName(retry.data.text);if(text&&(!raw||retry.data.confidence>result.data.confidence)){result=retry;raw=text}}
-   const memory=recallExample('names',sc.wp,row.nameFeature,raw),staff=!memory&&raw&&staffNameSuggestion(wp(sc.wp),raw),name=usableName(memory?.label||staff?.label||raw);
-   Object.assign(row,{nm:name,rawName:raw,score:sc.nameLayoutUncertain?0:nameMatchScore(name),remembered:!!memory,suggested:!!staff,nameConfidence:result.data.confidence||0})
-  }catch{sc.nameWarning='ocr';await killWk();break}
- }
+ // No name OCR or guessed labels: every row remains selectable from its crop.
+ sc.nameWarning='';
 }
 function rebuildScanRows(){sc.rows=sc.pages.flatMap((p,pi)=>p.rows.map(r=>({...r,pi,page:pi+1})))}
 function rowPickerV(){
  const pages=sc.pages||[];
- return `${isSettingUp()?setupSteps(2):''}${scanError()}<div class="scan-tools"><button class="text-button" onclick="startAlignment(0)">${T2('Straighten / rotate','صاف کردن / چرخاندن')}</button></div><h1>${T2('Choose your row from the photo','ردیف خودت رو از عکس انتخاب کن')}</h1><div class="scan-row-list">`+sc.rows.map((r,i)=>`<button class="c scan-row-choice" onclick="chooseRow(${i})"><img src="${imageSrc(r.img)}" alt="${T2('Name from row ','نام در ردیف ')}${r.index+1}"><span><b>${bidi(usableName(r.nm)||T2('Row '+(r.index+1),'ردیف '+PDg(r.index+1)))}</b>${pages.length>1?`<small>${T2('Page ','صفحه ')}${r.page}</small>`:''}</span></button>`).join('')+`</div><div class="scan-page-tools">${pages.map((p,i)=>`<button class="text-button" onclick="openNameColumn(${i})">${T2('Fix names column','اصلاح ستون نام‌ها')}${pages.length>1?' · '+(i+1):''}</button><button class="text-button" onclick="openPhotoRow(${i})">${T2('Choose from the full photo','انتخاب از تمام عکس')}${pages.length>1?' · '+(i+1):''}</button>`).join('')}</div><div class="row"><button class="p s" onclick="sc.pick=false;killWk();render()">${T2('Back','بازگشت')}</button><label class="p s"><input type="file" accept="image/*" multiple hidden onchange="scanFile(this.files,true);this.value=''">${T2('Add another page','افزودن صفحه')}</label></div>`
+ return `${isSettingUp()?setupSteps(2):''}${scanError()}<div class="scan-tools"><button class="text-button" onclick="startAlignment(0)">${T2('Straighten / rotate','صاف کردن / چرخاندن')}</button></div><h1>${T2('Choose your row from the photo','ردیف خودت رو از عکس انتخاب کن')}</h1><div class="scan-row-list">`+sc.rows.map((r,i)=>`<button class="c scan-row-choice" onclick="chooseRow(${i})"><img src="${imageSrc(r.img)}" alt="${T2('Name from row ','نام در ردیف ')}${r.index+1}"><span><b>${bidi(T2('Row '+(r.index+1),'ردیف '+PDg(r.index+1)))}</b>${pages.length>1?`<small>${T2('Page ','صفحه ')}${r.page}</small>`:''}</span></button>`).join('')+`</div><div class="scan-page-tools">${pages.map((p,i)=>`<button class="text-button" onclick="openNameColumn(${i})">${T2('Fix names column','اصلاح ستون نام‌ها')}${pages.length>1?' · '+(i+1):''}</button><button class="text-button" onclick="openPhotoRow(${i})">${T2('Choose from the full photo','انتخاب از تمام عکس')}${pages.length>1?' · '+(i+1):''}</button>`).join('')}</div><div class="row"><button class="p s" onclick="sc.pick=false;killWk();render()">${T2('Back','بازگشت')}</button><label class="p s"><input type="file" accept="image/*" multiple hidden onchange="scanFile(this.files,true);this.value=''">${T2('Add another page','افزودن صفحه')}</label></div>`
 }
 function nameColumnWidth(page){return Math.max(1,page.cv?.width||Math.max(1,...(page.rawV||page.vl||[]).filter(Number.isFinite)))}
 function nameColumnEdges(page){const width=nameColumnWidth(page),raw=page.rawV?.length>1?page.rawV:page.vl||[];return [...new Set([0,...raw,width].filter(Number.isFinite).map(x=>Math.round(Math.max(0,Math.min(width,x)))))].sort((a,b)=>a-b)}

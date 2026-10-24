@@ -207,7 +207,7 @@ async function readAll(){const w=S.wps.find(x=>x.id===sc.wp);if(!w||!sc.pages)re
         scan[iso(d)]=scanEvidence(result);if(t&&parse(w,t))cells[iso(d)]=t;}
       const name=cleanName(r.nm),duplicate=rows.filter(x=>nn(cleanName(x.nm))===nn(name)).length>1,ex=duplicate?null:matchingColleague(w.id,name);
       const meta={img:r.img,rawName:r.rawName||r.nm,nameFeature:r.nameFeature};
-      if(ex){for(const date of Object.keys(scan))delete ex.cells[date];Object.assign(ex.cells,cells);ex.uns=[...(ex.uns||[]).filter(x=>!(x in scan)),...uns];ex.scan={...ex.scan,...scan};ex.scan=Object.fromEntries(Object.entries(ex.scan).sort(([a],[b])=>b.localeCompare(a)).slice(0,62));Object.assign(ex,meta)}else(S.mates=S.mates||[]).push({id:'m'+Date.now()+q,wp:w.id,name:name||'#'+(q+1),...meta,cells,uns,scan})}
+      if(ex){for(const date of Object.keys(scan))delete ex.cells[date];Object.assign(ex.cells,cells);ex.uns=[...(ex.uns||[]).filter(x=>!(x in scan)),...uns];ex.scan={...ex.scan,...scan};ex.scan=Object.fromEntries(Object.entries(ex.scan).sort(([a],[b])=>b.localeCompare(a)).slice(0,62));Object.assign(ex,meta)}else(S.mates=S.mates||[]).push({id:'m'+Date.now()+q,wp:w.id,name:name||T2('Colleague '+(q+1),'همکار '+PDg(q+1)),...meta,cells,uns,scan})}
 
     }catch(e){alert(T2('Could not finish reading colleagues. Try again.','خواندن برنامهٔ همکاران کامل نشد؛ دوباره تلاش کنید.'))}
   const saved=await commitChange(change);tc.busy=false;await killWk();render();if(!saved)return;roster.review=false;roster.cm=mfirst(S.cal==='j'?fromJ(sc.y,sc.m,1):new Date(sc.y,sc.m-1,1));roster.page=0;openRoster(w.id)}

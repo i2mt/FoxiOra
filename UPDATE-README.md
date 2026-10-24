@@ -1,11 +1,13 @@
-# FoxiOra v12.31 — names-column selection
+# FoxiOra v12.31 → v12.32
 
-The names-column picker previously searched only intervals between detected vertical lines. When the date grid was detected but the outside border of the names area was missing, tapping that area returned no interval and left the selection unchanged. This failure reproduced on both sides of a table.
+Replace the files in this patch over v12.31. app.js and style.css are already built. No file deletions, deployment or database migration is required.
 
-The picker now covers the full photo, including areas before the first and after the last detected line. Automatic name-column candidates also consider those outside areas. A selected-column crop preview makes the result visible before reading. Optional native edge sliders allow selection across false internal lines or part of a merged column without relying on line detection. Slider updates preserve the active control rather than rebuilding the page during adjustment.
+- Person selection uses photographed name rows and neutral row numbers. Automatic name OCR and guessed name suggestions are removed. Manual naming remains available.
+- Corrections stay in one editor with a larger photo crop, one-line pending-date queue, automatic next unclear date, Skip and Undo. The month overview keeps every day editable.
+- Date checks happen before corrections when the date layout is uncertain. Later date adjustment preserves human confirmations by physical photo column.
+- Smaller strokes survive extraction; off-mark detection separates small DN from thin marks. Strong symbol readings can be checked on a cleaned crop when raw segmentation fails. Weak suggestions stay pending, genuine blanks stay unknown, and only human corrections teach example memory.
+- Colleagues without entered names receive neutral editable labels beside their name-photo crops.
 
-Accepting a column preserves each page's date mapping and row-selection flow. A selected names area outside the date grid does not consume a date cell. Switching pages now uses that page's progress photo. A successful column correction clears a previous failure message.
+All 356 automated checks passed. Sixteen browser layout/touch cases passed, including stable page position during corrections. On the supplied photo, pending results fell from 168 to 66 across 690 date cells in a controlled comparison. See QA-REPORT.md for the test scope and remaining limits.
 
-This fixes column geometry and selection; it does not promise perfect OCR labels. Unreadable labels remain available through their photo rows. No new model, paid API, dependency or vendor download is introduced. Existing offline scanner assets remain valid.
-
-Apply over v12.30. Copy only repo-files contents into the repository root, preserving subfolders. Generated app.js/style.css are included. No deletions. Prepared for manual upload; not deployed.
+This release retains the existing free local engines. It does not include a newly trained model. The approximately 20-photo dataset requested for that work has not yet been recovered; two actual roster photos are currently available.

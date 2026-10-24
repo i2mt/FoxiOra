@@ -1,21 +1,35 @@
-# FoxiOra v12.31 verification
+# FoxiOra v12.32 verification
 
-## Reproduction
+## Release scope
 
-In v12.30, with photo width 1000 and detected vertical lines [200,400,600,800], taps at x=50 and x=950 both left the selection at [400,600]. Those taps were outside the detected grid but inside the original photo. The new picker selects [0,200] and [800,1000], respectively.
+Photo-based person selection, stable shift correction and stronger use of the existing recognition engines. No new neural model has been trained or shipped. No external OCR API, API key, paid service or new runtime dependency is introduced. The existing scanner models remain unchanged.
 
 ## Automated checks
 
-All 343 checks passed in the complete npm test suite. scanner-layout.cjs now has 36 tests, including 13 additions for this release: missing left/right borders; image-versus-frame coordinate mapping; joining falsely split columns without re-rendering; clamped non-crossing edges; automatic outside-grid candidates; free selection without inner borders; sorted/unique/in-bounds candidates; preserved separate page/date mappings; not masking dates for an outside names area; visible crop preview and labelled native sliders; selected-page progress photos; and clearing stale failure messages.
+The complete npm test suite passed: 356 tests, zero failures. Thirteen new correction tests cover mounted controls, executable updated click handlers, advancing through pending dates, skipping, completion and Undo, preserved original evidence, no premature roster/memory writes, checking uncertain dates before reading, preserving confirmations by physical photo column during date correction, isolation between people's rows, small-DN versus dash extraction, cleaned-crop validation, tentative specialist labels and blank-cell abstention. Names tests now explicitly require no name OCR or guessed labels.
 
-Generated bundles match source, and app.js/sw.js syntax checks pass.
+Generated bundles match source. app.js and sw.js syntax checks pass.
 
-## Browser and OCR checks
+## Supplied photo comparison
 
-The actual bundled OCR workers processed two generated Persian roster images with 6 people and 31 dates. One has names on the right with its outside vertical border omitted; the other has names on the left with the same omission and dates in the opposite direction. Automatic detection chose the names area in both, with all 6 photo rows retained. Automatic OCR labels were usable for 5 of 6 names in each generated image; the unreadable name remained a photo row. These fixtures do not establish real-world name-reading accuracy.
+The actual bundled workers processed the user's latest 810×1080 photo in v12.31 and v12.32 using the same row and date-column mapping. This comparison uses 23 photographed rows and 30 valid dates (690 cells); the unused day-31 column is excluded. The benchmark sets the correct date-column mapping explicitly to isolate symbol recognition from layout.
 
-Actual touch events selected the names area beyond the detected lines on either side. Applying the selection retained 6 selectable rows. Reading a selected row on the right-side fixture produced 31 distinct dates; selecting names did not shift or remove the date columns. Precise controls changed both edges and updated a valid crop preview.
+Pending cells fell from 168 to 66. There were 102 newly resolved cells: 80 off marks, 18 D, 3 M and 1 E. No formerly clear cell became pending in this run. All 122 changed symbol/status crops were visually inspected; this includes tentative readings that remain pending. This is a one-photo regression comparison, not a general accuracy percentage. Unchanged confident outputs were not all independently labelled, so these results do not establish perfect overall correctness. OCR confidence is not a calibrated probability.
 
-16 viewport/language/theme combinations passed: 320×548, 375×548, 430×800 and 667×375, each in Persian/English and light/dark. No horizontal page overflow, no page errors, and both native sliders and the confirmation action remained usable. With the browser offline and the previous OCR worker terminated, accepting the column started a fresh worker using cached scanner assets and retained all 6 photo rows.
+A separate complete UI flow on the same photo used the visible Aban 1405 month: all 23 name-photo rows were retained, with no guessed names; the date mapping was detected correctly for that month; the chosen second person's row produced 30 dates in order and 3 pending cells. Corrections and Undo worked, and review opened at the page top. Different reading order/worker state may produce different pending counts, so this single-row result is separate from the all-row comparison above.
 
-These are Chromium mobile/touch emulation checks, not tests on the two reported physical phones. The user's original failing image was not supplied in this turn; its exact layout has not been verified. OCR models are unchanged. QA screenshots, generated images, browser runtime and automation scripts are excluded from the repository patch.
+## Synthetic controls
+
+Thirty-two generated cells exercised D, Persian م, -, N, E, DN, unsupported O and empty cells in normal, small, faint and grid-border conditions. D/N/E/DN and off marks were read correctly in these fixtures. The small DN that previously became an off mark now remains DN. Unsupported O and actual empty cells remained unknown. Three Persian م variants proposed M for human confirmation; the smallest remained unknown. Persian readings still need review in many cases.
+
+## Correction UI
+
+Sixteen Chromium touch-emulation cases passed: 320×548, 375×548, 430×800 and 667×375, each in Persian/English and light/dark. Controls stay mounted and visible taps do not change page scroll or editor position. Automatic advance, final completion, direct DN editing, Undo, reachable Save and no horizontal page overflow were checked. Editing and Undo also worked with the browser offline. These are browser emulation checks, not tests on physical iPhones or Safari.
+
+The single-line pending queue keeps a constant area as dates are resolved. All days remain available in the overview. Blank cells stay unknown unless the user explicitly defines their meaning. Name rows are selected from photographs; names can be entered manually. Colleague imports use editable neutral labels and name-photo crops.
+
+Original roster photos, employee names, private crops, QA screenshots, browser binaries, local analysis scripts and downloaded unrelated candidate images are excluded from the update package.
+
+## Dedicated recognizer dataset
+
+Two distinct actual roster photos have currently been recovered: IMG_6179.jpeg and the latest 9b2d17bb-5426-4d87-a64f-1db8009b5d51.JPG. The set of approximately 20 photos mentioned by the user has not been located. A multi-photo model comparison/training run is pending recovery or upload of that dataset. Neither the current release nor this report claims that such a model has been trained.

@@ -8,7 +8,7 @@ const dField=(id,v)=>S.cal==='j'?`<input id="${esc(id)}" inputmode="numeric" dir
 const dGet=id=>{const v=document.getElementById(id).value;if(S.cal!=='j')return v;const p=nrm(v).split(/[\/\-.]/).map(Number);if(p.length!==3||p.some(isNaN))return'';const t=fromJ(...p);return t?iso(t):''};
 const JM=['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
 
-// Scanner pipeline: enhance photo -> OCR #1 (layout: dates + names) -> locate header row & your row -> OCR #2 per cell (single-line, code whitelist) -> review with crops.
+// Scanner pipeline: table/date layout -> photographed name rows -> shift recognition -> review.
 let sc={wp:'',name:'',y:0,m:0,words:null,cells:null,msg:'',busy:false,img:'',cv:null};
 const OCR_CACHE='foxiora-ocr-v1';
 const OCR_ASSETS=[{"file":"tesseract.min.js","bytes":66695,"sha256":"a8e29918d098b2b06e1012bdaeffb4aec0445c5d5654709023e0bd1f442a80e8"},{"file":"worker.min.js","bytes":123724,"sha256":"aca1229639fc9907d86f96e825955a2b7c5716d17f3bc3acd71f9c7ab66181fc"},{"file":"tesseract-core-simd-lstm.wasm.js","bytes":3938657,"sha256":"ce20eda9533cbed1e6c2b4276fbae1e0adc61b6754b5513084be601787b457cf"},{"file":"tesseract-core-lstm.wasm.js","bytes":3938277,"sha256":"8f04aa0cc81e7bde33f80e92fa01a7a665f0b4884d098acf5de9c7104a11dfaa"},{"file":"lang/eng.traineddata.gz","bytes":2952873,"sha256":"45b4cb346724ac1774f1c36f42f182b887bcdb28ebe63e6fff90ac41f3fcff91"},{"file":"lang/fas.traineddata.gz","bytes":424507,"sha256":"b5847360e25f646c55449f1fe93eee57d53e406a265ead2374e7320bf0b82025"},{"file":"lang/ora.traineddata.gz","bytes":2937787,"sha256":"7f45d3f82d5927c8290ecd4e66616817742ee5b7b95ceb11be1ffb1b929d9a1a"}];
@@ -83,12 +83,13 @@ function glyph(x0,y0,x1,y1,hg=80,source=sc.cv){const w=x1-x0,h=y1-y0,mx=Math.rou
   const lab=new Int32Array(W*H),cp=[],st=[];let id=0;
   for(let i=0;i<W*H;i++)if(m[i]&&!lab[i]){id++;let ar=0,x0=W,x1=0,y0=H,y1=0;st.push(i);lab[i]=id;while(st.length){const p=st.pop(),x=p%W,y=(p/W)|0;ar++;if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y;for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const nx=x+dx,ny=y+dy;if(nx>=0&&ny>=0&&nx<W&&ny<H){const q=ny*W+nx;if(m[q]&&!lab[q]){lab[q]=id;st.push(q)}}}}
     const cw=x1-x0+1,ch=y1-y0+1,line=(ch>H*.85&&cw<W*.12&&(x0<2||x1>W-3))||(cw>W*.85&&ch<H*.12&&(y0<2||y1>H-3));cp.push({id,ar,ok:!line,x0,x1,y0,y1})}
-  const big=Math.max(0,...cp.filter(c=>c.ok).map(c=>c.ar)),keep=new Set(cp.filter(c=>c.ok&&c.ar>=big*.12&&c.ar>=Math.max(2,W*H*.001)&&(c.x0+c.x1)/2>=mx&&(c.x0+c.x1)/2<W-mx&&(c.y0+c.y1)/2>=my&&(c.y0+c.y1)/2<H-my).map(c=>c.id));
+  const big=Math.max(0,...cp.filter(c=>c.ok).map(c=>c.ar)),keep=new Set(cp.filter(c=>c.ok&&c.ar>=big*.12&&c.ar>=Math.max(2,Math.min(4,W*H*.0005))&&(c.x0+c.x1)/2>=mx&&(c.x0+c.x1)/2<W-mx&&(c.y0+c.y1)/2>=my&&(c.y0+c.y1)/2<H-my).map(c=>c.id));
   for(let i=0;i<m.length;i++)if(m[i]&&!keep.has(lab[i]))m[i]=0;
   const cs=new Int32Array(W),rs=new Int32Array(H);let n=0;for(let y=0;y<H;y++)for(let x=0;x<W;x++)if(m[y*W+x]){cs[x]++;rs[y]++;n++}
   let a=0,b=W-1,c=0,e=H-1;while(a<W&&cs[a]<1)a++;while(b>=0&&cs[b]<1)b--;while(c<H&&rs[c]<1)c++;while(e>=0&&rs[e]<1)e--;
-  if(a>b||c>e||n<Math.max(3,W*H*.0015))return{blank:1};const bw=b-a+1,bh=e-c+1;
-  if(bw>=Math.max(3,w*.1)&&bw/bh>=1.4&&bh<=h*.3)return{dash:1};
+  if(a>b||c>e||n<Math.max(2,W*H*.0005))return{blank:1};const bw=b-a+1,bh=e-c+1;
+  // A small DN is wide too: require a thin, filled, central stroke.
+  if(bw>=Math.max(3,w*.045)&&bw/bh>=1.25&&bh<=Math.max(3,h*.13)&&n/(bw*bh)>=.55&&Math.abs((c+e)/2-(my+h/2))<h*.3)return{dash:1,shape:{bw,bh,w,h}};
   const p=Math.round(bh*.35)+2,sm=document.createElement('canvas');sm.width=bw+2*p;sm.height=bh+2*p;const sx=sm.getContext('2d');sx.fillStyle='#fff';sx.fillRect(0,0,sm.width,sm.height);
   const im=sx.getImageData(0,0,sm.width,sm.height);for(let y=0;y<bh;y++)for(let x=0;x<bw;x++)if(m[(c+y)*W+a+x]){const q=((y+p)*sm.width+x+p)*4;im.data[q]=im.data[q+1]=im.data[q+2]=0}sx.putImageData(im,0,0);
   const k=hg/sm.height,o=document.createElement('canvas');o.width=Math.round(sm.width*k)+40;o.height=Math.round(hg)+40;const ox=o.getContext('2d');ox.fillStyle='#fff';ox.fillRect(0,0,o.width,o.height);ox.drawImage(sm,20,20,Math.round(sm.width*k),Math.round(hg));return{canvas:o,nc:keep.size,shape:{bw,bh,w,h}}}
@@ -150,27 +151,27 @@ async function readPage(f){let img;if(f.getContext)img=f;else try{img=await crea
   if(!best)throw Error('Table lines not found. Retake the photo flat and fully in view.');
   setLayout(best.cv,best.G);await structure(true,best.header);
   sc.pages.push({source,cv:sc.cv,img:sc.img,hl:sc.hl,vl:sc.vl,dayAt:sc.dayAt,nameCol:sc.nameCol,dr:sc.dr,guess:sc.guess,dbg:sc.dbg,rows:sc.rows,rawV:sc.rawV,nameBounds:sc.nameBounds,headerRow:sc.headerRow,headerValues:sc.headerValues,dayOffset:sc.dayOffset,nameLayoutUncertain:sc.nameLayoutUncertain,nameLanguage:sc.nameLanguage});}
-async function scanFile(files,add){files=[...(files||[])];if(!files.length)return;if($('#sw'))readForm();sc.msg='';sc.status='';sc.progress=0;sc.fallbackError='';sc.expertError='';sc.nameWarning='';sc.columnPick=null;sc.photoRowPick=null;sc.cells=null;sc.pick=false;if(!add||!sc.pages){sc.pages=[];sc.ri=-1;sc.img='';await killWk()}
+async function scanFile(files,add){files=[...(files||[])];if(!files.length)return;if($('#sw'))readForm();sc.msg='';sc.status='';sc.progress=0;sc.fallbackError='';sc.expertError='';sc.nameWarning='';sc.columnPick=null;sc.photoRowPick=null;sc.continueReadRow=null;sc.cells=null;sc.pick=false;if(!add||!sc.pages){sc.pages=[];sc.ri=-1;sc.img='';await killWk()}
   try{sc.busy=true;render();for(const f of files)await readPage(f);
     sc.rows=sc.pages.flatMap((p,pi)=>p.rows.map(r=>({...r,pi,page:pi+1})));await pickAuto()}catch(e){sc.busy=false;sc.msg='Scan failed: '+e.message+(sc.dbg?' ['+sc.dbg+']':'');await killWk();render()}}
-// Date sequences locate the header; independent name samples validate the column.
+// Date sequences locate the header; geometry proposes a photographed names column.
 async function structure(readNames=true,header=null){if(header){Object.assign(sc,header);const offset=sc.dayOffset,direction=sc.dr;sc.dayAt=i=>offset+direction*i}else await locateDateHeader();if(!readNames)return;sc.nameSamples=null;await locateNameColumn();await readNameRows()}
 function pickAuto(){const unsure=sc.pages?.findIndex(p=>p.nameLayoutUncertain);if(unsure>=0){sc.busy=false;return openNameColumn(unsure)}if(sc.colleaguesOnly){sc.busy=false;return importColleaguePages()}const sr=sc.rows.map(r=>r.score),b=sr.indexOf(Math.max(...sr)),o=[...sr].sort((x,y)=>y-x);if(sr[b]>=.6&&(o[1]===undefined||o[1]<sr[b]-.2))return readCells(b);sc.busy=false;sc.pick=true;render()}
-async function chooseRow(i){if(sc.busy||!sc.rows[i])return;sc.msg='';if(!sc.name){sc.name=sc.rows[i].nm||'';S.myname=sc.name;saveQuietly()}sc.pick=false;sc.busy=true;render();await readCells(i)}
-async function readCells(ri){try{const r=sc.rows[ri];if(!r||!sc.pages?.[r.pi])throw Error('Selected row is no longer available.');usePage(r.pi);sc.ri=ri;const w=S.wps.find(x=>x.id===sc.wp);if(!w)throw Error('Workplace is no longer available.');if(!Number.isInteger(sc.y)||!Number.isInteger(sc.m)||sc.m<1||sc.m>12)throw Error('Check the roster month and year.');const wk=await scanWorker('eng'),V=sc.vl,J=S.cal==='j',b0=J?fromJ(sc.y,sc.m,1):new Date(sc.y,sc.m-1,1),list=[];
+async function chooseRow(i){if(sc.busy||!sc.rows[i])return;sc.msg='';usePage(sc.rows[i].pi);sc.ri=i;if(sc.guess){sc.continueReadRow=i;sc.busy=false;openDateCheck(sc.rows[i].pi);return}sc.pick=false;sc.busy=true;render();await readCells(i)}
+async function readCells(ri,keepConfirmed=false){const confirmed=new Map(keepConfirmed?(sc.cells||[]).filter(c=>c.confirmed&&Number.isInteger(c.column)).map(c=>[c.column,c]):[]);try{const r=sc.rows[ri];if(!r||!sc.pages?.[r.pi])throw Error('Selected row is no longer available.');usePage(r.pi);sc.ri=ri;const w=S.wps.find(x=>x.id===sc.wp);if(!w)throw Error('Workplace is no longer available.');if(!Number.isInteger(sc.y)||!Number.isInteger(sc.m)||sc.m<1||sc.m>12)throw Error('Check the roster month and year.');const wk=await scanWorker('eng'),V=sc.vl,J=S.cal==='j',b0=J?fromJ(sc.y,sc.m,1):new Date(sc.y,sc.m-1,1),list=[];
   await wk.setParameters({tessedit_char_whitelist:codeTokens(w)});
   for(let i=0;i<V.length-1;i++){const day=sc.dayAt(i);if(day<1||day>31||scanNameOverlap(sc,i))continue;const d=new Date(b0.getFullYear(),b0.getMonth(),b0.getDate()+day-1);if(!(J?jp(d).m===sc.m:d.getMonth()===sc.m-1))continue;list.push({i,day,date:iso(d)})}
-  list.sort((a,b)=>a.day-b.day);sc.cells=[];sc.reviewAll=false;sc.reviewPage=0;sc.reviewIndex=0;
+  list.sort((a,b)=>a.day-b.day);sc.cells=[];sc.reviewAll=false;sc.reviewPage=0;sc.reviewIndex=0;sc.cellUndo=[];sc.correctionMessage='';
   for(let q=0;q<list.length;q++){const{i,day,date}=list[q];P('Reading cells '+(q+1)+'/'+list.length,.75+.25*q/list.length);const [x0,y0,x1,y1]=cellBounds(V[i],r.y0,V[i+1],r.y1);
-    const result=await recognizeShift(w,wk,x0,y0,x1,y1);
-    sc.cells.push({day,date,...result})}
+    const result=confirmed.get(i)||await recognizeShift(w,wk,x0,y0,x1,y1);
+    sc.cells.push({...result,day,date,column:i})}
 
   sc.reviewIndex=Math.max(0,sc.cells.findIndex(c=>cState(w,c)!=='ok'));sc.strip=cropC(V[0],r.y0+2,V[V.length-1],r.y1-2,0,56).toDataURL('image/jpeg',.6)}catch(e){sc.msg=e.message;sc.cells=null;sc.pick=!!sc.rows?.length;await killWk()}
-  sc.busy=false;render()}
+  sc.busy=false;render();if(sc.cells)window.scrollTo?.({top:0,behavior:'instant'})}
 const cState=(w,c)=>c.uncertain&&!c.confirmed?'low':!c.text?'empty':!parse(w,c.text)?'bad':c.c<80?'low':'ok';
-const setCell=(i,v)=>{const c=sc.cells[i];c.text=canonicalShift(wp(sc.wp),v);c.c=100;c.confirmed=true;c.uncertain=false;render()};
+const setCell=(i,v,advance=false)=>{const c=sc.cells?.[i];if(!c)return;(sc.cellUndo||=[]).push({i,cell:{...c}});c.text=canonicalShift(wp(sc.wp),v);c.c=100;c.confirmed=true;c.uncertain=false;sc.correctionMessage=T2('Day '+c.day+' · '+(c.text||'left unclear'),'روز '+c.day+' · '+(c.text||'نامشخص ماند'));if(advance){const pending=scanPendingIndices().filter(n=>n!==i);sc.reviewIndex=pending.find(n=>n>i)??pending[0]??i}refreshScanReview()};
 async function doImport(all){const w=S.wps.find(x=>x.id===sc.wp),L=sc.cells.filter(c=>c.text);
-  const bad=L.filter(c=>!parse(w,c.text)).length,unsure=sc.cells.filter(c=>cState(w,c)==='low').length;
+  const bad=L.filter(c=>!parse(w,c.text)).length,unsure=sc.cells.filter(c=>cState(w,c)!=='ok').length;
   if(bad)return alert(T2(bad+' unknown codes. Fix them first.',bad+' علامت ناشناخته است. ابتدا آن‌ها را اصلاح کنید.'));
   if(sc.guess){openDateCheck(sc.rows[sc.ri]?.pi||0);return;}
   if(unsure&&!confirm(T2(`Save now with ${unsure} cells pending? You can review them from the digital roster.`,`${unsure} خانه برای بررسی بعدی می‌ماند. برنامه ثبت شود؟ بعداً از برنامهٔ دیجیتال اصلاحشان می‌کنید.`)))return;

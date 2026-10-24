@@ -122,7 +122,7 @@ async function recognizePersianLeave(w,canvas){
 async function recognizeBaseShift(w,wk,x0,y0,x1,y1){
   const source=cropC(x0,y0,x1,y1,false,80),modern=glyph(x0,y0,x1,y1),legacy=legacyGlyph(x0,y0,x1,y1);
   const feature=visualFeature(modern.canvas||source),preview=cropC(x0,y0,x1,y1,false,44).toDataURL('image/jpeg',.8);
-  let text='',confidence=0,raw='',uncertain=false;
+  let text='',confidence=0,raw='',uncertain=false,persianEvidence=false;
   if(modern.dash){text=parse(w,'-')?canonicalShift(w,'-'):'';confidence=text?90:0}
   else if(modern.blank&&legacy.blank){text=w.blankMeansOff?offCode(w):'';uncertain=!text;confidence=text?90:0}
   else{
@@ -152,13 +152,13 @@ async function recognizeBaseShift(w,wk,x0,y0,x1,y1){
     if(uncertain)confidence=Math.min(72,confidence);
     await wk.setParameters({tessedit_pageseg_mode:'7'});
   }
-  if(!text&&modern.canvas&&!sc.fallbackError){try{const persian=await recognizePersianLeave(w,modern.canvas);if(persian){text=persian.text;confidence=persian.c;raw=persian.raw;uncertain=true;}}catch(e){sc.fallbackError=e.message;uncertain=true;confidence=0}}
+  if((!text||(uncertain||confidence<80)&&confidence<60)&&modern.canvas&&!sc.fallbackError){try{const persian=await recognizePersianLeave(w,modern.canvas);if(persian){text=persian.text;confidence=persian.c;raw=persian.raw;uncertain=true;persianEvidence=true;}}catch(e){sc.fallbackError=e.message;uncertain=true;confidence=0}}
   if(y1-y0<10||(!modern.dash&&modern.shape&&modern.shape.bh<8)){uncertain=true;confidence=Math.min(65,confidence)}
   const remembered=recallExample('glyphs',w.id,feature);
   const suggestion=remembered&&parse(w,remembered.label)?remembered.label:'';
   if(suggestion&&suggestion!==text){text=suggestion;confidence=70;uncertain=true}
   if(suggestion&&remembered.distance===0){text=suggestion;confidence=100;uncertain=false}
-  return {text,c:confidence,raw,feature,img:preview,suggestion,rememberedExact:!!(suggestion&&remembered.distance===0),uncertain,blank:!!(modern.blank&&legacy.blank),confirmed:false};
+  return {text,c:confidence,raw,persianEvidence,feature,img:preview,suggestion,rememberedExact:!!(suggestion&&remembered.distance===0),uncertain,blank:!!(modern.blank&&legacy.blank),confirmed:false};
 }
 
 function knownStaffNames(w){const corrected=(S.mates||[]).filter(m=>m.wp===w.id&&(m.nameConfirmed||!m.rawName&&!m.img)).map(m=>m.name),remembered=memoryStore().names.filter(x=>x.wp===w.id).map(x=>x.label);return [...new Set([...(w.staffNames||[]),...corrected,...remembered].map(x=>x.trim()).filter(Boolean))]}
@@ -170,7 +170,7 @@ function staffNameSuggestion(w,raw){if(S.learnOCR===false)return null;const key=
 function specialistSupports(w){return (w.codes||[]).filter(c=>c.type!=='off').every(c=>/^[DENnMS]+$/.test(c.code)&&(c.aliases||[]).every(a=>/^[DENnMS]+$/.test(a)))}
 async function recognizeShift(w,wk,x0,y0,x1,y1){
  const base=await recognizeBaseShift(w,wk,x0,y0,x1,y1);
- if(base.rememberedExact||!specialistSupports(w)||typeof Tesseract==='undefined'||sc.expertError)return base;
+ if(base.rememberedExact||base.blank||!specialistSupports(w)||typeof Tesseract==='undefined'||sc.expertError)return base;
  try{
   if(!sc.expertWk){const B=BASE();sc.expertWk=await Tesseract.createWorker('ora',1,{workerPath:B+'worker.min.js',corePath:B,langPath:B+'lang',gzip:true})}
   const expert=sc.expertWk,cv=document.createElement('canvas');cv.width=84;cv.height=84;cv.getContext('2d').drawImage(sc.cv,x0,y0,Math.max(1,x1-x0),Math.max(1,y1-y0),0,0,84,84);await expert.setParameters({tessedit_pageseg_mode:'13',tessedit_char_whitelist:codeTokens(w)});
@@ -182,10 +182,22 @@ async function recognizeShift(w,wk,x0,y0,x1,y1){
   if(off&&!modern.dash&&!legacy.dash)return {...base,expert:value};
   if(cs.some(c=>c.type==='off')&&cs.some(c=>c.type!=='off'))return base;
   if(cs.length>1&&modern.shape&&modern.shape.bw/modern.shape.bh<1.05)return base;
-  await expert.setParameters({tessedit_pageseg_mode:'7'});const check=await expert.recognize(cv);
-  if(normalizeOCR(w,check.data.text)!==value||(check.data.confidence||0)<85)return {...base,expert:value};
-  if(base.text&&parse(w,base.text)&&base.text!==value)return {...base,c:Math.min(72,base.c),uncertain:true,expert:value};
+  // The raw square can fail line segmentation even when its symbol reading is
+  // correct. Check the independently cleaned ink before discarding that result.
+  let agreement=base.persianEvidence&&value==='M';
+  const canvases=[cv,...(modern.canvas?[modern.canvas]:[])];
+  for(const candidate of canvases){
+   if(agreement)break;
+   await expert.setParameters({tessedit_pageseg_mode:'7'});const check=await expert.recognize(candidate);
+   agreement=normalizeOCR(w,check.data.text)===value&&(check.data.confidence||0)>=85;
+  }
+  if(!agreement){
+   // A proposed label is still reviewable, never silently confirmed or learned.
+   if(!base.text||base.c<20)return {...base,text:value,c:Math.min(70,confidence),uncertain:true,expert:value};
+   return {...base,expert:value};
+  }
+  if(base.text&&parse(w,base.text)&&base.text!==value&&base.c>=30)return {...base,c:Math.min(72,base.c),uncertain:true,expert:value};
   if(base.suggestion&&base.suggestion!==value)return {...base,expert:value};
-  return {...base,text:value,c:Math.min(confidence,check.data.confidence),uncertain:false,expert:value};
+  return {...base,text:value,c:Math.min(90,confidence),uncertain:false,expert:value};
  }catch(e){sc.expertError=e.message;return base}
 }
