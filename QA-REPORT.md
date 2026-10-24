@@ -1,27 +1,21 @@
-# FoxiOra v12.30 verification
+# FoxiOra v12.31 verification
 
-## Automated behavior
+## Reproduction
 
-328 checks passed in the complete suite. A subsequent focused run passed 47 checks against final draft/handover guards, including two additional regressions: 330 distinct automated checks passed in total. The final usability.cjs contains 30 tests and is included in npm test. Final focused reruns and browser smoke checks covered the completed recovery paths.
+In v12.30, with photo width 1000 and detected vertical lines [200,400,600,800], taps at x=50 and x=950 both left the selection at [400,600]. Those taps were outside the detected grid but inside the original photo. The new picker selects [0,200] and [800,1000], respectively.
 
-New behavior checks cover same-page drafts retaining original shift identities; own/colleague/event draft isolation; multiple-workplace editing; table-first ordering; stale review exit; the three input methods; exact workplace/date recovery; explicit handover agreement, combined DN, revalidation, uncertain recovery, failed storage rollback and Undo; separated colleague controls; explicit combination exclusions; file preview next-step feedback; isolated interactive photo/file/manual tutorials; restored drafts on tutorial exit; notices deferred during unfinished work; pending-file workplace protection; file/scan cancellation; folded lookup activation; whole-roster recovery; a valid swap lesson after practicing DN; manual entry returning to the correct calendar date/workplace; selecting the missing workplace when adding a duty; opening an existing duty for manual correction; refusing an undefined or unclear own shift in a handover; and safely handling a colleague removed while a draft was parked.
+## Automated checks
 
-Existing schedule/conflict, OCR/layout/learning, scan correction, file import, monthly-hours, settings, availability, tutorial, launch-animation, undo and service-worker checks passed. Test expectations were updated where the intended interaction changed: optional multiple selection, method choice, direct missing-workplace editing and the tutorial's new input/correction stops.
+All 343 checks passed in the complete npm test suite. scanner-layout.cjs now has 36 tests, including 13 additions for this release: missing left/right borders; image-versus-frame coordinate mapping; joining falsely split columns without re-rendering; clamped non-crossing edges; automatic outside-grid candidates; free selection without inner borders; sorted/unique/in-bounds candidates; preserved separate page/date mappings; not masking dates for an outside names area; visible crop preview and labelled native sliders; selected-page progress photos; and clearing stale failure messages.
 
-Generated bundles match source. app.js and sw.js syntax checks pass. No new runtime dependency or vendor/model file.
+Generated bundles match source, and app.js/sw.js syntax checks pass.
 
-## Browser interaction
+## Browser and OCR checks
 
-Actual Chromium clicks passed across 12 phone configurations: widths 320, 375 and 430 at height 548, Persian/English, light/dark. Exercised Today Edit → DN → Save → Undo; roster colleague edit → DN → Save → Undo; horizontal-overflow checks; and the table's position near the top of the screen.
+The actual bundled OCR workers processed two generated Persian roster images with 6 people and 31 dates. One has names on the right with its outside vertical border omitted; the other has names on the left with the same omission and dates in the opposite direction. Automatic detection chose the names area in both, with all 6 photo rows retained. Automatic OCR labels were usable for 5 of 6 names in each generated image; the unreadable name remained a photo row. These fixtures do not establish real-world name-reading accuracy.
 
-Additional actual-click workflows passed: two own shift drafts on one calendar page, resuming/saving the correct record; agreed handover Save/Undo; missing second-workplace recovery into the correct editor; disabling DN in workplace suggestion combinations and saving the exclusion; CSV upload → choose own row → save; all three tutorial input methods through sample save, interactive exchange, theme preview and completion with real schedules restored. No page errors. Request drafts were inspected; nothing was sent to another person.
+Actual touch events selected the names area beyond the detected lines on either side. Applying the selection retained 6 selectable rows. Reading a selected row on the right-side fixture produced 31 distinct dates; selecting names did not shift or remove the date columns. Precise controls changed both edges and updated a valid crop preview.
 
-Responsive layout checks passed across 24 configurations: 320×548, 375×548, 375×667, 430×800, 667×375 and 1280×800, in both languages and light/dark. Checked 168 normal-view states and 144 non-welcome intro states. No horizontal page overflow. Planner time fields stayed inside the viewport; guide and app panes did not overlap or leave the screen. Main settings disclosures stayed mutually exclusive.
+16 viewport/language/theme combinations passed: 320×548, 375×548, 430×800 and 667×375, each in Persian/English and light/dark. No horizontal page overflow, no page errors, and both native sliders and the confirmation action remained usable. With the browser offline and the previous OCR worker terminated, accepting the column started a fresh worker using cached scanner assets and retained all 6 photo rows.
 
-These are Chromium viewport/emulation checks, not physical iPhone/Safari verification. Screenshots and automation are internal QA, excluded from the patch. The UI no longer relies on a claim that all settings fit without scrolling: it keeps one item per row and allows natural scrolling on short screens.
-
-## Scope and limits
-
-This release refines navigation and task completion. It does not introduce a new OCR engine or claim a new recognition-accuracy improvement. Photo review/tutorial data and CSV input in this pass were synthetic. The previous scanner safeguards, original-photo fallback, offline assets and no-paid-API behavior remain. No new real hospital-photo benchmark, independent nurse usability study or deployment was performed.
-
-For a real-user check, ask someone unfamiliar with FoxiOra to add their own roster, correct a wrong shift, edit a second workplace, find and record an agreed swap/handover, and resolve an incomplete roster result. Observe first taps, help requests, whether they know the change was saved, and whether they can return without losing work. Those observations should guide the next pass; browser checks cannot establish real-user completion rates.
+These are Chromium mobile/touch emulation checks, not tests on the two reported physical phones. The user's original failing image was not supplied in this turn; its exact layout has not been verified. OCR models are unchanged. QA screenshots, generated images, browser runtime and automation scripts are excluded from the repository patch.

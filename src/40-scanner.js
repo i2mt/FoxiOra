@@ -139,7 +139,7 @@ function setLayout(cv,G){const c=Math.cos(G.th),s=Math.sin(G.th),n=document.crea
   if(Math.max(G.hl.length,G.hl2?.length||0)<5||G.vl.length<8)throw Error('Table lines not found. Retake the photo flat and fully in view.');
   sc.rawV=removeSplitLines(G.vl);sc.hl=recoverRowLines(G.hl,G.hl2);sc.vl=extLines(fillGaps(sc.rawV),removeSplitLines(G.vl2))}
 const tick=()=>new Promise(r=>setTimeout(r,30));
-const usePage=pi=>{const p=sc.pages[pi];Object.assign(sc,{cv:p.cv,hl:p.hl,vl:p.vl,dayAt:p.dayAt,nameCol:p.nameCol,dr:p.dr,guess:p.guess,dbg:p.dbg,rawV:p.rawV,nameBounds:p.nameBounds,headerRow:p.headerRow,headerValues:p.headerValues,dayOffset:p.dayOffset,nameLayoutUncertain:p.nameLayoutUncertain,nameLanguage:p.nameLanguage})};
+const usePage=pi=>{const p=sc.pages[pi];Object.assign(sc,{cv:p.cv,img:p.img||sc.img,hl:p.hl,vl:p.vl,dayAt:p.dayAt,nameCol:p.nameCol,dr:p.dr,guess:p.guess,dbg:p.dbg,rawV:p.rawV,nameBounds:p.nameBounds,headerRow:p.headerRow,headerValues:p.headerValues,dayOffset:p.dayOffset,nameLayoutUncertain:p.nameLayoutUncertain,nameLanguage:p.nameLanguage})};
 async function readPage(f){let img;if(f.getContext)img=f;else try{img=await createImageBitmap(f,{imageOrientation:'from-image'})}catch(e){img=await createImageBitmap(f)}
   const k=Math.min(1,2400/Math.max(img.width,img.height));let cv=document.createElement('canvas');cv.width=Math.round(img.width*k);cv.height=Math.round(img.height*k);cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);if(!f.getContext)img.close?.();
   const source=cv;sc.img=cv.toDataURL('image/jpeg',.5);const pv=$('.pv');if(pv)pv.src=sc.img;P('Preparing image…',.05);await tick();enhance(cv);
