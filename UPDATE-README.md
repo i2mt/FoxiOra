@@ -1,13 +1,9 @@
-# FoxiOra v12.31 → v12.32
+# FoxiOra v12.32 → v12.33
 
-Replace the files in this patch over v12.31. app.js and style.css are already built. No file deletions, deployment or database migration is required.
+This changes-only patch adds the first custom FoxiOra symbol network, trained on the user's roster archive. Replace the included files over v12.32. The generated app.js is included; style.css is unchanged. There are no deletions or database migrations.
 
-- Person selection uses photographed name rows and neutral row numbers. Automatic name OCR and guessed name suggestions are removed. Manual naming remains available.
-- Corrections stay in one editor with a larger photo crop, one-line pending-date queue, automatic next unclear date, Skip and Undo. The month overview keeps every day editable.
-- Date checks happen before corrections when the date layout is uncertain. Later date adjustment preserves human confirmations by physical photo column.
-- Smaller strokes survive extraction; off-mark detection separates small DN from thin marks. Strong symbol readings can be checked on a cleaned crop when raw segmentation fails. Weak suggestions stay pending, genuine blanks stay unknown, and only human corrections teach example memory.
-- Colleagues without entered names receive neutral editable labels beside their name-photo crops.
+The model runs locally and checks the existing scanner. It supports D, E, N, M/م, DE, DN/ND and off marks. Existing controls/OCR handle other codes. Independent agreement can resolve a pending reading; disagreements and unmatched new proposals remain reviewable. Blank cells stay unknown unless their meaning is explicitly configured. Human-confirmed examples retain priority.
 
-All 356 automated checks passed. Sixteen browser layout/touch cases passed, including stable page position during corrections. On the supplied photo, pending results fell from 168 to 66 across 690 date cells in a controlled comparison. See QA-REPORT.md for the test scope and remaining limits.
+The scanner's offline preparation also caches the new roughly 203 KiB model. If that optional model cannot load, the original OCR remains usable. Saved scan corrections now have an export action for confirmed symbol features, without names, workplace identities, photo previews or full rosters. Those examples can support supervised model updates. Network weights do not automatically retrain on the phone or upload data.
 
-This release retains the existing free local engines. It does not include a newly trained model. The approximately 20-photo dataset requested for that work has not yet been recovered; two actual roster photos are currently available.
+All 368 automated tests and sixteen browser layout/touch cases pass. See MODEL-CARD.md and QA-REPORT.md for the comparison and limitations. The optional training kit contains research code/data and should not be uploaded as application files. Nothing has been deployed.

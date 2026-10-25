@@ -6,6 +6,7 @@
     "src/30-calendar-planning.js",
     "src/40-scanner.js",
     "src/42-scan-layout.js",
+    "src/43-glyph-model.js",
     "src/45-scan-review.js",
     "src/50-colleagues-swaps.js",
     "src/55-roster-presence.js",

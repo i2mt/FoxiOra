@@ -1,35 +1,19 @@
-# FoxiOra v12.32 verification
+# FoxiOra v12.33 verification
 
-## Release scope
+368 automated app tests pass. The twelve added model tests cover independent PyTorch/JavaScript numerical parity, unsupported/empty features, malformed models, file checksums, exact human examples, blank handling, low-resolution caution, untrained codes, independent agreement, disagreement, rejection, optional-model failure, symbol-only export and the user-confirmed ND equivalence. Generated bundles and app/service-worker syntax checks pass.
 
-Photo-based person selection, stable shift correction and stronger use of the existing recognition engines. No new neural model has been trained or shipped. No external OCR API, API key, paid service or new runtime dependency is introduced. The existing scanner models remain unchanged.
+The user-provided archive contains 30 image files, including 11 HEIC originals. 1,680 manually labelled symbol/rejection candidates were prepared. Fifteen photos / 840 crops train the models; five / 280 calibrate them; ten / 560 are held out for comparison. Potential page variants are grouped conservatively. See MODEL-CARD.md for counts, methods and limits.
 
-## Automated checks
+Custom CNN and MLP networks were trained from scratch with PyTorch on CPU, alongside an SVM comparator. The existing hybrid OCR and larger official Tesseract best English/Persian models were tested on the same held-out candidates. The deployed CNN has 38,760 parameters and a roughly 203 KiB JSON weight file. No proprietary API or paid hosted model is used.
 
-The complete npm test suite passed: 356 tests, zero failures. Thirteen new correction tests cover mounted controls, executable updated click handlers, advancing through pending dates, skipping, completion and Undo, preserved original evidence, no premature roster/memory writes, checking uncertain dates before reading, preserving confirmations by physical photo column during date correction, isolation between people's rows, small-DN versus dash extraction, cleaned-crop validation, tentative specialist labels and blank-cell abstention. Names tests now explicitly require no name OCR or guessed labels.
+PyTorch and JavaScript inference agreed on all nonempty feature comparisons, with maximum probability difference under 0.00001. Empty features abstain. Model predictions were not saved as human training examples during scanning (the integrated replay left personal glyph memory empty).
 
-Generated bundles match source. app.js and sw.js syntax checks pass.
+The guarded integrated replay accepted 242 assignments with 5 wrong accepted assignments, compared with 242 / 7 in v12.32. These include deliberately sampled non-shift/rejection candidates; this is not a complete-roster accuracy figure. The model's raw correct-code count was 405/417 legible held-out examples, also distinct from automatic assignment accuracy. New unmatched proposals remain pending.
 
-## Supplied photo comparison
+Sixteen Chromium touch/layout cases passed: 320×548, 375×548, 430×800 and 667×375 in Persian/English and light/dark. No horizontal page overflow; correction controls stay mounted and retain page position; Undo and Save remain reachable. Offline correction also passes.
 
-The actual bundled workers processed the user's latest 810×1080 photo in v12.31 and v12.32 using the same row and date-column mapping. This comparison uses 23 photographed rows and 30 valid dates (690 cells); the unused day-31 column is excluded. The benchmark sets the correct date-column mapping explicitly to isolate symbol recognition from layout.
+The offline scanner preparation verifies eight assets, including the new network. With the browser offline and the model removed from memory, a fresh load from verified cache inferred D correctly. A browser download of confirmed-symbol examples succeeded and excluded the test user's name, colleague name, workplace identities and preview images.
 
-Pending cells fell from 168 to 66. There were 102 newly resolved cells: 80 off marks, 18 D, 3 M and 1 E. No formerly clear cell became pending in this run. All 122 changed symbol/status crops were visually inspected; this includes tentative readings that remain pending. This is a one-photo regression comparison, not a general accuracy percentage. Unchanged confident outputs were not all independently labelled, so these results do not establish perfect overall correctness. OCR confidence is not a calibrated probability.
+A full scan/review flow on the previously supplied 810×1080 roster retained all 23 photographed name rows without guessed labels. The chosen second person's row produced 30 ordered dates with no pending cells in this run; corrections and Undo worked. This one-row result is a regression example, not a broad reliability claim.
 
-A separate complete UI flow on the same photo used the visible Aban 1405 month: all 23 name-photo rows were retained, with no guessed names; the date mapping was detected correctly for that month; the chosen second person's row produced 30 dates in order and 3 pending cells. Corrections and Undo worked, and review opened at the page top. Different reading order/worker state may produce different pending counts, so this single-row result is separate from the all-row comparison above.
-
-## Synthetic controls
-
-Thirty-two generated cells exercised D, Persian م, -, N, E, DN, unsupported O and empty cells in normal, small, faint and grid-border conditions. D/N/E/DN and off marks were read correctly in these fixtures. The small DN that previously became an off mark now remains DN. Unsupported O and actual empty cells remained unknown. Three Persian م variants proposed M for human confirmation; the smallest remained unknown. Persian readings still need review in many cases.
-
-## Correction UI
-
-Sixteen Chromium touch-emulation cases passed: 320×548, 375×548, 430×800 and 667×375, each in Persian/English and light/dark. Controls stay mounted and visible taps do not change page scroll or editor position. Automatic advance, final completion, direct DN editing, Undo, reachable Save and no horizontal page overflow were checked. Editing and Undo also worked with the browser offline. These are browser emulation checks, not tests on physical iPhones or Safari.
-
-The single-line pending queue keeps a constant area as dates are resolved. All days remain available in the overview. Blank cells stay unknown unless the user explicitly defines their meaning. Name rows are selected from photographs; names can be entered manually. Colleague imports use editable neutral labels and name-photo crops.
-
-Original roster photos, employee names, private crops, QA screenshots, browser binaries, local analysis scripts and downloaded unrelated candidate images are excluded from the update package.
-
-## Dedicated recognizer dataset
-
-Two distinct actual roster photos have currently been recovered: IMG_6179.jpeg and the latest 9b2d17bb-5426-4d87-a64f-1db8009b5d51.JPG. The set of approximately 20 photos mentioned by the user has not been located. A multi-photo model comparison/training run is pending recovery or upload of that dataset. Neither the current release nor this report claims that such a model has been trained.
+These are Chromium emulation/CPU tests, not physical iPhone/Safari tests. Perspective, curvature and segmentation remain limitations. Different hospitals, additional fonts and rare/untrained codes need more data. No deployment was performed. Original photos, private crops, browser screenshots and research datasets are excluded from the repository patch.

@@ -92,13 +92,14 @@ function memoryDialog() {
   dlg(`<h3>${T2('Saved scan corrections','اصلاحات ذخیره‌شدهٔ اسکن')}</h3><p class="mu">${T2('Confirmed examples stay on this device and are included in your backup. Similar scans are suggested for review.','اصلاحات شما به خواندن اسکن بعدی کمک می‌کند. برای حذف هر مورد، × را بزنید.')}</p>`+
     ['names','glyphs'].map(kind=>`<h1>${kind==='names'?T2('Names','نام‌ها'):T2('Shift symbols','علامت‌های شیفت')}</h1>`+
       (m[kind].map((x,i)=>`<div class="pk"><span>${bidi(x.label)} <small class="mu">${esc(wp(x.wp).name)}</small></span><button class="x" aria-label="${T2('Forget example','حذف نمونه')}" onclick="forgetExample(${jsArg(kind)},${i})">×</button></div>`).join('')||`<p class="mu">${T2('No examples yet.','هنوز نمونه‌ای ذخیره نشده.')}</p>`)).join('')+
-    `<button class="p s" onclick="closeDialog()">${T2('Close','بستن')}</button>`);
+    `<button class="p s" onclick="exportGlyphCorrections()">${T2('Export confirmed symbols','خروجی علامت‌های تأییدشده')}</button><button class="p s" onclick="closeDialog()">${T2('Close','بستن')}</button>`);
 }
 async function forgetExample(kind,index){const change=beginChange('Scan correction removal','حذف اصلاح اسکن',['ocrMemory']);memoryStore()[kind].splice(index,1);if(!await commitChange(change))return;closeDialog();render();memoryDialog()}
 
 function offCode(w){const cs=w?.codes||[],off=cs.find(c=>c.code==='-'&&c.type==='off')||cs.find(c=>c.type==='off');return off?cs.some(c=>c.code==='-'&&c.type!=='off')||!['OFF','*','-'].includes(off.code)?off.code:'-':''}
 function normalizeOCR(w,text){
   text=cleanCode(nrm(text).replace(/\s/g,''));
+  if(text==='ND'){const parts=parse(w,text);if(parts?.length===2&&parts[0].code==='N'&&parts[1].code==='D'&&!w.codes.some(c=>c.code==='DN'))text='DN'}
   if(text==='*'&&!w.codes.some(c=>c.code==='*'&&c.type!=='off'))return offCode(w)||'*';
   if(text&&!parse(w,text)&&parse(w,text.toUpperCase()))return text.toUpperCase();
   return text;
@@ -168,7 +169,7 @@ function staffNameSuggestion(w,raw){if(S.learnOCR===false)return null;const key=
 // retains dates/custom codes; its mask-based readings provide an independent
 // check. Expert guesses are never remembered as confirmed training labels.
 function specialistSupports(w){return (w.codes||[]).filter(c=>c.type!=='off').every(c=>/^[DENnMS]+$/.test(c.code)&&(c.aliases||[]).every(a=>/^[DENnMS]+$/.test(a)))}
-async function recognizeShift(w,wk,x0,y0,x1,y1){
+async function recognizeOCRShift(w,wk,x0,y0,x1,y1){
  const base=await recognizeBaseShift(w,wk,x0,y0,x1,y1);
  if(base.rememberedExact||base.blank||!specialistSupports(w)||typeof Tesseract==='undefined'||sc.expertError)return base;
  try{
