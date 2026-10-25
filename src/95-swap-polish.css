@@ -1,0 +1,34 @@
+/* Readable photo identities and a calendar sized for touch screens. */
+.colleague-label{display:inline-flex;align-items:center;vertical-align:middle;max-width:100%;min-width:0;overflow-wrap:anywhere;white-space:normal;text-align:start}
+.colleague-photo{display:block;max-width:100%;width:136px;height:42px;object-fit:contain;background:#fff;border-radius:6px;padding:2px}
+.colleague-name-button{display:inline-flex;align-items:center;gap:7px;min-height:44px;max-width:100%;padding:3px 5px;border:0;background:none;color:var(--tx);font:inherit;text-align:start}
+.colleague-name-button>span:last-child{color:var(--ac-ink);font-size:.8125rem;flex:none}
+.colleague-choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:7px;margin-block:7px}
+.colleague-choice{display:flex;align-items:center;justify-content:space-between;gap:5px;min-width:0;min-height:48px;border:1px solid var(--ln);border-radius:9px;padding:5px;background:var(--card);color:var(--tx);font:inherit;font-size:.8125rem;text-align:start}
+.colleague-choice[aria-pressed=true]{border-color:var(--ac-ink);background:color-mix(in srgb,var(--ac) 12%,var(--card))}
+.colleague-picker{margin-block:8px}.colleague-picker>summary{display:flex;align-items:center;gap:8px}
+.option-heading{gap:8px}.option-heading .colleague-name-button{flex:1;min-width:0}.option-kind{flex-shrink:0}
+.colleague-card>summary>span:first-child{min-width:0}.colleague-card>summary small{display:block;margin-top:4px}
+.roster-person-name .colleague-photo{width:112px;height:36px;max-height:none}.roster-person-name .colleague-label{width:100%}
+.presence-person .colleague-photo,.presence-unclear .colleague-photo{width:118px;height:36px}.exchange-table .colleague-photo{width:110px;min-width:80px;height:38px}
+.hours-title .colleague-photo{width:100px;height:30px}.request-recipient{margin:5px 0}.name-preview{background:#fff}
+.swap-title{font-size:.875rem;letter-spacing:0;color:var(--tx);line-height:1.7;margin:8px 2px}
+.swap-calendar{padding:10px;border:1px solid var(--ln);border-radius:16px;background:var(--card)}
+.swap-calendar .month-heading{margin-bottom:7px}.swap-calendar .month-heading>b{font-size:.875rem;min-width:0}
+.swap-calendar .month-heading .calendar-today{min-width:50px;font-size:.6875rem}
+.swap-view{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:140px;margin:0 auto 9px;padding:3px;border-radius:10px;background:var(--bg)}
+.swap-view button{border:0;background:none;color:var(--mu);font:inherit;font-size:.75rem;min-height:32px;border-radius:8px;white-space:nowrap;padding:3px}
+.swap-view button[aria-pressed=true]{background:var(--card);color:var(--ac-ink);box-shadow:0 1px 4px #0001}
+.swap-calendar .cover-month{gap:4px;margin:0}.swap-calendar .weekday{font-size:clamp(.5rem,2.2vw,.6875rem);line-height:1.6;min-width:0;white-space:normal;text-align:center;padding:4px 0}
+.swap-calendar .cover-day{position:relative;min-width:0;min-height:60px;border:1px solid transparent;border-radius:10px;gap:3px;padding:4px 1px;background:var(--bg);color:var(--tx);opacity:1;justify-content:flex-start}
+.swap-calendar .cover-day.available{border-color:var(--ln);background:var(--card)}
+.swap-calendar .cover-day.unavailable{color:var(--mu)}.swap-calendar .cover-day.unavailable .shift-mark{opacity:.65}
+.swap-calendar .cover-day .day-number{height:18px;line-height:18px;font-size:.75rem}.swap-calendar .cover-day.t .day-number{color:var(--card);background:var(--ac-ink);border-radius:50%;width:20px;height:20px;line-height:20px}
+.swap-calendar .cover-day.holiday .day-number{color:var(--red)}.swap-calendar .cover-day.holiday.t .day-number{color:var(--card)}
+.swap-calendar .cover-day.sel{border:2px solid var(--ac-ink);background:color-mix(in srgb,var(--ac) 13%,var(--card));padding:3px 0}
+.swap-duty{display:flex;align-items:center;justify-content:center;gap:1px;flex-wrap:wrap;width:100%}.swap-calendar .cover-day .shift-mark{font-size:.8125rem;line-height:1.3;margin:0;max-width:100%}.swap-calendar .cover-day .combined{font-size:.75rem}
+.swap-check{position:absolute;inset-inline-end:2px;top:0;font-size:.625rem;color:var(--ac-ink)}.swap-review{position:absolute;bottom:0;inset-inline-end:3px;color:var(--org);font-size:.75rem}.swap-no-duty{color:var(--ln)}
+.multi-shift-choice{display:flex;align-items:center;gap:7px;min-height:44px;font-size:.8125rem}.multi-shift-choice input{width:18px;height:18px;margin:0;accent-color:var(--ac-ink)}
+.swap-selection{border:1px solid var(--ln);border-radius:12px;background:var(--card);padding:6px 10px;margin-top:4px;font-size:.8125rem}
+.swap-selection>.row>b{font-size:.75rem}.swap-selection .text-button{font-size:.75rem;padding:3px;min-height:36px}.swap-selected-duty{display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:1px solid var(--ln);padding:5px 0}.swap-selected-duty>span{min-width:0}.swap-selected-duty small{display:block;color:var(--mu);font-size:.6875rem;margin-top:3px}.swap-selected-duty .icon-button{min-width:36px;color:var(--mu)}
+@media(max-width:360px){.swap-calendar{padding:7px}.swap-calendar .cover-month{gap:3px}.swap-calendar .cover-day{min-height:55px}.swap-calendar .cover-day .shift-mark{font-size:.75rem}.swap-calendar .cover-day .combined{font-size:.6875rem}.colleague-name-button .colleague-photo{width:120px}}

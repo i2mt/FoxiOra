@@ -1,13 +1,9 @@
-# FoxiOra v12.33 → v12.34
+# FoxiOra v12.34 → v12.35
 
-Apply the changed repository files over v12.33. app.js and style.css are built. Nothing has been deployed.
+Apply this patch over v12.34. The generated app.js and style.css are included. No deployment has been performed.
 
-After choosing a photographed row, your name and full-photo action are visible. Select “فقط برنامهٔ من” or “برنامهٔ من و همکاران” before saving. Repair tools are grouped under “ردیفم را پیدا نمی‌کنم”. Corrections remain mounted while changing scope or checking the source photo.
+Shift suggestions now use the original cropped name from the roster instead of a generated colleague number or an unconfirmed name guess. The same identity appears in exchange and handover previews, request recipients, common-cover summaries, review/conflict options, colleague preferences, comparison and merge selectors, roster cells, shift presence and monthly-hours person choices. Tap the photo/pencil to enter a clean name. The source crop and colleague ID stay saved; Undo restores the previous name. Request drafts use a neutral greeting until a name is supplied. Legacy generated numbers are hidden without changing person IDs or schedules. Text names imported from files and human-confirmed names remain visible.
 
-Repeated imports pause before changing saved dates. Choose replacement, a genuinely different page, or another month. Exact repeated sources suppress the extra-page option. Month changes remain drafts for review; impossible dates are refused. Exact source/row features or identical name photos can reuse a unique colleague identity, preserving confirmed names. Replacement affects only imported dates and the selected workplace. Other months remain saved; emptied old rows stay out of the selected month's table. Interrupted colleague reads never save a partial replacement. Undo covers the whole combined import.
+The shift-change calendar now has a complete month grid with full weekday labels, today/weekend/holiday marks, saved work and off symbols, clear selection borders and a separate selected-shifts area. Only future saved work shifts can be selected. Browse months without losing the selection, remove a selected duty, clear the selection, or enable several shifts. The optional list view remains available. Rename dialogs preserve the open swap preview.
 
-Tap names directly in the table to edit them. Unconfirmed colleagues retain photographed name labels. The whole-month control is beside table navigation.
-
-General name OCR suggestions remain disabled after the dedicated pilot. Only exact, unambiguous human-confirmed name features are reused locally. The v12.33 shift recognizer is unchanged. See NAME-RECOGNITION-PILOT.md for results and limits.
-
-386 automated tests and correction/import browser checks across sixteen screen configurations pass. Emulation is not physical iPhone/Safari testing. Exact-file detection does not identify every new photograph or recompressed copy; date-overlap confirmation protects those imports. Old duplicate identities are not blindly merged.
+All 400 automated tests pass. Chromium touch checks pass in sixteen screen configurations and two Jalali configurations, including 320 px width. Offline selection passes. These checks are browser emulation, not physical iPhone/Safari testing. The shift recognizer and duplicate-import safeguards are unchanged. Source photos, private name crops and QA screenshots are not included.

@@ -8,7 +8,9 @@
     "src/42-scan-layout.js",
     "src/43-glyph-model.js",
     "src/45-scan-review.js",
+    "src/49-colleague-labels.js",
     "src/50-colleagues-swaps.js",
+    "src/51-swap-calendar.js",
     "src/55-roster-presence.js",
     "src/58-monthly-hours.js",
     "src/60-digital-roster.js",
@@ -30,6 +32,7 @@
     "src/58-monthly-hours.css",
     "src/80-brand-assets.css",
     "src/85-intro-import.css",
-    "src/90-refinements.css"
+    "src/90-refinements.css",
+    "src/95-swap-polish.css"
   ]
 }
