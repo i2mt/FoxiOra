@@ -109,7 +109,7 @@ test('import replaces matching dates only and learns only explicitly confirmed s
  const{run,runAsync}=app();await runAsync(`render=()=>{};globalThis.saved=null;save=async()=>{saved=JSON.parse(JSON.stringify(S))};
  S.shifts=[{id:'replace',wp:'w1',date:'2026-10-04',text:'D',segs:[]},{id:'other-workplace',wp:'w2',date:'2026-10-04',text:'N',segs:[]},{id:'blank-must-stay',wp:'w1',date:'2026-10-05',text:'D',segs:[]},{id:'outside-range',wp:'w1',date:'2026-11-01',text:'D',segs:[]}];
  sc.wp='w1';sc.name='نام تأییدشده';sc.nameConfirmed=true;sc.ri=0;sc.guess=false;sc.rows=[{nm:'نام اسکن',rawName:'نام اسکن',nameFeature:null}];
- sc.cells=[{date:'2026-10-04',text:'E',c:100,confirmed:true,feature:{bits:'ffff0000',aspect:1},raw:'D'},{date:'2026-10-05',text:'',c:100,confirmed:true},{date:'2026-10-06',text:'N',c:95,confirmed:false,feature:{bits:'0000ffff',aspect:1}}];await doImport();`);
+ sc.cells=[{date:'2026-10-04',text:'E',c:100,confirmed:true,feature:{bits:'ffff0000',aspect:1},raw:'D'},{date:'2026-10-05',text:'',c:100,confirmed:true},{date:'2026-10-06',text:'N',c:95,confirmed:false,feature:{bits:'0000ffff',aspect:1}}];await doImport();await chooseRosterImportMode('replace');`);
  assert.equal(run("S.shifts.find(x=>x.date==='2026-10-04'&&x.wp==='w1').text"),'E');
  for(const id of ['other-workplace','outside-range'])assert.equal(run(`S.shifts.some(x=>x.id==='${id}')`),true);
  assert.equal(run("S.shifts.filter(x=>x.date==='2026-10-04'&&x.wp==='w1').length"),1);
@@ -152,7 +152,7 @@ test('colleague re-scan clears stale unreadable values and pauses for guessed da
  sc.wp='w1';sc.wk=mock;sc.y=1405;sc.m=7;sc.ri=-1;sc.rows=[{pi:0,y0:10,y1:30,nm:'همکار'}];
  sc.pages=[{cv:null,hl:[0,10,30],vl:[0,50],dayAt:()=>1,nameCol:-1,dr:-1,guess:false}];
  S.mates=[{id:'mate',wp:'w1',name:'همکار',cells:{'2026-09-23':'-'},uns:[]}];`);
- await run('readAll()');
+ await run('readAll()');await run("chooseRosterImportMode('replace')");
  assert.equal(run("S.mates[0].cells['2026-09-23']"),undefined);
  assert.equal(run("S.mates[0].uns.includes('2026-09-23')"),true);
  run("sc.wk=mock;sc.pages[0].guess=true;recognizeShift=async()=>({text:'D',c:99,uncertain:false})");await run('readAll()');

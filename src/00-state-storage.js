@@ -2,9 +2,9 @@
    Times are stored as epoch-ms segments, so old shifts keep their real times if a code is later edited. */
 const $=s=>document.querySelector(s), DAY=864e5;
 const DEF=[['N','Night','19:30-08:00'],['D','Morning','07:30-14:30'],['E','Evening','14:00-20:00'],['n','Short night','20:00-24:00'],['M','Leave','leave'],['S','Sick leave','leave'],['OFF','Day off','off'],['*','Day off','off'],['-','Day off','off']];
-const VER='v12.33';
+const VER='v12.34';
 const DEFAULT_COMBOS=['DE','DN','EN','En'];
-const DS=()=>({wps:[],shifts:[],events:[],mates:[],gap:120,cal:'j',theme:'auto',lang:'fa',ver:3,myname:'',h24:true,fdow:6,cross:true,same:false,fh:2,weekend:[5],holidays:true,learnOCR:true,themePlaces:true,rosterDays:{},rosterPeriods:[],ocrMemory:{version:1,glyphs:[],names:[]}});
+const DS=()=>({wps:[],shifts:[],events:[],mates:[],gap:120,cal:'j',theme:'auto',lang:'fa',ver:3,myname:'',h24:true,fdow:6,cross:true,same:false,fh:2,weekend:[5],holidays:true,learnOCR:true,themePlaces:true,rosterDays:{},rosterPeriods:[],rosterImports:[],ocrMemory:{version:1,glyphs:[],names:[]}});
 let S=DS(),tab='today',cm=new Date(),sel='',vm='month',calendarWorkplace='',daySelected=false;
 
 /* ---------- STORAGE (IndexedDB, one state object; swap later for per-table stores) ---------- */
@@ -13,7 +13,7 @@ async function load(){const d=await db();return new Promise((resolve,reject)=>{c
 async function save(){if(tour.active)throw Error("Sample schedule cannot be saved");const d=await db();return new Promise((resolve,reject)=>{const tx=d.transaction('kv','readwrite');tx.objectStore('kv').put(S,'state');tx.oncomplete=()=>{d.close();resolve()};tx.onerror=tx.onabort=()=>{d.close();reject(tx.error||Error('Save failed'))}})}
 
 /* Reversible roster changes: small field patches, persisted with the same state. */
-const UNDO_KEYS=['wps','shifts','mates','events','rosterDays','onboarding','swapHistory','ocrMemory','rosterPeriods','myname'];
+const UNDO_KEYS=['wps','shifts','mates','events','rosterDays','onboarding','swapHistory','ocrMemory','rosterPeriods','myname','rosterImports'];
 const UNDO_ARRAYS=['wps','shifts','mates','events','swapHistory'];
 const own=(o,k)=>o!=null&&Object.prototype.hasOwnProperty.call(o,k);
 const copyJSON=v=>v===undefined?undefined:JSON.parse(JSON.stringify(v));
