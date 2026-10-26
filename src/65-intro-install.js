@@ -21,14 +21,8 @@ function clearIntroLayout(){if(tour.layoutFrame)window.cancelAnimationFrame?.(to
 function positionIntro(reveal=false){
  if(!tour.active||tour.step===0)return;
  const panel=$('#intro-card'),view=$('#v');if(!panel?.getBoundingClientRect)return;
- const viewport=window.visualViewport,visibleHeight=viewport?.height||window.innerHeight;
- const inset=Math.max(0,window.innerHeight-visibleHeight-(viewport?.offsetTop||0));
- const style=document.documentElement.style;
- style.setProperty('--intro-dock-bottom',(inset+8)+'px');
- style.setProperty('--intro-dock-max',Math.max(164,Math.min(260,visibleHeight*.42))+'px');
- style.setProperty('--intro-view-top',($('#hd').getBoundingClientRect().bottom+6)+'px');
- style.setProperty('--intro-view-bottom',(panel.getBoundingClientRect().height+inset+24)+'px');
- if(reveal){const target=view.querySelector('#inline-editor.intro-spotlight')||view.querySelector('.intro-spotlight');target?.scrollIntoView?.({block:'start',behavior:'instant'})}
+ const style=document.documentElement.style;style.setProperty('--intro-view-top',(panel.getBoundingClientRect().bottom+12)+'px');style.setProperty('--intro-view-bottom','16px');
+ if(reveal)window.scrollTo?.(0,0);
 }
 function queueIntroLayout(reveal=false){
  if(!tour.active||tour.step===0||!window.requestAnimationFrame)return;
@@ -45,11 +39,11 @@ window.addEventListener?.('resize',()=>queueIntroLayout());
 window.visualViewport?.addEventListener?.('resize',()=>queueIntroLayout());
 function renderTour(){clearTourLocks();$('#intro-card')?.remove();$('#intro-veil')?.remove();if(!tour.active)return;document.body.classList.add('intro-active');document.body.classList.toggle('intro-welcoming',tour.step===0);
  const welcome=tour.step===0,copy=[
- [T2('Welcome to FoxiOra','به FoxiOra خوش اومدی!'),T2('Try a sample schedule, then start your own.','یه دور کوتاه بزنیم، بعد بریم سراغ برنامهٔ خودت. (برنامه برای نمونه قرار داده شده است.)')],
- [T2('Start with your roster','اول برنامهٔ شیفتت'),T2('Choose photo, file or manual entry. Try one with this sample.','عکس، فایل یا ثبت دستی؛ یکی رو برای امتحان انتخاب کن.')],
- [T2('Correct it, then save','بررسی کن، بعد ثبت کن'),tour.didImport?T2('Sample saved. Your changes appear in the calendar.','نمونه ثبت شد؛ تغییراتت رو در تقویم می‌بینی.'):tour.method==='file'?T2('Choose your row and match X to a shift, then save this sample.','ردیف خودت و معنی X رو انتخاب کن، بعد نمونه رو ثبت کن.'):tour.method==='manual'?T2('Choose a shift and save. You can edit any saved shift the same way.','یه شیفت انتخاب و ذخیره کن؛ شیفت‌های ثبت‌شده هم همین‌طور ویرایش می‌شن.'):T2('Compare the photo with the buttons. Choose D, then save this sample.','عکس رو با علامت‌ها مقایسه کن؛ D رو انتخاب کن و نمونه رو ثبت کن.')],
- [T2('Your shifts, close at hand','شیفت‌هات دم دستته'),T2('Edit your next shift here. The calendar has your month, roster table and who’s on shift.','شیفت بعدی رو همین‌جا ویرایش کن؛ تقویم، جدول و «کیا شیفتن؟» هم دم دستته.')],
- [T2('Try a shift swap','یه تعویض شیفت رو امتحان کن'),T2('Choose a shift, find suggestions, then preview the exchange. You can try it with this sample.','برای شیفت انتخاب‌شده، «پیدا کردن پیشنهادها» رو بزن و یه تعویض رو امتحان کن.')],
+ [T2('Welcome to FoxiOra','به FoxiOra خوش اومدی!'),T2('A quick look at the app. No tasks to complete.','یه نگاه کوتاه به امکانات برنامه؛ لازم نیست چیزی وارد کنی. (برنامه برای نمونه قرار داده شده است.)')],
+ [T2('Start with your roster','اول برنامهٔ شیفتت'),T2('Add your roster using a photo, file or manual entry.','برنامه‌ات رو با عکس، فایل یا ثبت دستی اضافه کن.')],
+ [T2('Correct it, then save','بررسی کن، بعد ثبت کن'),tour.didImport?T2('Sample saved. Your changes appear in the calendar.','نمونه ثبت شد؛ تغییراتت رو در تقویم می‌بینی.'):tour.method==='file'?T2('Choose your row and match X to a shift, then save this sample.','ردیف خودت و معنی X رو انتخاب کن، بعد نمونه رو ثبت کن.'):tour.method==='manual'?T2('Choose a shift and save. You can edit any saved shift the same way.','یه شیفت انتخاب و ذخیره کن؛ شیفت‌های ثبت‌شده هم همین‌طور ویرایش می‌شن.'):T2('Check unclear shifts against their photos before saving.','شیفت‌های نامشخص کنار عکسشان دیده می‌شوند؛ قبل از ثبت اصلاحشان کن.')],
+ [T2('Your shifts, close at hand','شیفت‌هات دم دستته'),T2('Tap a calendar date to edit its shift. Today shows what is coming next.','روی روز تقویم بزن و شیفتش رو ویرایش کن. در «امروز» شیفت بعدی و در جدول «کیا شیفتن؟» رو می‌بینی.')],
+ [T2('Find a shift swap','تعویض شیفت با همکار'),T2('Select your shift to see colleagues who can cover it or exchange. Save after you agree.','شیفتت رو انتخاب کن تا جایگزین یا تعویض پیدا کنی؛ بعد از توافق با همکارت ثبتش کن.')],
  [T2('Free time, your way','وقت آزاد برای خودت'),T2('Choose a duration and start time to find your free periods.','مدت و زمان شروع رو انتخاب کن تا وقت‌های آزاد رو پیدا کنی.')],
  [T2('FoxiOra, your way','FoxiOra به سلیقهٔ خودت'),T2('Explore calendar, language, clock and shift-alert settings. Colors and light/dark mode are here too.','ظاهر، تقویم و هشدارها رو به سلیقه‌ات تنظیم کن. پوسته و حالت روشن یا تیره هم اینجاست.')]
  ][tour.step],locations=['FoxiOra',T2('Add roster','افزودن برنامه'),T2('Check & save','بررسی و ثبت'),T2('Today & calendar','امروز و تقویم'),T2('Shift swap','تعویض شیفت'),T2('Free time & trips','وقت آزاد و سفر'),T2('Settings','تنظیمات')];
@@ -63,7 +57,7 @@ function renderTour(){clearTourLocks();$('#intro-card')?.remove();$('#intro-veil
  $('#v').querySelectorAll('button,input,select,a').forEach(el=>{if(!allowed(el)&&!el.disabled){el.disabled=true;el.dataset.introDisabled='1';if(el.tagName==='A'){el.setAttribute('inert','');el.dataset.introInert='1'}}});
  const targets=[[],['.schedule-methods'],[tour.didImport?'#selected-day':tour.method==='file'?'.file-loaded':tour.method==='manual'?'#inline-editor':'.scan-focus'],[inlineEditor?'#inline-editor':'.hero'],[inlineEditor?'#inline-editor':tour.didSwap?'.saved-exchange':tc.res?'.exchange-option':'.cover-submit'],[travel.searched&&$('.trip-card')?'.trip-card':'.planner-controls'],[]][tour.step];for(const selector of targets)document.querySelectorAll('#v '+selector).forEach(n=>n.classList.add('intro-spotlight'));
  if(tour.step===6){const groups=[...document.querySelectorAll('#v .settings-group')],a=groups[tour.settingsFocus]||groups[0];if(a){groups.forEach(g=>g.open=g===a);a.classList.add('intro-spotlight')}groups.forEach((g,i)=>{if(g.dataset.introSummaryBound)return;g.dataset.introSummaryBound='1';g.querySelector('summary').addEventListener('click',e=>{if(tour.active&&tour.step===6){e.preventDefault();introSettingsSection(i)}})})}
- if(!welcome)watchIntroLayout(panel);else clearIntroLayout();
+ $('#v').setAttribute('inert','');$('#v').dataset.introInert='1';panel.setAttribute('role','dialog');panel.setAttribute('aria-modal','true');if(!welcome)watchIntroLayout(panel);else clearIntroLayout();
 }
 document.addEventListener('keydown',e=>{if(!tour.active||$('#dlg').open)return;if(e.key==='Escape'){e.preventDefault();finishIntro(true)}if(e.key==='Tab'){const nodes=[...document.querySelectorAll('#v button:not([disabled]),#v input:not([disabled]),#v select:not([disabled]),#v summary,#intro-card button')].filter(n=>!n.closest('[inert]')&&n.getClientRects?.().length);if(!nodes.length)return;const i=nodes.indexOf(document.activeElement);if(e.shiftKey&&i<=0){e.preventDefault();nodes.at(-1).focus()}else if(!e.shiftKey&&(i===nodes.length-1||i<0)){e.preventDefault();nodes[0].focus()}}});
 let installPrompt=null,installedThisSession=false;

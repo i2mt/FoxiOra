@@ -4,6 +4,7 @@
     "src/10-shift-engine.js",
     "src/20-interface.js",
     "src/30-calendar-planning.js",
+    "src/39-scan-recovery.js",
     "src/40-scanner.js",
     "src/42-scan-layout.js",
     "src/43-glyph-model.js",
@@ -33,6 +34,7 @@
     "src/80-brand-assets.css",
     "src/85-intro-import.css",
     "src/90-refinements.css",
-    "src/95-swap-polish.css"
+    "src/95-swap-polish.css",
+    "src/96-flow-recovery.css"
   ]
 }

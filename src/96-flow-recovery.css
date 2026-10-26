@@ -1,0 +1,8 @@
+.scan-exit{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}.scan-exit .p{flex:1;min-width:120px;min-height:44px;font-size:.8125rem}.scan-loading .pv{max-height:220px;object-fit:contain}
+body.intro-active:not(.intro-welcoming) #intro-card{top:calc(8px + env(safe-area-inset-top));bottom:auto;max-height:45dvh;overflow:auto;background:var(--card);border:2px solid var(--ac-ink);box-shadow:0 8px 24px #0002}
+body.intro-active:not(.intro-welcoming) #v{top:var(--intro-view-top,240px);bottom:16px;filter:none;pointer-events:none}
+body.intro-active:not(.intro-welcoming) #intro-veil{backdrop-filter:none;background:var(--bg)}
+body.intro-active .intro-copy p{font-size:.875rem;line-height:1.8}body.intro-active .intro-spotlight{box-shadow:none!important;outline:none!important}
+@media(prefers-reduced-motion:reduce){.intro-enter{animation:none!important}}
+body.intro-active:not(.intro-welcoming) #intro-card{background:#182b3e;color:#f5f8fc;border-color:#789dbb}
+@media(max-height:480px) and (min-width:600px){body.intro-active:not(.intro-welcoming) #intro-card{top:8px;bottom:8px;max-height:none}body.intro-active:not(.intro-welcoming) #v{top:68px}}

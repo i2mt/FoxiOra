@@ -17,7 +17,7 @@ function isolateMixed(root){
 }
 const vbtn=(k,l)=>`<button class="${vm===k?'on':''}" onclick="vm=${jsArg(k)};render()">${l}</button>`;
 const mfirst=d=>{d=new Date(d);return new Date(d.getFullYear(),d.getMonth(),d.getDate()-(S.cal==='j'?jp(d).d-1:d.getDate()-1))};
-const mv=n=>{const d=mfirst(cm);cm=mfirst(n>0?new Date(d.getFullYear(),d.getMonth(),d.getDate()+32):new Date(d.getFullYear(),d.getMonth(),d.getDate()-1));sel=iso(cm);render()}, pick=d=>{sel=d;daySelected=true;render();$('#selected-day')?.scrollIntoView?.({block:'start',behavior:'instant'})};
+const mv=n=>{const d=mfirst(cm);cm=mfirst(n>0?new Date(d.getFullYear(),d.getMonth(),d.getDate()+32):new Date(d.getFullYear(),d.getMonth(),d.getDate()-1));sel=iso(cm);render()}, pick=d=>{openCalendarDate(d)};
 // Month grid follows the chosen calendar: a Jalali month is built from real Jalali day boundaries (via Intl).
 const workplaceNumber=id=>Math.max(0,S.wps.findIndex(w=>w.id===id))+1;
 const monthShiftMark=h=>S.wps.length<2?shiftMark(wp(h.wp),h.text):`<em class="shift-mark ${shiftKind(wp(h.wp),h.text)} workplace-shift" style="--work-color:${placeColor(h.wp)}" title="${esc(wp(h.wp).name+' · '+h.text)}"><span class="workplace-number" aria-hidden="true">${workplaceNumber(h.wp)}</span>${codeHTML(canonicalShift(wp(h.wp),h.text))}</em>`;
