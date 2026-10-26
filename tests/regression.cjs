@@ -271,7 +271,7 @@ test('ambiguous hospital aliases abstain and are not accepted as a known shift',
 });
 test('digital roster distinguishes off from missing and keeps uncertain dates reviewable',async()=>{
  const {run,runAsync,document}=app();run("roster.cm=fromJ(1405,7,1);roster.page=0;S.mates=[{id:'m',wp:'w1',name:'Colleague',cells:{'2026-09-23':'OFF','2026-09-24':'D'},uns:['2026-09-24']}];go('roster')");
- assert.equal(document.querySelectorAll('.roster-table thead th').length,8);assert.equal(document.querySelectorAll('.roster-table tbody tr').length,2);assert.equal(document.querySelectorAll('.uncertain-cell').length,1);assert.ok(document.querySelector('.shift-mark.off'));assert.ok(document.querySelector('.unknown-mark'));
+ assert.equal(document.querySelectorAll('.roster-table thead th').length,31);assert.equal(document.querySelectorAll('.roster-table tbody tr').length,2);assert.equal(document.querySelectorAll('.uncertain-cell').length,1);assert.ok(document.querySelector('.shift-mark.off'));assert.ok(document.querySelector('.unknown-mark'));
  run('roster.wide=true;render()');assert.equal(document.querySelectorAll('.roster-table thead th').length,31);
  run("roster.search='Nobody';render()");assert.equal(document.querySelectorAll('.roster-table tbody tr').length,1);
 });
