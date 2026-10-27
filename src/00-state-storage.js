@@ -2,7 +2,7 @@
    Times are stored as epoch-ms segments, so old shifts keep their real times if a code is later edited. */
 const $=s=>document.querySelector(s), DAY=864e5;
 const DEF=[['N','Night','19:30-08:00'],['D','Morning','07:30-14:30'],['E','Evening','14:00-20:00'],['n','Short night','20:00-24:00'],['M','Leave','leave'],['S','Sick leave','leave'],['OFF','Day off','off'],['*','Day off','off'],['-','Day off','off']];
-const VER='v12.37';
+const VER='v12.38';
 const DEFAULT_COMBOS=['DE','DN','EN','En'];
 const DS=()=>({wps:[],shifts:[],events:[],mates:[],gap:120,cal:'j',theme:'auto',lang:'fa',ver:3,myname:'',h24:true,fdow:6,cross:true,same:false,fh:2,weekend:[5],holidays:true,learnOCR:true,themePlaces:true,rosterDays:{},rosterPeriods:[],rosterImports:[],ocrMemory:{version:1,glyphs:[],names:[]}});
 let S=DS(),tab='today',cm=new Date(),sel='',vm='month',calendarWorkplace='',daySelected=false;
@@ -10,7 +10,7 @@ let S=DS(),tab='today',cm=new Date(),sel='',vm='month',calendarWorkplace='',dayS
 /* ---------- STORAGE (IndexedDB, one state object; swap later for per-table stores) ---------- */
 const db=()=>new Promise((r,j)=>{const q=indexedDB.open('shiftfox',1);q.onupgradeneeded=()=>q.result.createObjectStore('kv');q.onsuccess=()=>r(q.result);q.onerror=j});
 async function load(){const d=await db();return new Promise((resolve,reject)=>{const tx=d.transaction('kv'),q=tx.objectStore('kv').get('state');let value;q.onsuccess=()=>value=q.result;tx.oncomplete=()=>{d.close();resolve(value)};tx.onerror=tx.onabort=()=>{d.close();reject(tx.error||Error('Load failed'))}})}
-async function save(){if(tour.active)throw Error("Sample schedule cannot be saved");const d=await db();return new Promise((resolve,reject)=>{const tx=d.transaction('kv','readwrite');tx.objectStore('kv').put(S,'state');tx.oncomplete=()=>{d.close();resolve()};tx.onerror=tx.onabort=()=>{d.close();reject(tx.error||Error('Save failed'))}})}
+async function save(clearImportDraft){if(tour.active)throw Error("Sample schedule cannot be saved");const d=await db();return new Promise((resolve,reject)=>{const tx=d.transaction('kv','readwrite');tx.objectStore('kv').put(S,'state');for(const kind of clearImportDraft===true?['photo','file']:[clearImportDraft])if(IMPORT_DRAFT_KEYS[kind])tx.objectStore('kv').delete(IMPORT_DRAFT_KEYS[kind]);tx.oncomplete=()=>{d.close();resolve()};tx.onerror=tx.onabort=()=>{d.close();reject(tx.error||Error('Save failed'))}})}
 
 /* Reversible roster changes: small field patches, persisted with the same state. */
 const UNDO_KEYS=['wps','shifts','mates','events','rosterDays','onboarding','swapHistory','ocrMemory','rosterPeriods','myname','rosterImports'];
@@ -34,14 +34,14 @@ async function commitChange(change){
  if(changeSaving){for(const key of change.keys)if(change.before[key]===undefined)delete S[key];else S[key]=change.before[key];return false}
  changeSaving=true;const editor=inlineEditor,buttons=[...document.querySelectorAll('button')].filter(b=>!b.disabled);buttons.forEach(b=>b.disabled=true);
  finishChange(change);
- try{await save();showChangeFeedback(T2(enLabel(change.label)+' saved',faLabel(change.label).startsWith('حذف ')?faLabel(change.label).slice(4)+' حذف شد':faLabel(change.label)+' ثبت شد'),true);return true}
+ try{if(change.importKind)await importDrafts.queue;await save(change.importKind);if(change.importKind)forgetImportDraft(change.importKind);showChangeFeedback(T2(enLabel(change.label)+' saved',faLabel(change.label).startsWith('حذف ')?faLabel(change.label).slice(4)+' حذف شد':faLabel(change.label)+' ثبت شد'),true);return true}
  catch{for(const key of change.keys)if(change.before[key]===undefined)delete S[key];else S[key]=copyJSON(change.before[key]);if(change.history===undefined)delete S.undoHistory;else S.undoHistory=change.history;
   showChangeFeedback(T2('Could not save. Your draft is still here; try again.','ذخیره نشد؛ نوشته‌هایتان اینجاست. دوباره امتحان کنید.'));render();if(editor&&editor.view===inlineView())mountInline(editor);return false}
  finally{changeSaving=false;buttons.forEach(b=>b.disabled=false)}
 }
 async function saveSettings(patch){if(tour.active)return previewTourSettings(patch);if(changeSaving||undoBusy)return false;const fields=[...document.querySelectorAll('#v input[id],#v select[id],#v textarea[id]')].map(e=>({id:e.id,value:e.value,checked:e.checked})),before=Object.fromEntries(Object.keys(patch).map(k=>[k,copyJSON(S[k])]));changeSaving=true;Object.assign(S,patch);try{await save();render();const status=$('#settings-save-status');if(status)status.textContent=T2('Saved automatically','خودکار ذخیره شد');return true}catch{for(const [key,value]of Object.entries(before))if(value===undefined)delete S[key];else S[key]=value;render();for(const field of fields){const input=document.getElementById(field.id);if(input){input.value=field.value;if(input.type==='checkbox')input.checked=field.checked}}showChangeFeedback(T2('Could not save this setting. Please try again.','این تنظیم ذخیره نشد؛ دوباره امتحان کنید.'));return false}finally{changeSaving=false}}
 function saveQuietly(){return save().catch(()=>showChangeFeedback(T2('Could not save yet. Please try again.','هنوز ذخیره نشد؛ دوباره امتحان کنید.')))}
-async function clearData(){if(changeSaving||!confirm(T2('Delete all schedules and settings?','همهٔ برنامه‌ها و تنظیمات حذف شوند؟')))return;const previous=S;S=DS();try{await save();inlineDrafts.clear();inlineEditor=null;render()}catch{S=previous;render();showChangeFeedback(T2('Could not save. Your data is still here.','ذخیره نشد؛ اطلاعاتتان هنوز اینجاست.'))}}
+async function clearData(){if(changeSaving||!confirm(T2('Delete all schedules and settings?','همهٔ برنامه‌ها و تنظیمات حذف شوند؟')))return;const previous=S;S=DS();try{await importDrafts.queue;await save(true);forgetImportDraft('photo');forgetImportDraft('file');sc={busy:false,cells:null,pages:[],rows:[],wp:''};Object.assign(fi,{book:null,rows:[],busy:false});inlineDrafts.clear();inlineEditor=null;render()}catch{S=previous;render();showChangeFeedback(T2('Could not save. Your data is still here.','ذخیره نشد؛ اطلاعاتتان هنوز اینجاست.'))}}
 const enLabel=label=>label?.en||'Change',faLabel=label=>label?.fa||'تغییر';
 const undoLabel=record=>T2(enLabel(record?.label),faLabel(record?.label));
 function undoRecord(){return Array.isArray(S.undoHistory)?S.undoHistory.at(-1):null}

@@ -39,5 +39,5 @@ async function finishLoading(){
  setTimeout(()=>{screen.remove();startAppExperience()},reduced?0:300)
 }
 
-(async()=>{try{loadingProgress(12,'داریم برنامه‌ات رو باز می‌کنیم…');const L=await load()||{};if(L.wps&&!L.ver){L.lang='fa';L.cal='j';L.ver=3}S={...S,...L};loadingProgress(70,'برنامه‌ات تقریباً آماده‌ست…');normalizeSavedOff();sel=iso(Date.now());cm=mfirst(new Date());render();registerAppWorker();await finishLoading()}catch(e){const screen=$('#loading-screen');if(screen){$('#loading-status').textContent='برنامهٔ ذخیره‌شده باز نشد. دوباره تلاش کنید.';screen.querySelector('.loading-retry').hidden=false;screen.classList.add('load-error')}}})();
+(async()=>{try{loadingProgress(12,'داریم برنامه‌ات رو باز می‌کنیم…');const L=await load()||{};if(L.wps&&!L.ver){L.lang='fa';L.cal='j';L.ver=3}S={...S,...L};loadingProgress(70,'برنامه‌ات تقریباً آماده‌ست…');normalizeSavedOff();await loadImportDrafts();sel=iso(Date.now());cm=mfirst(new Date());render();registerAppWorker();await finishLoading()}catch(e){const screen=$('#loading-screen');if(screen){$('#loading-status').textContent='برنامهٔ ذخیره‌شده باز نشد. دوباره تلاش کنید.';screen.querySelector('.loading-retry').hidden=false;screen.classList.add('load-error')}}})();
 setInterval(()=>tab==='today'&&!$('#dlg').open&&render(),60000);

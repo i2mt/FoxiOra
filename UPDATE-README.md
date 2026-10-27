@@ -1,13 +1,15 @@
-# FoxiOra v12.36 → v12.37
+# FoxiOra v12.37 → v12.38
 
-Apply over v12.36. Built app.js and style.css are included. No deployment was performed.
+Apply over v12.37. Built app.js and style.css are included. No deployment was performed.
 
-- The main add action now says «افزودن برنامه». Photo, file, manual-entry, workplace and save actions use explicit labels. Questions and recovery prompts use natural, concise Persian.
-- Photo review asks about one unclear shift at a time, with its image and D/E/N/–/M/DN choices. Extra symbols, geometry repairs and full-table tools are available under expandable options. Completion reveals the import choices. Undo remains available; skipping preserves uncertainty.
-- Reading colleagues stays on the import screen with progress and Stop. Successful extraction opens the monthly calendar for the imported month and workplace.
-- The colleague roster immediately shows the whole month and scrolls horizontally, with sticky names. The whole-month toggle and seven-day paging are removed.
-- Calendar is the place to edit shifts. Today's duplicate edit action is removed; its calendar navigation remains.
-- Shift swapping leads with choosing a shift and finding options. Colleague preferences and request-copy tools remain available under expandable options. Planning leads with duration and finding free time; optional start time/date and change-shift searches are folded.
-- Card spacing is tighter, and optional legends/table previews are folded. Critical date, overwrite, conflict and uncertainty warnings remain visible.
+- Monthly date selection gently scrolls to the correct editor. A «برگشت به تقویم» action returns to the same selected date and month without discarding the editor. Reduced-motion preferences are respected. The competing automatic toggle scroll was removed.
+- The roster has one bounded scroll region for both axes. Names stay pinned at the starting edge; dates stay pinned at the top; their shared corner stays above both. Name crops remain tappable to rename, without a separate pencil line or an extra self-row caption. Scrolling position survives edits and name dialogs. Weekdays use full names.
+- Import stages are labelled: choose roster → check shifts → save roster. The current stage updates without rebuilding correction controls.
+- Photo reviews and file previews are checkpointed locally. Reopening offers continuation with the selected row, crops, corrections, Undo, import scope, file mappings and month. Photo review resumes without rerunning OCR. Pending drafts do not trigger installation/update interruptions or get silently overwritten by new input.
+- Drafts are stored separately from saved shifts. Successful import saves the roster and deletes its checkpoint in one transaction. Failed saves retain the review. Cancel/discard removes its checkpoint; clearing data or restoring a backup clears old import checkpoints. Tutorial samples cannot write over them.
+- Successful photo, colleague and file imports open the imported month and workplace in monthly view, with a month-specific save message and Undo.
+- Generic duplicated More menus were replaced with purpose-labelled controls. Swap multi-selection and request-copy actions are direct. Colleague limits and roster navigation are direct links. Roster management separates adding colleague schedules from symbol/hour and colleague settings. Photo review separates source/identity/date repairs from checking other days. Calendar legend, file table preview and planning controls retain specific labels.
 
-The recognition model is unchanged. This release improves interaction, not measured OCR accuracy. Small-phone primary correction choices were checked in Chromium; physical iPhone/Safari testing and real-roster usability feedback remain necessary. Expanded tools and settings can still require vertical scrolling on short screens.
+The OCR model and confidence thresholds are unchanged. The app still asks about uncertain cells and permits reviewing all days. USABILITY-TEST.md provides real-phone tasks and an OCR confidence audit; these are not completed participant sessions or a new accuracy measurement.
+
+Recovery uses the last completed on-device checkpoint. Closing before a checkpoint completes, before table layout is ready, browser storage eviction, private-mode restrictions or clearing site data can prevent recovery. In-progress OCR computation is not resumed mid-operation; a saved row-selection checkpoint can be read again. Unconfirmed geometry edits return to the last completed checkpoint. Storage errors are shown instead of claiming the draft was saved. These checkpoints do not transfer to another phone or origin.

@@ -315,6 +315,6 @@ test('failed row reading preserves photo and picker for a retry, without importi
 });
 test('guided setup creates one workplace and continues directly to roster entry',async()=>{
  const {run,runAsync,document}=app();run("S=DS();go('today')");assert.match(document.querySelector('#v').textContent,/شروع کنیم/);run("go('setup')");document.querySelector('#setup-workplace').value='بخش داخلی';document.querySelector('#setup-name').value='علی رضایی';await run('completeSetup()');
- assert.equal(run('S.wps.length'),1);assert.equal(run('tab'),'scan');assert.equal(run('sc.wp'),run('S.wps[0].id'));assert.equal(run('S.myname'),'علی رضایی');assert.equal(document.querySelector('[aria-current=step]').textContent,'۲برنامه');assert.match(document.querySelector('#v').textContent,/ثبت دستی شیفت/);
+ assert.equal(run('S.wps.length'),1);assert.equal(run('tab'),'scan');assert.equal(run('sc.wp'),run('S.wps[0].id'));assert.equal(run('S.myname'),'علی رضایی');assert.equal(document.querySelector('#import-progress [aria-current=step]').textContent,'۱انتخاب برنامه');assert.match(document.querySelector('#v').textContent,/ثبت دستی شیفت/);
  await runAsync("go('today');await resumeSetup()");assert.equal(run('S.wps.length'),1);assert.equal(run('tab'),'scan');run('finishSetup(sc.wp)');assert.equal(run('S.onboarding.stage'),'done');
 });
